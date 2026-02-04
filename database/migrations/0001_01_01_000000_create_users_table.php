@@ -12,12 +12,12 @@ return new class extends Migration {
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id(); // id : int
-            $table->string('userName'); // userName : string
+            $table->string('name'); // name : string
             $table->string('email')->unique(); // email : string
             $table->string('password'); // password : string
 
             // role : enum (simple option)
-            $table->enum('role', ['admin', 'moderator', 'vendor', 'customer'])->default('customer');
+            $table->enum('role', ['admin', 'moderator', 'seller', 'buyer'])->default('buyer');
 
             $table->timestamps(); // created_at + updated_at
             $table->softDeletes(); // deleted_at

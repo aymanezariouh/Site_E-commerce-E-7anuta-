@@ -60,7 +60,7 @@ class RolesAndPermissionsSeeder extends Seeder
         foreach ($demoUsers as $demo) {
             $user = User::firstOrCreate(
                 ['email' => $demo['email']],
-                ['name' => $demo['name'], 'password' => Hash::make('password')]
+                ['name' => $demo['name'], 'password' => Hash::make('password'), 'role' => $demo['role']]
             );
             $user->syncRoles([$demo['role']]);
         }
