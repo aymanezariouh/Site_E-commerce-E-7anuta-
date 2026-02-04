@@ -20,7 +20,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'userName',
+        'name',
         'email',
         'password',
         'role',
@@ -77,14 +77,19 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
-    public function isVendor()
+    public function isModerator()
     {
-        return $this->role === 'vendor';
+        return $this->role === 'moderator';
     }
 
-    public function isCustomer()
+    public function isSeller()
     {
-        return $this->role === 'customer';
+        return $this->role === 'seller';
+    }
+
+    public function isBuyer()
+    {
+        return $this->role === 'buyer';
     }
 
     // Equivalent of: hasPermission(p: Permission): bool
