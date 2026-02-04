@@ -19,6 +19,8 @@ return new class extends Migration {
             // role : enum (simple option)
             $table->enum('role', ['admin', 'moderator', 'seller', 'buyer'])->default('buyer');
 
+            $table->timestamp('email_verified_at')->nullable();
+            $table->rememberToken();
             $table->timestamps(); // created_at + updated_at
             $table->softDeletes(); // deleted_at
         });
