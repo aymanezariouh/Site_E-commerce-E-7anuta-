@@ -1,15 +1,24 @@
-<div class="rounded-lg border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-cyan-50 p-4 shadow-md">
+<div class="dash-card p-4">
     <div class="flex items-center justify-between">
-        <h5 class="font-bold text-blue-800">Panier</h5>
-        <span class="text-sm text-blue-600 bg-blue-200 px-2 py-1 rounded-full">Accès rapide</span>
+        <div>
+            <h5 class="dash-title text-base text-slate-800">Panier</h5>
+            <p class="text-xs text-slate-500">Resume de votre panier actuel.</p>
+        </div>
+        <span class="dash-pill">Acces rapide</span>
     </div>
-    <div class="mt-3 text-sm text-blue-700">
-        <p>Produits du panier: <span class="text-blue-500 font-medium">—</span></p>
-        <p class="mt-1">Total panier: <span class="text-blue-500 font-medium">—</span></p>
+    <div class="mt-4 grid gap-3 sm:grid-cols-2">
+        <div class="dash-card-soft p-3">
+            <p class="text-xs text-slate-500">Articles</p>
+            <p class="text-lg font-semibold text-slate-800">3</p>
+        </div>
+        <div class="dash-card-soft p-3">
+            <p class="text-xs text-slate-500">Total</p>
+            <p class="text-lg font-semibold text-slate-800">$86.00</p>
+        </div>
     </div>
-    <div class="mt-3 flex flex-wrap gap-2">
-        <button class="px-3 py-1.5 rounded-lg border-2 border-blue-300 bg-blue-100 text-blue-800 text-sm hover:bg-blue-200 transition-colors">Modifier quantités</button>
-        <button class="px-3 py-1.5 rounded-lg border-2 border-red-300 bg-red-100 text-red-800 text-sm hover:bg-red-200 transition-colors">Supprimer</button>
-        <button class="px-3 py-1.5 rounded-lg bg-blue-600 text-white text-sm hover:bg-blue-700 transition-colors shadow-sm">Passer commande</button>
+    <div class="mt-4 flex flex-wrap gap-2">
+        <button class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50">Modifier</button>
+        <button class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50">Vider</button>
+        <button class="rounded-lg bg-teal-600 px-3 py-1.5 text-sm text-white hover:bg-teal-700">Passer commande</button>
     </div>
 </div>

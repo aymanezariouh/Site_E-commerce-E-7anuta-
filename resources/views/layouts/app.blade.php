@@ -35,7 +35,7 @@
             <div x-show="profileOpen" class="fixed inset-0 z-50" style="display: none;">
                 <div class="absolute inset-0 bg-black/40" @click="profileOpen = false"></div>
                 <div
-                    class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl"
+                    class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl flex flex-col"
                     x-transition:enter="transition transform duration-300"
                     x-transition:enter-start="translate-x-full"
                     x-transition:enter-end="translate-x-0"
@@ -56,7 +56,7 @@
                             </svg>
                         </button>
                     </div>
-                    <div class="p-4">
+                    <div class="flex-1 overflow-y-auto p-4">
                         <x-buyer.profile-quick />
                     </div>
                 </div>

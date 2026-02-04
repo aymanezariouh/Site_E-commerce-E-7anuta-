@@ -1,11 +1,14 @@
-<div class="rounded-lg border-2 border-blue-300 bg-blue-50 shadow-md">
-    <div class="flex items-center justify-between px-4 py-3 border-b-2 border-blue-200 bg-blue-100">
-        <h5 class="font-bold text-blue-800">Mes commandes</h5>
-        <div class="text-sm text-blue-600 bg-blue-200 px-2 py-1 rounded-full">Table principale</div>
+<div class="dash-card overflow-hidden">
+    <div class="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+        <div>
+            <h5 class="dash-title text-base text-slate-800">Mes commandes</h5>
+            <p class="text-xs text-slate-500">Suivez vos achats recents.</p>
+        </div>
+        <span class="dash-pill">Historique</span>
     </div>
     <div class="overflow-x-auto">
         <table class="min-w-full text-sm">
-            <thead class="bg-blue-100 text-blue-800">
+            <thead class="bg-slate-50 text-slate-600">
                 <tr>
                     <th class="text-left px-4 py-2 font-semibold">ID</th>
                     <th class="text-left px-4 py-2 font-semibold">Date</th>
@@ -15,9 +18,9 @@
                     <th class="text-left px-4 py-2 font-semibold">Actions</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr class="border-t border-blue-200">
-                    <td class="px-4 py-3 text-blue-600" colspan="6">Aucune commande pour le moment.</td>
+            <tbody class="text-slate-600">
+                <tr class="border-t border-slate-200">
+                    <td class="px-4 py-3" colspan="6">Aucune commande pour le moment.</td>
                 </tr>
             </tbody>
         </table>

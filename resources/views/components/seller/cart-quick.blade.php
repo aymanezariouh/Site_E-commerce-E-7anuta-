@@ -1,15 +1,23 @@
-<div class="rounded-lg border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-4 shadow-sm">
+<div class="dash-card p-4">
     <div class="flex items-center justify-between">
-        <h5 class="font-bold text-amber-800">Panier</h5>
-        <span class="text-sm text-amber-700 bg-amber-100 px-2 py-1 rounded-full">Acces rapide</span>
+        <div>
+            <h5 class="dash-title text-base text-slate-800">Panier</h5>
+            <p class="text-xs text-slate-500">Achats personnels en cours.</p>
+        </div>
+        <span class="dash-pill">Client</span>
     </div>
-    <div class="mt-3 text-sm text-amber-700">
-        <p>Produits du panier: <span class="text-amber-600 font-medium">--</span></p>
-        <p class="mt-1">Total panier: <span class="text-amber-600 font-medium">--</span></p>
+    <div class="mt-4 grid gap-3 sm:grid-cols-2">
+        <div class="dash-card-soft p-3">
+            <p class="text-xs text-slate-500">Articles</p>
+            <p class="text-lg font-semibold text-slate-800">2</p>
+        </div>
+        <div class="dash-card-soft p-3">
+            <p class="text-xs text-slate-500">Total</p>
+            <p class="text-lg font-semibold text-slate-800">$42.00</p>
+        </div>
     </div>
-    <div class="mt-3 flex flex-wrap gap-2">
-        <button class="px-3 py-1.5 rounded-lg border-2 border-amber-300 bg-amber-100 text-amber-800 text-sm hover:bg-amber-200 transition-colors">Modifier quantites</button>
-        <button class="px-3 py-1.5 rounded-lg border-2 border-orange-300 bg-orange-100 text-orange-800 text-sm hover:bg-orange-200 transition-colors">Supprimer</button>
-        <button class="px-3 py-1.5 rounded-lg bg-amber-600 text-white text-sm hover:bg-amber-700 transition-colors shadow-sm">Passer commande</button>
+    <div class="mt-4 flex flex-wrap gap-2">
+        <button class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50">Modifier</button>
+        <button class="rounded-lg bg-teal-600 px-3 py-1.5 text-sm text-white hover:bg-teal-700">Commander</button>
     </div>
 </div>

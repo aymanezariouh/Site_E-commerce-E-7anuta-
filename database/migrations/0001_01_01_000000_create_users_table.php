@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id(); // id : int
-            $table->string('userName'); // userName : string
+            $table->string('name'); // userName : string
             $table->string('email')->unique(); // email : string
             $table->string('password'); // password : string
 
@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->enum('role', ['admin', 'moderator', 'vendor', 'customer'])->default('customer');
 
             $table->timestamps(); // created_at + updated_at
-            $table->softDeletes(); // deleted_at
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
