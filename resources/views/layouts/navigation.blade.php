@@ -15,6 +15,18 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    
+                    @role('buyer')
+                        <x-nav-link :href="route('buyer.produits')" :active="request()->routeIs('buyer.produits')">
+                            Products
+                        </x-nav-link>
+                        <x-nav-link :href="route('buyer.cart')" :active="request()->routeIs('buyer.cart')">
+                            Cart
+                        </x-nav-link>
+                        <x-nav-link :href="route('buyer.orders')" :active="request()->routeIs('buyer.orders')">
+                            My Orders
+                        </x-nav-link>
+                    @endrole
                 </div>
             </div>
 
@@ -70,6 +82,18 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            
+            @role('buyer')
+                <x-responsive-nav-link :href="route('buyer.produits')" :active="request()->routeIs('buyer.produits')">
+                    Products
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('buyer.cart')" :active="request()->routeIs('buyer.cart')">
+                    Cart
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('buyer.orders')" :active="request()->routeIs('buyer.orders')">
+                    My Orders
+                </x-responsive-nav-link>
+            @endrole
         </div>
 
         <!-- Responsive Settings Options -->

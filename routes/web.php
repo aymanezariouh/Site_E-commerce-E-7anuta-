@@ -34,11 +34,16 @@ Route::middleware('auth')->group(function () {
 
 
 
-Route::middleware(['auth', 'role:client'])->group(function() {
-    Route::get('/produits', [BuyerController::class, 'index'])->name('buyer.produits');
-    Route::get('/produits/{id}', [BuyerController::class, 'show'])->name('buyer.produits.show');
-    Route::post('/produits/{id}/add-to-cart', [BuyerController::class, 'addToCart'])->name('buyer.addToCart');
-    Route::get('/mes-commandes', [BuyerController::class, 'orders'])->name('buyer.orders');
+Route::middleware(['auth', 'role:buyer'])->group(function() {
+    Route::get('/products', [BuyerController::class, 'index'])->name('buyer.produits');
+    Route::get('/products/{id}', [BuyerController::class, 'show'])->name('buyer.produits.show');
+    Route::post('/products/{id}/add-to-cart', [BuyerController::class, 'addToCart'])->name('buyer.addToCart');
+    Route::get('/cart', [BuyerController::class, 'cart'])->name('buyer.cart');
+    Route::get('/checkout', [BuyerController::class, 'checkout'])->name('buyer.checkout');
+    Route::post('/place-order', [BuyerController::class, 'placeOrder'])->name('buyer.placeOrder');
+    Route::get('/orders', [BuyerController::class, 'orders'])->name('buyer.orders');
+    Route::get('/orders/{id}', [BuyerController::class, 'orderDetails'])->name('buyer.orderDetails');
+    Route::post('/products/{id}/review', [BuyerController::class, 'addReview'])->name('buyer.addReview');
 });
 
 
