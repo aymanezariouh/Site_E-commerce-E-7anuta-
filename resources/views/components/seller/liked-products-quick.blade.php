@@ -1,13 +1,16 @@
-<div class="rounded-lg border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-4 shadow-sm">
+<div class="dash-card p-4">
     <div class="flex items-center justify-between">
-        <h5 class="font-bold text-amber-800">Produits likes</h5>
-        <span class="text-sm text-amber-700 bg-amber-100 px-2 py-1 rounded-full">Recents</span>
+        <div>
+            <h5 class="dash-title text-base text-slate-800">Produits likes</h5>
+            <p class="text-xs text-slate-500">Sauvegardes personnelles.</p>
+        </div>
+        <span class="dash-pill">Recents</span>
     </div>
-    <div class="mt-3 text-sm text-amber-700">
+    <div class="mt-4 text-sm text-slate-600">
         <p>Aucun produit like pour le moment.</p>
     </div>
-    <div class="mt-3 flex flex-wrap gap-2">
-        <button class="px-3 py-1.5 rounded-lg border-2 border-orange-300 bg-orange-100 text-orange-800 text-sm hover:bg-orange-200 transition-colors">Retirer le like</button>
-        <button class="px-3 py-1.5 rounded-lg border-2 border-amber-300 bg-amber-100 text-amber-800 text-sm hover:bg-amber-200 transition-colors">Voir produit</button>
+    <div class="mt-4 flex flex-wrap gap-2">
+        <button class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50">Retirer</button>
+        <button class="rounded-lg bg-teal-600 px-3 py-1.5 text-sm text-white hover:bg-teal-700">Voir produit</button>
     </div>
 </div>

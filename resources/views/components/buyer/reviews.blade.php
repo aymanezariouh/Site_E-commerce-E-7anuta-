@@ -1,14 +1,17 @@
-<div class="rounded-lg border-2 border-teal-300 bg-gradient-to-br from-teal-50 to-blue-50 p-4 shadow-md">
+<div class="dash-card p-4">
     <div class="flex items-center justify-between">
-        <h5 class="font-bold text-teal-800">Mes avis et notes</h5>
-        <span class="text-sm text-teal-600 bg-teal-200 px-2 py-1 rounded-full">Section</span>
+        <div>
+            <h5 class="dash-title text-base text-slate-800">Mes avis</h5>
+            <p class="text-xs text-slate-500">Partagez votre experience.</p>
+        </div>
+        <span class="dash-pill">Avis</span>
     </div>
-    <div class="mt-3 text-sm text-teal-700">
-        <p>Aucun avis publié.</p>
-        <p class="text-xs text-teal-600 mt-1">Statut: visible/masqué si modération.</p>
+    <div class="mt-4 text-sm text-slate-600">
+        <p>Aucun avis publie.</p>
+        <p class="text-xs text-slate-500 mt-1">Vos avis apparaissent apres validation.</p>
     </div>
-    <div class="mt-3 flex flex-wrap gap-2">
-        <button class="px-3 py-1.5 rounded-lg border-2 border-teal-300 bg-teal-100 text-teal-800 text-sm hover:bg-teal-200 transition-colors">Modifier</button>
-        <button class="px-3 py-1.5 rounded-lg border-2 border-red-300 bg-red-100 text-red-800 text-sm hover:bg-red-200 transition-colors">Supprimer</button>
+    <div class="mt-4 flex flex-wrap gap-2">
+        <button class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50">Modifier</button>
+        <button class="rounded-lg bg-teal-600 px-3 py-1.5 text-sm text-white hover:bg-teal-700">Ecrire un avis</button>
     </div>
 </div>

@@ -1,14 +1,17 @@
-<div class="rounded-lg border-2 border-red-300 bg-gradient-to-br from-red-50 to-amber-50 p-4 shadow-md">
+<div class="dash-card p-4">
     <div class="flex items-center justify-between">
-        <h5 class="font-bold text-red-800">Stock et alertes</h5>
-        <span class="text-sm text-red-600 bg-red-200 px-2 py-1 rounded-full">Section</span>
+        <div>
+            <h5 class="dash-title text-base text-slate-800">Stock et alertes</h5>
+            <p class="text-xs text-slate-500">Surveillez les ruptures.</p>
+        </div>
+        <span class="dash-pill">Stock</span>
     </div>
-    <div class="mt-3 text-sm text-red-700">
-        <p>Produits stock faible: <span class="text-red-500 font-medium">—</span></p>
-        <p class="text-xs text-red-600 mt-1">Seuil configurable.</p>
+    <div class="mt-4 text-sm text-slate-600">
+        <p>Produits stock faible: <span class="font-semibold text-slate-800">--</span></p>
+        <p class="text-xs text-slate-500 mt-1">Seuil configurable par categorie.</p>
     </div>
-    <div class="mt-3 flex flex-wrap gap-2">
-        <button class="px-3 py-1.5 rounded-lg border-2 border-green-300 bg-green-100 text-green-800 text-sm hover:bg-green-200 transition-colors">Augmenter stock</button>
-        <button class="px-3 py-1.5 rounded-lg border-2 border-red-300 bg-red-100 text-red-800 text-sm hover:bg-red-200 transition-colors">Modifier produit</button>
+    <div class="mt-4 flex flex-wrap gap-2">
+        <button class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50">Augmenter stock</button>
+        <button class="rounded-lg bg-teal-600 px-3 py-1.5 text-sm text-white hover:bg-teal-700">Modifier produit</button>
     </div>
 </div>

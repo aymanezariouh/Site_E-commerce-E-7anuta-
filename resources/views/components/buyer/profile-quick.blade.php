@@ -52,26 +52,44 @@
         @role('seller')
             <div class="rounded-lg border border-amber-200 bg-amber-50 p-3">
                 <div class="flex items-center justify-between">
-                    <h6 class="font-semibold text-amber-800">Profil vendeur</h6>
+                    <div>
+                        <h6 class="font-semibold text-amber-800">Profil vendeur</h6>
+                        <p class="text-xs text-amber-700">Boutique active et performance recente.</p>
+                    </div>
                     <span class="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">Boutique</span>
                 </div>
-                <div class="mt-2 grid grid-cols-3 gap-2 text-xs">
+                <div class="mt-3 grid grid-cols-2 gap-2 text-xs">
                     <div class="rounded-md bg-white p-2 text-amber-800">
-                        <p class="text-[11px] text-amber-600">Produits</p>
+                        <p class="text-[11px] text-amber-600">Produits en ligne</p>
                         <p class="text-base font-semibold">18</p>
                     </div>
                     <div class="rounded-md bg-white p-2 text-amber-800">
-                        <p class="text-[11px] text-amber-600">Ventes</p>
+                        <p class="text-[11px] text-amber-600">Ventes totales</p>
                         <p class="text-base font-semibold">74</p>
                     </div>
                     <div class="rounded-md bg-white p-2 text-amber-800">
-                        <p class="text-[11px] text-amber-600">CA</p>
+                        <p class="text-[11px] text-amber-600">CA 30j</p>
                         <p class="text-base font-semibold">$1.2k</p>
                     </div>
+                    <div class="rounded-md bg-white p-2 text-amber-800">
+                        <p class="text-[11px] text-amber-600">Note moyenne</p>
+                        <p class="text-base font-semibold">4.7</p>
+                    </div>
                 </div>
-                <div class="mt-2 flex flex-wrap gap-2">
+                <div class="mt-3 rounded-md border border-amber-200 bg-white p-2 text-xs text-amber-800">
+                    <div class="flex items-center justify-between">
+                        <span>Commandes en cours</span>
+                        <span class="font-semibold">6</span>
+                    </div>
+                    <div class="mt-1 flex items-center justify-between">
+                        <span>Retours a traiter</span>
+                        <span class="font-semibold">1</span>
+                    </div>
+                </div>
+                <div class="mt-3 flex flex-wrap gap-2">
                     <button class="rounded-lg border border-amber-300 bg-amber-100 px-3 py-1 text-xs text-amber-800 hover:bg-amber-200">Mes produits</button>
                     <button class="rounded-lg border border-amber-300 bg-amber-100 px-3 py-1 text-xs text-amber-800 hover:bg-amber-200">Commandes</button>
+                    <button class="rounded-lg border border-amber-300 bg-amber-100 px-3 py-1 text-xs text-amber-800 hover:bg-amber-200">Payouts</button>
                     <button class="rounded-lg bg-amber-600 px-3 py-1 text-xs text-white hover:bg-amber-700">Tableau vendeur</button>
                 </div>
             </div>

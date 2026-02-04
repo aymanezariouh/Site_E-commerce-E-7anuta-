@@ -1,3 +1,64 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :root {
+        --ink-strong: #1f2937;
+        --ink-soft: #475569;
+        --panel: #ffffff;
+        --panel-border: #e2e8f0;
+        --panel-soft: #f8fafc;
+        --accent: #0f766e;
+        --accent-soft: #ccfbf1;
+        --sand: #f6f3ee;
+        --glow: #fde68a;
+    }
+
+    body {
+        background-color: var(--sand);
+        color: var(--ink-strong);
+    }
+}
+
+@layer components {
+    .dashboard-bg {
+        background-image:
+            radial-gradient(1200px 600px at 10% -10%, #e0f2fe 0%, transparent 55%),
+            radial-gradient(800px 400px at 90% 0%, #fef3c7 0%, transparent 60%),
+            linear-gradient(180deg, #f8fafc 0%, #f6f3ee 100%);
+    }
+
+    .dash-card {
+        border: 1px solid var(--panel-border);
+        background: var(--panel);
+        border-radius: 18px;
+        box-shadow: 0 12px 32px -24px rgba(15, 23, 42, 0.6);
+    }
+
+    .dash-card-soft {
+        border: 1px solid var(--panel-border);
+        background: var(--panel-soft);
+        border-radius: 16px;
+    }
+
+    .dash-title {
+        font-weight: 700;
+        letter-spacing: -0.01em;
+    }
+
+    .dash-pill {
+        border-radius: 999px;
+        border: 1px solid #d1fae5;
+        background: #ecfeff;
+        color: #0f766e;
+        padding: 0.25rem 0.6rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .dash-divider {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+    }
+}

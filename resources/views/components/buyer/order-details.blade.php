@@ -1,12 +1,15 @@
-<div class="rounded-lg border-2 border-cyan-300 bg-gradient-to-br from-cyan-50 to-blue-50 p-4 shadow-md">
+<div class="dash-card p-4">
     <div class="flex items-center justify-between">
-        <h5 class="font-bold text-cyan-800">Détails commande</h5>
-        <span class="text-sm text-cyan-600 bg-cyan-200 px-2 py-1 rounded-full">Accès rapide</span>
+        <div>
+            <h5 class="dash-title text-base text-slate-800">Details commande</h5>
+            <p class="text-xs text-slate-500">Infos rapides sur la commande selectionnee.</p>
+        </div>
+        <span class="dash-pill">Acces rapide</span>
     </div>
-    <div class="mt-3 text-sm text-cyan-700 space-y-2">
-        <div>Produits commandés: <span class="text-cyan-500 font-medium">—</span></div>
-        <div>Adresse de livraison: <span class="text-cyan-500 font-medium">—</span></div>
-        <div>Statut + historique: <span class="text-cyan-500 font-medium">—</span></div>
-        <div>Paiement: <span class="text-cyan-500 font-medium">—</span></div>
+    <div class="mt-4 grid gap-3 sm:grid-cols-2 text-sm text-slate-600">
+        <div class="dash-card-soft p-3">Produits commandes: <span class="font-semibold text-slate-800">--</span></div>
+        <div class="dash-card-soft p-3">Adresse livraison: <span class="font-semibold text-slate-800">--</span></div>
+        <div class="dash-card-soft p-3">Statut: <span class="font-semibold text-slate-800">--</span></div>
+        <div class="dash-card-soft p-3">Paiement: <span class="font-semibold text-slate-800">--</span></div>
     </div>
 </div>
