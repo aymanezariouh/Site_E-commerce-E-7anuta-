@@ -1,0 +1,70 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use App\Models\Product;
+use App\Models\Category;
+use App\Models\User;
+
+class ProductSeeder extends Seeder
+{
+    public function run(): void
+    {
+        // Créer quelques catégories
+        $categories = [
+            ['name' => 'Électronique'],
+            ['name' => 'Vêtements'],
+            ['name' => 'Maison'],
+        ];
+
+        foreach ($categories as $cat) {
+            Category::firstOrCreate(['name' => $cat['name']]);
+        }
+
+        // Créer un vendeur
+        $seller = User::firstOrCreate(
+            ['email' => 'seller@example.com'],
+            ['name' => 'Seller User', 'password' => bcrypt('password')]
+        );
+        $seller->assignRole('seller');
+
+        // Créer quelques produits
+        $products = [
+            [
+                'name' => 'Smartphone Samsung',
+                'description' => 'Smartphone dernière génération avec écran OLED',
+                'price' => 2500.00,
+                'stock_quantity' => 10,
+                'sku' => 'PHONE001',
+                'is_active' => true,
+                'category_id' => Category::where('name', 'Électronique')->first()->id,
+                'user_id' => $seller->id,
+            ],
+            [
+                'name' => 'T-shirt Coton',
+                'description' => 'T-shirt 100% coton, confortable et durable',
+                'price' => 150.00,
+                'stock_quantity' => 25,
+                'sku' => 'TSHIRT001',
+                'is_active' => true,
+                'category_id' => Category::where('name', 'Vêtements')->first()->id,
+                'user_id' => $seller->id,
+            ],
+            [
+                'name' => 'Lampe de Bureau',
+                'description' => 'Lampe LED avec variateur d\'intensité',
+                'price' => 300.00,
+                'stock_quantity' => 15,
+                'sku' => 'LAMP001',
+                'is_active' => true,
+                'category_id' => Category::where('name', 'Maison')->first()->id,
+                'user_id' => $seller->id,
+            ],
+        ];
+
+        foreach ($products as $product) {
+            Product::firstOrCreate(['sku' => $product['sku']], $product);
+        }
+    }
+}

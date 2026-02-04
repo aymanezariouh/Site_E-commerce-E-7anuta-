@@ -1,29 +1,46 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Produits') }}
+            {{ __('Products') }}
         </h2>
     </x-slot>
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Category Filter -->
+            <div class="mb-6">
+                <form method="GET" class="flex gap-4">
+                    <select name="category_id" class="border rounded px-3 py-2">
+                        <option value="">All Categories</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Filter</button>
+                </form>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                @foreach($produits as $produit)
+                @foreach($products as $product)
                     <div class="border p-4 rounded-lg shadow">
-                        <h3 class="font-semibold text-lg">{{ $produit->name }}</h3>
-                        <p class="text-sm text-gray-600">{{ $produit->description }}</p>
-                        <p class="mt-2 font-medium">Prix: {{ $produit->prix }} MAD</p>
+                        <h3 class="font-semibold text-lg">{{ $product->name }}</h3>
+                        <p class="text-sm text-gray-600">{{ $product->description }}</p>
+                        <p class="text-sm text-gray-500">Category: {{ $product->category->name ?? 'N/A' }}</p>
+                        <p class="mt-2 font-medium">Price: ${{ $product->price }}</p>
+                        <p class="text-sm">Rating: {{ number_format($product->average_rating, 1) }}/5 ({{ $product->total_reviews }} reviews)</p>
                         
-                        <form action="{{ route('buyer.addToCart', $produit->id) }}" method="POST" class="mt-3">
+                        <form action="{{ route('buyer.addToCart', $product->id) }}" method="POST" class="mt-3">
                             @csrf
-                            <input type="number" name="quantite" value="1" min="1" class="border p-1 w-16">
+                            <input type="number" name="quantity" value="1" min="1" max="{{ $product->stock_quantity }}" class="border p-1 w-16">
                             <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded">
-                                Ajouter au panier
+                                Add to Cart
                             </button>
                         </form>
 
-                        <a href="{{ route('buyer.produits.show', $produit->id) }}" class="text-blue-600 mt-2 inline-block">
-                            Voir détails
+                        <a href="{{ route('buyer.produits.show', $product->id) }}" class="text-blue-600 mt-2 inline-block">
+                            View Details
                         </a>
                     </div>
                 @endforeach
