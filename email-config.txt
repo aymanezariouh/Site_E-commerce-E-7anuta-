@@ -1,0 +1,32 @@
+# Email Configuration for Testing
+# Replace these values with your actual email service credentials
+
+# For Mailtrap (recommended for testing)
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your_mailtrap_username
+MAIL_PASSWORD=your_mailtrap_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="noreply@e-7anuta.com"
+MAIL_FROM_NAME="E-7anuta Store"
+
+# For Gmail SMTP (production)
+# MAIL_MAILER=smtp
+# MAIL_HOST=smtp.gmail.com
+# MAIL_PORT=587
+# MAIL_USERNAME=your_gmail@gmail.com
+# MAIL_PASSWORD=your_app_password
+# MAIL_ENCRYPTION=tls
+# MAIL_FROM_ADDRESS="noreply@yourdomain.com"
+# MAIL_FROM_NAME="Your Store Name"
+
+# For SendGrid (production)
+# MAIL_MAILER=smtp
+# MAIL_HOST=smtp.sendgrid.net
+# MAIL_PORT=587
+# MAIL_USERNAME=apikey
+# MAIL_PASSWORD=your_sendgrid_api_key
+# MAIL_ENCRYPTION=tls
+# MAIL_FROM_ADDRESS="noreply@yourdomain.com"
+# MAIL_FROM_NAME="Your Store Name"

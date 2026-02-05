@@ -1,4 +1,34 @@
-<x-app-layout>
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ config('app.name', 'Laravel') }} - Dashboard</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="font-sans antialiased bg-gray-100">
+    @auth
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="{{ route('dashboard') }}" class="text-xl font-semibold text-gray-800">{{ config('app.name', 'Laravel') }}</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-gray-900 font-semibold">Dashboard</a>
+                    <a href="{{ route('marketplace') }}" class="text-gray-700 hover:text-gray-900">Marketplace</a>
+                    <a href="{{ route('orders') }}" class="text-gray-700 hover:text-gray-900">Orders</a>
+                    <a href="{{ route('profile.edit') }}" class="text-gray-700 hover:text-gray-900">Profile</a>
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="text-gray-700 hover:text-gray-900">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
     <div class="py-10 dashboard-bg">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="space-y-8">
@@ -116,4 +146,14 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+    @else
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="text-center">
+            <h1 class="text-2xl font-bold text-gray-900 mb-4">Access Denied</h1>
+            <p class="text-gray-600 mb-4">You must be logged in to access the dashboard.</p>
+            <a href="{{ route('login') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Login</a>
+        </div>
+    </div>
+    @endauth
+</body>
+</html>
