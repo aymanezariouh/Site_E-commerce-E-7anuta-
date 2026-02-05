@@ -11,6 +11,9 @@ use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\Review;
 use App\Models\ProductLike;
+use App\Models\User;
+use App\Notifications\NewOrderNotification;
+use App\Notifications\NewReviewNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -80,13 +83,15 @@ class BuyerController extends Controller
 
     public function placeOrder(Request $request)
     {
-        $cart = Cart::with('items.product')->where('user_id', Auth::id())->first();
+        $cart = Cart::with('items.product.vendor')->where('user_id', Auth::id())->first();
         
         if (!$cart || $cart->items->isEmpty()) {
             return redirect()->route('buyer.produits')->with('error', 'Your cart is empty.');
         }
 
-        DB::transaction(function () use ($cart, $request) {
+        $order = null;
+        
+        DB::transaction(function () use ($cart, $request, &$order) {
             $order = Order::create([
                 'order_number' => Order::generateOrderNumber(),
                 'user_id' => Auth::id(),
@@ -102,13 +107,40 @@ class BuyerController extends Controller
                     'product_id' => $item->product_id,
                     'quantity' => $item->quantity,
                     'unit_price' => $item->price,
-                    'total_price' => $item->quantity * $item->price,
+                    'total_price' => $item->price * $item->quantity,
                 ]);
+                
+                // Decrease stock
+                $item->product->decrement('stock_quantity', $item->quantity);
             }
 
             $cart->items()->delete();
             $cart->delete();
         });
+
+        // Notify sellers about the new order
+        if ($order) {
+            $order->load('items.product.vendor', 'user');
+            
+            // Group items by seller and notify each seller
+            $sellerTotals = [];
+            foreach ($order->items as $item) {
+                if ($item->product && $item->product->vendor) {
+                    $sellerId = $item->product->user_id;
+                    if (!isset($sellerTotals[$sellerId])) {
+                        $sellerTotals[$sellerId] = [
+                            'seller' => $item->product->vendor,
+                            'total' => 0,
+                        ];
+                    }
+                    $sellerTotals[$sellerId]['total'] += $item->total_price;
+                }
+            }
+            
+            foreach ($sellerTotals as $data) {
+                $data['seller']->notify(new NewOrderNotification($order, $data['total']));
+            }
+        }
 
         return redirect()->route('buyer.orders')->with('success', 'Order placed successfully!');
     }
@@ -132,7 +164,9 @@ class BuyerController extends Controller
             'comment' => 'nullable|string|max:1000'
         ]);
 
-        Review::updateOrCreate(
+        $product = Product::with('vendor')->findOrFail($productId);
+
+        $review = Review::updateOrCreate(
             ['user_id' => Auth::id(), 'product_id' => $productId],
             [
                 'rating' => $request->rating,
@@ -140,6 +174,12 @@ class BuyerController extends Controller
                 'is_approved' => true
             ]
         );
+
+        // Notify the seller about the new review
+        if ($product->vendor) {
+            $review->load(['user', 'product']);
+            $product->vendor->notify(new NewReviewNotification($review));
+        }
 
         return redirect()->back()->with('success', 'Review added successfully!');
     }
