@@ -1,18 +1,12 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
-
     <div class="py-10 dashboard-bg">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="space-y-8">
-                <section class="dash-card px-6 py-5 sm:px-8">
+                <section class="dash-card px-6 py-6 sm:px-8">
                     <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                         <div>
-                            <p class="text-sm text-slate-500">Bienvenue,</p>
-                            <h3 class="dash-title text-2xl text-slate-800">{{ Auth::user()->name }}</h3>
+                            <p class="text-sm text-slate-500">Tableau de bord</p>
+                            <h3 class="dash-title text-2xl text-slate-800">Bienvenue, {{ Auth::user()->name }}</h3>
                             <p class="mt-1 text-sm text-slate-600">
                                 Votre espace regroupe les achats, les ventes et les activites recentes.
                             </p>
@@ -52,12 +46,14 @@
 
                 <div class="grid gap-8 lg:grid-cols-3">
                     <div class="space-y-8 lg:col-span-2">
+                        <div id="stock-alerts" class="sr-only"></div>
+                        <div id="order-details" class="sr-only"></div>
+                        <div id="reviews" class="sr-only"></div>
+                        <div id="analytics" class="sr-only"></div>
                         @role('buyer')
-                            <section class="space-y-6">
+                            <section id="marketplace" class="space-y-6">
                                 <x-buyer.marketplace />
-                                <x-buyer.orders-table />
-                                <x-buyer.order-details />
-                                <x-buyer.cart />
+                                <div id="orders"></div>
                                 <x-buyer.liked-products />
                                 <x-buyer.reviews />
                                 <x-buyer.notifications />
@@ -67,21 +63,13 @@
                         @role('seller')
                             <section class="space-y-6">
                                 <x-seller.marketplace-quick />
-                                <x-seller.cart-quick />
                                 <x-seller.liked-products-quick />
                             </section>
                         @endrole
 
                         @role('seller')
                             <section class="space-y-6">
-                                <x-seller.summary-cards />
                                 <x-seller.products-module />
-                                <x-seller.stock-alerts />
-                                <x-seller.orders-module />
-                                <x-seller.order-details />
-                                <x-seller.reviews />
-                                <x-seller.notifications />
-                                <x-seller.analytics />
                             </section>
                         @endrole
                     </div>

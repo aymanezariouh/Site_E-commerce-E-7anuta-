@@ -7,11 +7,11 @@
         <span class="dash-pill">Stock</span>
     </div>
     <div class="mt-4 text-sm text-slate-600">
-        <p>Produits stock faible: <span class="font-semibold text-slate-800">--</span></p>
+        <p>Produits stock faible: <span class="font-semibold text-slate-800">{{ $lowStockCount ?? 0 }}</span></p>
         <p class="text-xs text-slate-500 mt-1">Seuil configurable par categorie.</p>
     </div>
     <div class="mt-4 flex flex-wrap gap-2">
-        <button class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50">Augmenter stock</button>
-        <button class="rounded-lg bg-teal-600 px-3 py-1.5 text-sm text-white hover:bg-teal-700">Modifier produit</button>
+        <a class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50" href="{{ route('seller.products.index') }}">Voir produits</a>
+        <a class="rounded-lg bg-teal-600 px-3 py-1.5 text-sm text-white hover:bg-teal-700" href="{{ route('seller.products.create') }}">Ajouter produit</a>
     </div>
 </div>
