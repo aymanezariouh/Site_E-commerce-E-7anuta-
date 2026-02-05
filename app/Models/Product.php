@@ -19,6 +19,8 @@ class Product extends Model
         'weight',
         'dimensions',
         'is_active',
+        'status',
+        'moderation_reason',
         'category_id',
         'user_id',
     ];
@@ -34,6 +36,11 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function vendor()
@@ -56,10 +63,25 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function likes()
+    {
+        return $this->hasMany(ProductLike::class);
+    }
+
     // Scopes
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    public function scopeApproved($query)
+    {
+        return $query->where('status', 'approved');
+    }
+
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
     }
 
     public function scopeInStock($query)
@@ -76,5 +98,15 @@ class Product extends Model
     public function getTotalReviewsAttribute()
     {
         return $this->reviews()->approved()->count();
+    }
+
+    public function getTotalLikesAttribute()
+    {
+        return $this->likes()->count();
+    }
+
+    public function isLikedByUser($userId)
+    {
+        return $this->likes()->where('user_id', $userId)->exists();
     }
 }

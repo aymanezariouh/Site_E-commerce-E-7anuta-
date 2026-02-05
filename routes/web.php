@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BuyerController;
 use App\Http\Controllers\MarketplaceController;
@@ -13,7 +14,7 @@ use App\Http\Controllers\SellerAnalyticsController;
 use App\Http\Controllers\SellerNotificationController;
 
 Route::get('/', function () {
-    return auth()->check()
+    return Auth::check()
         ? redirect()->route('dashboard')
         : redirect()->route('login');
 });
@@ -84,6 +85,42 @@ Route::middleware(['auth', 'role:buyer'])->group(function() {
     Route::get('/orders', [BuyerController::class, 'orders'])->name('buyer.orders');
     Route::get('/orders/{id}', [BuyerController::class, 'orderDetails'])->name('buyer.orderDetails');
     Route::post('/products/{id}/review', [BuyerController::class, 'addReview'])->name('buyer.addReview');
+    Route::post('/products/{id}/toggle-like', [BuyerController::class, 'toggleLike'])->name('buyer.toggleLike');
+});
+
+Route::middleware(['auth', 'role:admin'])->group(function() {
+    Route::get('/admin/orders', [App\Http\Controllers\AdminController::class, 'orders'])->name('admin.orders');
+    Route::patch('/admin/orders/{id}/status', [App\Http\Controllers\AdminController::class, 'updateOrderStatus'])->name('admin.updateOrderStatus');
+});
+
+// Routes Admin
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard & Statistiques
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/statistics', [AdminController::class, 'statistics'])->name('statistics');
+
+    // Gestion des utilisateurs
+    Route::get('/users', [AdminController::class, 'users'])->name('users');
+    Route::get('/users/{user}', [AdminController::class, 'showUser'])->name('users.show');
+    Route::patch('/users/{user}/role', [AdminController::class, 'updateUserRole'])->name('users.update-role');
+    Route::patch('/users/{user}/toggle-status', [AdminController::class, 'toggleUserStatus'])->name('users.toggle-status');
+    Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('users.delete');
+
+    // Modération des produits
+    Route::get('/products', [AdminController::class, 'products'])->name('products');
+    Route::patch('/products/{product}/moderate', [AdminController::class, 'moderateProduct'])->name('products.moderate');
+    Route::delete('/products/{product}', [AdminController::class, 'deleteProduct'])->name('products.delete');
+
+    // Modération des avis
+    Route::get('/reviews', [AdminController::class, 'reviews'])->name('reviews');
+    Route::get('/reviews/pending', [AdminController::class, 'pendingReviews'])->name('reviews.pending');
+    Route::patch('/reviews/{review}/moderate', [AdminController::class, 'moderateReview'])->name('reviews.moderate');
+    Route::delete('/reviews/{review}', [AdminController::class, 'deleteReview'])->name('reviews.delete');
+
+    // Gestion des commandes
+    Route::get('/orders', [AdminController::class, 'orders'])->name('orders');
+    Route::get('/orders/{order}', [AdminController::class, 'showOrder'])->name('orders.show');
+    Route::patch('/orders/{order}/status', [AdminController::class, 'updateOrderStatus'])->name('orders.update-status');
 });
 
 

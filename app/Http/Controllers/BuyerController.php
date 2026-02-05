@@ -10,6 +10,7 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\Review;
+use App\Models\ProductLike;
 use App\Models\User;
 use App\Notifications\NewOrderNotification;
 use App\Notifications\NewReviewNotification;
@@ -181,5 +182,28 @@ class BuyerController extends Controller
         }
 
         return redirect()->back()->with('success', 'Review added successfully!');
+    }
+
+    public function toggleLike($productId)
+    {
+        $product = Product::findOrFail($productId);
+        $userId = Auth::id();
+        
+        $like = ProductLike::where('user_id', $userId)
+            ->where('product_id', $productId)
+            ->first();
+            
+        if ($like) {
+            $like->delete();
+            $message = 'Product unliked successfully!';
+        } else {
+            ProductLike::create([
+                'user_id' => $userId,
+                'product_id' => $productId,
+            ]);
+            $message = 'Product liked successfully!';
+        }
+
+        return redirect()->back()->with('success', $message);
     }
 }
