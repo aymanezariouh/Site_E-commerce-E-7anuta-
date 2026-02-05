@@ -1,3 +1,11 @@
+@props(['products' => null, 'categories' => null])
+@php
+    $categories = $categories ?? collect();
+    $hasPaginator = $products instanceof \Illuminate\Contracts\Pagination\Paginator
+        || $products instanceof \Illuminate\Contracts\Pagination\LengthAwarePaginator;
+    $items = $hasPaginator ? $products : collect($products);
+@endphp
+
 <section class="dash-card p-5">
     <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
@@ -57,7 +65,7 @@
 
     <!-- Products Grid -->
     <div class="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        @forelse ($products as $product)
+        @forelse ($items as $product)
             <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
                 <div class="flex items-start justify-between">
                     <div>
@@ -146,13 +154,15 @@
     </div>
 
     <!-- Pagination -->
-    @if ($products->hasPages())
+    @if ($hasPaginator && $products->hasPages())
         <div class="mt-6">
             {{ $products->links() }}
         </div>
     @endif
 
     <div class="mt-5 flex flex-wrap items-center justify-between gap-3 text-sm">
-        <p class="text-slate-500">{{ $products->total() }} produit(s) trouvé(s)</p>
+        <p class="text-slate-500">
+            {{ $hasPaginator ? $products->total() : $items->count() }} produit(s) trouvé(s)
+        </p>
     </div>
 </section>

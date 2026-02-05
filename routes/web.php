@@ -12,21 +12,15 @@ use App\Http\Controllers\SellerReviewController;
 use App\Http\Controllers\SellerAnalyticsController;
 use App\Http\Controllers\SellerNotificationController;
 
-Route::middleware(['auth'])->group(function () {
-
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-
-});
 Route::get('/', function () {
     return auth()->check()
         ? redirect()->route('dashboard')
         : redirect()->route('login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified', 'role:buyer|seller|moderator'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified', 'role:buyer|seller|moderator'])
+    ->name('dashboard');
 
 Route::get('/admin/dashboard', function () {
     return view('admin.dashboard');
@@ -34,10 +28,6 @@ Route::get('/admin/dashboard', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace');
-
-    Route::get('/orders', function () {
-        return view('buyer.orders');
-    })->name('orders');
 });
 
 Route::middleware(['auth', 'verified', 'role:seller'])->group(function () {
