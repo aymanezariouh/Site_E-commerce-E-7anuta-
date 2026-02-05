@@ -63,6 +63,11 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function likes()
+    {
+        return $this->hasMany(ProductLike::class);
+    }
+
     // Scopes
     public function scopeActive($query)
     {
@@ -93,5 +98,15 @@ class Product extends Model
     public function getTotalReviewsAttribute()
     {
         return $this->reviews()->approved()->count();
+    }
+
+    public function getTotalLikesAttribute()
+    {
+        return $this->likes()->count();
+    }
+
+    public function isLikedByUser($userId)
+    {
+        return $this->likes()->where('user_id', $userId)->exists();
     }
 }
