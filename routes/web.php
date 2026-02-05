@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BuyerController;
+use App\Http\Controllers\MarketplaceController;
 use App\Http\Controllers\SellerProductController;
 use App\Http\Controllers\SellerCategoryController;
 use App\Http\Controllers\SellerOrderController;
@@ -32,30 +33,7 @@ Route::get('/admin/dashboard', function () {
 })->middleware(['auth', 'verified', 'role:admin'])->name('admin.dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/marketplace', function () {
-        $mockProducts = collect(range(1, 28))->map(function (int $index) {
-            return [
-                'name' => "Produit {$index}",
-                'category' => $index % 3 === 0 ? 'Mode' : ($index % 2 === 0 ? 'Tech' : 'Maison'),
-                'price' => number_format(9 + ($index * 2), 2),
-                'badge' => $index % 4 === 0 ? 'Promo' : ($index % 3 === 0 ? 'Top vente' : 'Nouveau'),
-                'summary' => 'Description rapide du produit.',
-            ];
-        });
-
-        $perPage = 12; // 4 rows * 3 columns
-        $page = \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPage();
-        $items = $mockProducts->forPage($page, $perPage)->values();
-        $products = new \Illuminate\Pagination\LengthAwarePaginator(
-            $items,
-            $mockProducts->count(),
-            $perPage,
-            $page,
-            ['path' => route('marketplace')]
-        );
-
-        return view('buyer.marketplace', ['products' => $products]);
-    })->name('marketplace');
+    Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace');
 
     Route::get('/orders', function () {
         return view('buyer.orders');
