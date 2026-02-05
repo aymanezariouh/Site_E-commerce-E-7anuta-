@@ -44,6 +44,12 @@ Route::middleware(['auth', 'role:buyer'])->group(function() {
     Route::get('/orders', [BuyerController::class, 'orders'])->name('buyer.orders');
     Route::get('/orders/{id}', [BuyerController::class, 'orderDetails'])->name('buyer.orderDetails');
     Route::post('/products/{id}/review', [BuyerController::class, 'addReview'])->name('buyer.addReview');
+    Route::post('/products/{id}/toggle-like', [BuyerController::class, 'toggleLike'])->name('buyer.toggleLike');
+});
+
+Route::middleware(['auth', 'role:admin'])->group(function() {
+    Route::get('/admin/orders', [App\Http\Controllers\AdminController::class, 'orders'])->name('admin.orders');
+    Route::patch('/admin/orders/{id}/status', [App\Http\Controllers\AdminController::class, 'updateOrderStatus'])->name('admin.updateOrderStatus');
 });
 
 

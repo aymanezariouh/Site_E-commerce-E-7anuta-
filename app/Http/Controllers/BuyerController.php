@@ -10,6 +10,7 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\Review;
+use App\Models\ProductLike;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -100,7 +101,8 @@ class BuyerController extends Controller
                     'order_id' => $order->id,
                     'product_id' => $item->product_id,
                     'quantity' => $item->quantity,
-                    'price' => $item->price,
+                    'unit_price' => $item->price,
+                    'total_price' => $item->quantity * $item->price,
                 ]);
             }
 
@@ -135,10 +137,33 @@ class BuyerController extends Controller
             [
                 'rating' => $request->rating,
                 'comment' => $request->comment,
-                'status' => 'approved'
+                'is_approved' => true
             ]
         );
 
         return redirect()->back()->with('success', 'Review added successfully!');
+    }
+
+    public function toggleLike($productId)
+    {
+        $product = Product::findOrFail($productId);
+        $userId = Auth::id();
+        
+        $like = ProductLike::where('user_id', $userId)
+            ->where('product_id', $productId)
+            ->first();
+            
+        if ($like) {
+            $like->delete();
+            $message = 'Product unliked successfully!';
+        } else {
+            ProductLike::create([
+                'user_id' => $userId,
+                'product_id' => $productId,
+            ]);
+            $message = 'Product liked successfully!';
+        }
+
+        return redirect()->back()->with('success', $message);
     }
 }

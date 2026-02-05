@@ -30,14 +30,26 @@
                         <p class="text-sm text-gray-500">Category: {{ $product->category->name ?? 'N/A' }}</p>
                         <p class="mt-2 font-medium">Price: ${{ $product->price }}</p>
                         <p class="text-sm">Rating: {{ number_format($product->average_rating, 1) }}/5 ({{ $product->total_reviews }} reviews)</p>
+                        <p class="text-sm">Likes: {{ $product->total_likes }}</p>
                         
-                        <form action="{{ route('buyer.addToCart', $product->id) }}" method="POST" class="mt-3">
-                            @csrf
-                            <input type="number" name="quantity" value="1" min="1" max="{{ $product->stock_quantity }}" class="border p-1 w-16">
-                            <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded">
-                                Add to Cart
-                            </button>
-                        </form>
+                        <div class="flex items-center justify-between mt-3">
+                            <form action="{{ route('buyer.addToCart', $product->id) }}" method="POST" class="flex items-center">
+                                @csrf
+                                <input type="number" name="quantity" value="1" min="1" max="{{ $product->stock_quantity }}" class="border p-1 w-16 mr-2">
+                                <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded">
+                                    Add to Cart
+                                </button>
+                            </form>
+                            
+                            <form action="{{ route('buyer.toggleLike', $product->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="{{ $product->isLikedByUser(Auth::id()) ? 'text-red-500' : 'text-gray-400' }} hover:text-red-600">
+                                    <svg class="w-5 h-5" fill="{{ $product->isLikedByUser(Auth::id()) ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
 
                         <a href="{{ route('buyer.produits.show', $product->id) }}" class="text-blue-600 mt-2 inline-block">
                             View Details
