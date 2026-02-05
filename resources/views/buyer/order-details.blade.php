@@ -62,9 +62,9 @@
                                     @foreach($order->items as $item)
                                         <tr>
                                             <td class="px-6 py-4 whitespace-nowrap">{{ $item->product->name }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap">${{ $item->price }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap">${{ $item->unit_price }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap">{{ $item->quantity }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap">${{ $item->price * $item->quantity }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap">${{ $item->total_price }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

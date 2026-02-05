@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderStatusChanged;
 
 class Order extends Model
 {
@@ -32,6 +34,22 @@ class Order extends Model
         'shipped_at' => 'datetime',
         'delivered_at' => 'datetime',
     ];
+
+    protected static function booted()
+    {
+        static::updating(function ($order) {
+            if ($order->isDirty('status')) {
+                $oldStatus = $order->getOriginal('status');
+                $newStatus = $order->status;
+                
+                if ($oldStatus !== $newStatus) {
+                    Mail::to($order->user->email)->send(
+                        new OrderStatusChanged($order, $oldStatus, $newStatus)
+                    );
+                }
+            }
+        });
+    }
 
     // Relationships
     public function user()
