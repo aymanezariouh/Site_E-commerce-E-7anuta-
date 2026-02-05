@@ -19,6 +19,8 @@ class Product extends Model
         'weight',
         'dimensions',
         'is_active',
+        'status',
+        'moderation_reason',
         'category_id',
         'user_id',
     ];
@@ -34,6 +36,11 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function vendor()
@@ -65,6 +72,16 @@ class Product extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    public function scopeApproved($query)
+    {
+        return $query->where('status', 'approved');
+    }
+
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
     }
 
     public function scopeInStock($query)
