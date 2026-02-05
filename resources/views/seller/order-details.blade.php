@@ -94,7 +94,6 @@
                         @php
                             $statusColors = [
                                 'pending' => 'bg-amber-100 text-amber-700',
-                                'paid' => 'bg-blue-100 text-blue-700',
                                 'processing' => 'bg-indigo-100 text-indigo-700',
                                 'shipped' => 'bg-purple-100 text-purple-700',
                                 'delivered' => 'bg-emerald-100 text-emerald-700',
@@ -102,7 +101,6 @@
                             ];
                             $statusLabels = [
                                 'pending' => 'En attente',
-                                'paid' => 'Payée',
                                 'processing' => 'En cours',
                                 'shipped' => 'Expédiée',
                                 'delivered' => 'Livrée',
@@ -121,7 +119,6 @@
                             <label class="block text-sm text-slate-600 mb-2">Changer le statut:</label>
                             <select name="status" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-500 focus:ring-teal-500">
                                 <option value="pending" {{ $order->status === 'pending' ? 'selected' : '' }}>En attente</option>
-                                <option value="paid" {{ $order->status === 'paid' ? 'selected' : '' }}>Payée</option>
                                 <option value="processing" {{ $order->status === 'processing' ? 'selected' : '' }}>En cours de préparation</option>
                                 <option value="shipped" {{ $order->status === 'shipped' ? 'selected' : '' }}>Expédiée</option>
                                 <option value="delivered" {{ $order->status === 'delivered' ? 'selected' : '' }}>Livrée</option>

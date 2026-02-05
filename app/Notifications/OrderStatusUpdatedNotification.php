@@ -8,20 +8,20 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NewOrderNotification extends Notification implements ShouldQueue
+class OrderStatusUpdatedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     protected Order $order;
-    protected float $sellerTotal;
+    protected string $oldStatus;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(Order $order, float $sellerTotal)
+    public function __construct(Order $order, string $oldStatus)
     {
         $this->order = $order;
-        $this->sellerTotal = $sellerTotal;
+        $this->oldStatus = $oldStatus;
     }
 
     /**
@@ -38,13 +38,13 @@ class NewOrderNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Nouvelle commande reçue - ' . $this->order->order_number)
+            ->subject('Statut de commande mis à jour - ' . $this->order->order_number)
             ->greeting('Bonjour ' . $notifiable->name . '!')
-            ->line('Vous avez reçu une nouvelle commande.')
-            ->line('Numéro de commande : ' . $this->order->order_number)
-            ->line('Client : ' . $this->order->user->name)
-            ->line('Montant de vos produits : ' . number_format($this->sellerTotal, 2) . ' €')
-            ->action('Voir la commande', url('/seller/orders/' . $this->order->id))
+            ->line('Le statut de votre commande a changé.')
+            ->line('Commande : ' . $this->order->order_number)
+            ->line('Ancien statut : ' . $this->oldStatus)
+            ->line('Nouveau statut : ' . $this->order->status)
+            ->action('Voir vos commandes', url('/orders'))
             ->line('Merci d\'utiliser LocalMart!');
     }
 
@@ -54,12 +54,12 @@ class NewOrderNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            'type' => 'new_order',
+            'type' => 'order_status_updated',
             'order_id' => $this->order->id,
             'order_number' => $this->order->order_number,
-            'customer_name' => $this->order->user->name,
-            'seller_total' => $this->sellerTotal,
-            'message' => 'Nouvelle commande #' . $this->order->order_number . ' de ' . $this->order->user->name,
+            'old_status' => $this->oldStatus,
+            'new_status' => $this->order->status,
+            'message' => 'Statut de commande mis à jour : ' . $this->oldStatus . ' → ' . $this->order->status,
         ];
     }
 }

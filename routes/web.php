@@ -13,24 +13,22 @@ use App\Http\Controllers\SellerReviewController;
 use App\Http\Controllers\SellerAnalyticsController;
 use App\Http\Controllers\SellerNotificationController;
 
-// Redirect root to dashboard or login
 Route::get('/', function () {
     return Auth::check()
         ? redirect()->route('dashboard')
         : redirect()->route('login');
 });
 
-// Dashboard for authenticated users (buyers, sellers, moderators)
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified', 'role:buyer|seller|moderator'])
     ->name('dashboard');
 
+Route::get('/admin/dashboard', function () {
+    return view('admin.dashboard');
+})->middleware(['auth', 'verified', 'role:admin'])->name('admin.dashboard');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace');
-
-    Route::get('/orders', function () {
-        return view('buyer.orders');
-    })->name('orders');
 });
 
 Route::middleware(['auth', 'verified', 'role:seller'])->group(function () {
