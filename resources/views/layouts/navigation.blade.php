@@ -2,42 +2,17 @@
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
-<<<<<<< HEAD
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                    </a>
-                </div>
-
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                    
-                    @role('buyer')
-                        <x-nav-link :href="route('buyer.produits')" :active="request()->routeIs('buyer.produits')">
-                            Products
-                        </x-nav-link>
-                        <x-nav-link :href="route('buyer.cart')" :active="request()->routeIs('buyer.cart')">
-                            Cart
-                        </x-nav-link>
-                        <x-nav-link :href="route('buyer.orders')" :active="request()->routeIs('buyer.orders')">
-                            My Orders
-                        </x-nav-link>
-=======
             <div class="flex items-center gap-6">
                 <div class="hidden items-center gap-6 sm:flex">
                     <a class="text-sm font-medium text-slate-600 hover:text-slate-800" href="{{ route('marketplace') }}">Marketplace</a>
-                    <a class="text-sm font-medium text-slate-600 hover:text-slate-800" href="{{ route('orders') }}">Orders</a>
+                    @role('buyer')
+                        <a class="text-sm font-medium text-slate-600 hover:text-slate-800" href="{{ route('buyer.orders') }}">Orders</a>
+                    @endrole
                     @role('seller')
                         <a class="text-sm font-medium text-slate-600 hover:text-slate-800" href="{{ route('seller.stock') }}">Stock</a>
-                        <a class="text-sm font-medium text-slate-600 hover:text-slate-800" href="{{ route('seller.order-details') }}">Order details</a>
+                        <a class="text-sm font-medium text-slate-600 hover:text-slate-800" href="{{ route('seller.orders') }}">Commandes</a>
                         <a class="text-sm font-medium text-slate-600 hover:text-slate-800" href="{{ route('seller.reviews') }}">Reviews</a>
                         <a class="text-sm font-medium text-slate-600 hover:text-slate-800" href="{{ route('seller.analytics') }}">Analytics</a>
->>>>>>> b294a07 (ajout de navbar sans avec les page du seller)
                     @endrole
                 </div>
             </div>
@@ -119,34 +94,23 @@
             <x-responsive-nav-link :href="route('marketplace')">
                 Marketplace
             </x-responsive-nav-link>
-<<<<<<< HEAD
-            
             @role('buyer')
-                <x-responsive-nav-link :href="route('buyer.produits')" :active="request()->routeIs('buyer.produits')">
-                    Products
+                <x-responsive-nav-link :href="route('buyer.orders')">
+                    Orders
                 </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('buyer.cart')" :active="request()->routeIs('buyer.cart')">
-                    Cart
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('buyer.orders')" :active="request()->routeIs('buyer.orders')">
-                    My Orders
-=======
-            <x-responsive-nav-link :href="route('orders')">
-                Orders
-            </x-responsive-nav-link>
+            @endrole
             @role('seller')
                 <x-responsive-nav-link :href="route('seller.stock')">
                     Stock
                 </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('seller.order-details')">
-                    Order details
+                <x-responsive-nav-link :href="route('seller.orders')">
+                    Commandes
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('seller.reviews')">
                     Reviews
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('seller.analytics')">
                     Analytics
->>>>>>> b294a07 (ajout de navbar sans avec les page du seller)
                 </x-responsive-nav-link>
             @endrole
         </div>

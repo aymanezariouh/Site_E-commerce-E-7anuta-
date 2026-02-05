@@ -3,10 +3,87 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <section class="dash-card px-6 py-6 sm:px-8">
                 <h2 class="dash-title text-2xl text-slate-800">Commandes vendeur</h2>
-                <p class="text-sm text-slate-600 mt-1">Gerez les commandes clients.</p>
+                <p class="text-sm text-slate-600 mt-1">Gérez les commandes clients contenant vos produits.</p>
             </section>
 
-            <x-seller.orders-module />
+            @if (session('success'))
+                <div class="dash-card bg-emerald-50 border-emerald-200 px-4 py-3">
+                    <p class="text-emerald-700 text-sm">{{ session('success') }}</p>
+                </div>
+            @endif
+
+            <div class="dash-card overflow-hidden">
+                <div class="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+                    <div>
+                        <h5 class="dash-title text-base text-slate-800">Commandes</h5>
+                        <p class="text-xs text-slate-500">Suivi des ventes clients.</p>
+                    </div>
+                    <span class="dash-pill">{{ $orders->total() }} commande(s)</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm">
+                        <thead class="bg-slate-50 text-slate-600">
+                            <tr>
+                                <th class="text-left px-4 py-2 font-semibold">N° Commande</th>
+                                <th class="text-left px-4 py-2 font-semibold">Client</th>
+                                <th class="text-left px-4 py-2 font-semibold">Vos produits</th>
+                                <th class="text-left px-4 py-2 font-semibold">Votre montant</th>
+                                <th class="text-left px-4 py-2 font-semibold">Statut</th>
+                                <th class="text-left px-4 py-2 font-semibold">Date</th>
+                                <th class="text-left px-4 py-2 font-semibold">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-600">
+                            @forelse ($orders as $order)
+                                <tr class="border-t border-slate-200">
+                                    <td class="px-4 py-3 font-medium text-slate-800">{{ $order->order_number }}</td>
+                                    <td class="px-4 py-3">{{ $order->user->name ?? 'N/A' }}</td>
+                                    <td class="px-4 py-3">{{ $order->seller_items_count }} article(s)</td>
+                                    <td class="px-4 py-3 font-semibold text-emerald-600">{{ number_format($order->seller_total, 2) }} €</td>
+                                    <td class="px-4 py-3">
+                                        @php
+                                            $statusColors = [
+                                                'pending' => 'bg-amber-100 text-amber-700',
+                                                'paid' => 'bg-blue-100 text-blue-700',
+                                                'processing' => 'bg-indigo-100 text-indigo-700',
+                                                'shipped' => 'bg-purple-100 text-purple-700',
+                                                'delivered' => 'bg-emerald-100 text-emerald-700',
+                                                'cancelled' => 'bg-rose-100 text-rose-700',
+                                            ];
+                                            $statusLabels = [
+                                                'pending' => 'En attente',
+                                                'paid' => 'Payée',
+                                                'processing' => 'En cours',
+                                                'shipped' => 'Expédiée',
+                                                'delivered' => 'Livrée',
+                                                'cancelled' => 'Annulée',
+                                            ];
+                                        @endphp
+                                        <span class="rounded-full px-2 py-1 text-xs {{ $statusColors[$order->status] ?? 'bg-slate-100 text-slate-600' }}">
+                                            {{ $statusLabels[$order->status] ?? ucfirst($order->status) }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3">{{ $order->created_at->format('d/m/Y H:i') }}</td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex flex-wrap gap-2">
+                                            <a href="{{ route('seller.orders.show', $order) }}" class="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs text-slate-600 hover:bg-slate-50">Détails</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr class="border-t border-slate-200">
+                                    <td class="px-4 py-3" colspan="7">Aucune commande pour le moment.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+                @if ($orders->hasPages())
+                    <div class="px-4 py-3 border-t border-slate-200">
+                        {{ $orders->links() }}
+                    </div>
+                @endif
+            </div>
         </div>
     </div>
 </x-app-layout>

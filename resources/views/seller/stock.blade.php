@@ -6,8 +6,9 @@
                 <p class="text-sm text-slate-600 mt-1">Controlez le stock et les alertes.</p>
             </section>
 
-            <x-seller.stock-alerts />
-            <x-seller.products-module />
+            <x-seller.stock-alerts :low-stock-count="$lowStockCount" />
+            <x-seller.products-module :products="$products" :categories="$categories" />
+            <x-seller.categories-module :categories="$categories" />
         </div>
     </div>
 </x-app-layout>
