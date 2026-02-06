@@ -40,7 +40,7 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">${{ $order->total_amount }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <form action="{{ route('admin.updateOrderStatus', $order->id) }}" method="POST" class="flex items-center space-x-2">
+                                            <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST" class="flex items-center space-x-2">
                                                 @csrf
                                                 @method('PATCH')
                                                 <select name="status" class="border rounded px-2 py-1 text-sm">
