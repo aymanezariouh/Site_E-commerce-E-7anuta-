@@ -74,7 +74,6 @@
                         @php
                             $statusLabels = [
                                 'pending' => ['label' => 'En attente', 'color' => 'bg-amber-500'],
-                                'paid' => ['label' => 'Payées', 'color' => 'bg-blue-500'],
                                 'processing' => ['label' => 'En cours', 'color' => 'bg-indigo-500'],
                                 'shipped' => ['label' => 'Expédiées', 'color' => 'bg-purple-500'],
                                 'delivered' => ['label' => 'Livrées', 'color' => 'bg-emerald-500'],

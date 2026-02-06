@@ -6,8 +6,19 @@
                 <p class="text-sm text-slate-600 mt-1">Parcourez les produits et ajoutez au panier.</p>
             </section>
 
-            <x-buyer.marketplace :products="$products" />
-            <x-buyer.liked-products />
+            @if (session('success'))
+                <div class="dash-card bg-emerald-50 border-emerald-200 px-4 py-3">
+                    <p class="text-emerald-700 text-sm">{{ session('success') }}</p>
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="dash-card bg-rose-50 border-rose-200 px-4 py-3">
+                    <p class="text-rose-700 text-sm">{{ session('error') }}</p>
+                </div>
+            @endif
+
+            <x-buyer.marketplace :products="$products" :categories="$categories ?? collect()" />
         </div>
     </div>
 </x-app-layout>

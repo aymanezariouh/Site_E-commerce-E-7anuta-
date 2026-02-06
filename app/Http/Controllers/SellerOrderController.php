@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,10 +28,10 @@ class SellerOrderController extends Controller
             $sellerItems = $order->items->filter(function ($item) use ($sellerId) {
                 return $item->product && $item->product->user_id === $sellerId;
             });
-            
+
             $order->seller_total = $sellerItems->sum('total_price');
             $order->seller_items_count = $sellerItems->count();
-            
+
             return $order;
         });
 
@@ -68,7 +67,7 @@ class SellerOrderController extends Controller
         $this->authorize('updateStatus', $order);
 
         $validated = $request->validate([
-            'status' => ['required', 'in:pending,paid,processing,shipped,delivered,cancelled'],
+            'status' => ['required', 'in:pending,processing,shipped,delivered,cancelled'],
         ]);
 
         $oldStatus = $order->status;
@@ -84,6 +83,11 @@ class SellerOrderController extends Controller
 
         $order->save();
 
-        return redirect()->back()->with('success', "Statut de commande mis à jour: {$oldStatus} → {$validated['status']}");
+        $order->loadMissing('user');
+        if ($order->user) {
+            $order->user->notify(new \App\Notifications\OrderStatusUpdatedNotification($order, $oldStatus));
+        }
+
+        return redirect()->back()->with('success', "Statut de commande mis à jour : {$oldStatus} → {$validated['status']}");
     }
 }
