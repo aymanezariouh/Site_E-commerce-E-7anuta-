@@ -13,6 +13,7 @@ use App\Http\Controllers\SellerOrderController;
 use App\Http\Controllers\SellerReviewController;
 use App\Http\Controllers\SellerAnalyticsController;
 use App\Http\Controllers\SellerNotificationController;
+use App\Http\Controllers\OrderController;
 
 Route::get('/', function () {
     return Auth::check()
@@ -92,6 +93,13 @@ Route::middleware(['auth', 'role:buyer'])->group(function() {
     Route::get('/buyer/orders/{id}', [BuyerController::class, 'orderDetails'])->name('buyer.orderDetails');
 });
 
+// Route temporaire pour tester changement de statut
+Route::get('/test-order-status/{orderId}/{status}', function($orderId, $status) {
+    $order = \App\Models\Order::findOrFail($orderId);
+    $order->update(['status' => $status]);
+    return redirect()->route('buyer.orders')->with('success', 'Order status changed to ' . $status . '. Check storage/logs/laravel.log for email!');
+})->middleware('auth')->name('test.orderStatus');
+
 // Routes Admin
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard & Statistiques
@@ -121,6 +129,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/orders/{order}', [AdminController::class, 'showOrder'])->name('orders.show');
     Route::patch('/orders/{order}/status', [AdminController::class, 'updateOrderStatus'])->name('orders.update-status');
 });
+
+Route::post('/admin/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 
 
 require __DIR__.'/auth.php';

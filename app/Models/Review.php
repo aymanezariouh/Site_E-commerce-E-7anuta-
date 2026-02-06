@@ -15,8 +15,6 @@ class Review extends Model
         'rating',
         'comment',
         'is_approved',
-        'status',
-        'moderation_reason',
     ];
 
     protected $casts = [
@@ -38,17 +36,7 @@ class Review extends Model
     // Scopes
     public function scopeApproved($query)
     {
-        return $query->where('is_approved', true)->orWhere('status', 'approved');
-    }
-
-    public function scopePending($query)
-    {
-        return $query->where('status', 'pending');
-    }
-
-    public function scopeRejected($query)
-    {
-        return $query->where('status', 'rejected');
+        return $query->where('is_approved', true);
     }
 
     public function scopeByRating($query, $rating)
