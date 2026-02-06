@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -27,10 +28,6 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace');
-
-    Route::get('/orders', function () {
-        return view('buyer.orders');
-    })->name('orders');
 });
 
 Route::middleware(['auth', 'verified', 'role:seller'])->group(function () {
@@ -88,11 +85,6 @@ Route::middleware(['auth', 'role:buyer'])->group(function() {
     Route::get('/orders/{id}', [BuyerController::class, 'orderDetails'])->name('buyer.orderDetails');
     Route::post('/products/{id}/review', [BuyerController::class, 'addReview'])->name('buyer.addReview');
     Route::post('/products/{id}/toggle-like', [BuyerController::class, 'toggleLike'])->name('buyer.toggleLike');
-});
-
-Route::middleware(['auth', 'role:admin'])->group(function() {
-    Route::get('/admin/orders', [App\Http\Controllers\AdminController::class, 'orders'])->name('admin.orders');
-    Route::patch('/admin/orders/{id}/status', [App\Http\Controllers\AdminController::class, 'updateOrderStatus'])->name('admin.updateOrderStatus');
 });
 
 // Routes Admin

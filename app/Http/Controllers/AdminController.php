@@ -83,9 +83,6 @@ class AdminController extends Controller
             'role' => 'required|string|in:buyer,seller,moderator,admin',
         ]);
 
-        // Update the role column
-        $user->update(['role' => $request->role]);
-
         // Sync Spatie roles
         $user->syncRoles([$request->role]);
 
@@ -231,11 +228,11 @@ class AdminController extends Controller
      */
     public function orders()
     {
-        $orders = Order::with('user', 'orderItems.product')
+        $orders = Order::with('user', 'items.product')
             ->latest()
             ->paginate(20);
 
-        return view('admin.orders.index', compact('orders'));
+        return view('admin.orders', compact('orders'));
     }
 
     /**
@@ -243,7 +240,7 @@ class AdminController extends Controller
      */
     public function showOrder(Order $order)
     {
-        $order->load(['user', 'orderItems.product', 'payment']);
+        $order->load(['user', 'items.product', 'payments']);
 
         return view('admin.orders.show', compact('order'));
     }
