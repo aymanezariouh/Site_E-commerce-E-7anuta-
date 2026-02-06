@@ -38,7 +38,9 @@ class Cart extends Model
     // Helper methods
     public function getTotalAmountAttribute()
     {
-        return $this->items()->with([])->get()->sum(fn($item) => $item->quantity * $item->price);
+        return $this->items->sum(function($item) {
+            return $item->quantity * $item->price;
+        });
     }
 
     public function getTotalItemsAttribute()

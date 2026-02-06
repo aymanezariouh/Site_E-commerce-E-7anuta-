@@ -17,7 +17,7 @@ use App\Http\Controllers\SellerNotificationController;
 Route::get('/', function () {
     return Auth::check()
         ? redirect()->route('dashboard')
-        : redirect()->route('login');
+        : view('welcome');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -29,7 +29,23 @@ Route::get('/admin/dashboard', function () {
 })->middleware(['auth', 'verified', 'role:admin'])->name('admin.dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace');
+    Route::get('/marketplace', function () {
+        $mockProducts = collect(range(1, 28))->map(function (int $index) {
+            return [
+                'name' => "Produit {$index}",
+                'category' => $index % 3 === 0 ? 'Mode' : ($index % 2 === 0 ? 'Tech' : 'Maison'),
+                'price' => number_format(9 + ($index * 2), 2),
+                'badge' => $index % 4 === 0 ? 'Promo' : ($index % 3 === 0 ? 'Top vente' : 'Nouveau'),
+                'summary' => 'Description rapide du produit.',
+            ];
+        });
+
+        return view('buyer.marketplace', ['products' => $mockProducts]);
+    })->name('marketplace');
+
+    Route::get('/orders', function () {
+        return view('orders');
+    })->name('orders');
 });
 
 Route::middleware(['auth', 'verified', 'role:seller'])->group(function () {
@@ -83,8 +99,8 @@ Route::middleware(['auth', 'role:buyer'])->group(function() {
     Route::get('/cart', [BuyerController::class, 'cart'])->name('buyer.cart');
     Route::get('/checkout', [BuyerController::class, 'checkout'])->name('buyer.checkout');
     Route::post('/place-order', [BuyerController::class, 'placeOrder'])->name('buyer.placeOrder');
-    Route::get('/orders', [BuyerController::class, 'orders'])->name('buyer.orders');
-    Route::get('/orders/{id}', [BuyerController::class, 'orderDetails'])->name('buyer.orderDetails');
+    Route::get('/buyer/orders', [BuyerController::class, 'orders'])->name('buyer.orders');
+    Route::get('/buyer/orders/{id}', [BuyerController::class, 'orderDetails'])->name('buyer.orderDetails');
     Route::post('/products/{id}/review', [BuyerController::class, 'addReview'])->name('buyer.addReview');
     Route::post('/products/{id}/toggle-like', [BuyerController::class, 'toggleLike'])->name('buyer.toggleLike');
 });

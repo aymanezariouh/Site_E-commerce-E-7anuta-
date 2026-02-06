@@ -38,19 +38,19 @@
                                 <div class="space-y-4">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Full Name</label>
-                                        <input type="text" name="shipping_address[name]" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        <input type="text" name="full_name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Address</label>
-                                        <textarea name="shipping_address[address]" required rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                                        <textarea name="address" required rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">City</label>
-                                        <input type="text" name="shipping_address[city]" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        <input type="text" name="city" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Phone</label>
-                                        <input type="text" name="shipping_address[phone]" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        <input type="text" name="phone" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                                     </div>
                                 </div>
                             </div>

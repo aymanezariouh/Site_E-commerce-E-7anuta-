@@ -83,22 +83,36 @@ class BuyerController extends Controller
 
     public function placeOrder(Request $request)
     {
-        $cart = Cart::with('items.product.vendor')->where('user_id', Auth::id())->first();
+        $request->validate([
+            'full_name' => 'required|string|max:255',
+            'address' => 'required|string',
+            'city' => 'required|string|max:255',
+            'phone' => 'required|string|max:20'
+        ]);
+
+        $cart = Cart::with('items.product')->where('user_id', Auth::id())->first();
         
         if (!$cart || $cart->items->isEmpty()) {
             return redirect()->route('buyer.produits')->with('error', 'Your cart is empty.');
         }
 
+        $shippingAddress = [
+            'name' => $request->full_name,
+            'address' => $request->address,
+            'city' => $request->city,
+            'phone' => $request->phone
+        ];
+
         $order = null;
         
-        DB::transaction(function () use ($cart, $request, &$order) {
+        DB::transaction(function () use ($cart, $shippingAddress, &$order) {
             $order = Order::create([
                 'order_number' => Order::generateOrderNumber(),
                 'user_id' => Auth::id(),
                 'status' => 'pending',
                 'total_amount' => $cart->total_amount,
-                'shipping_address' => $request->shipping_address,
-                'billing_address' => $request->billing_address ?? $request->shipping_address,
+                'shipping_address' => $shippingAddress,
+                'billing_address' => $shippingAddress,
             ]);
 
             foreach ($cart->items as $item) {
@@ -117,30 +131,6 @@ class BuyerController extends Controller
             $cart->items()->delete();
             $cart->delete();
         });
-
-        // Notify sellers about the new order
-        if ($order) {
-            $order->load('items.product.vendor', 'user');
-            
-            // Group items by seller and notify each seller
-            $sellerTotals = [];
-            foreach ($order->items as $item) {
-                if ($item->product && $item->product->vendor) {
-                    $sellerId = $item->product->user_id;
-                    if (!isset($sellerTotals[$sellerId])) {
-                        $sellerTotals[$sellerId] = [
-                            'seller' => $item->product->vendor,
-                            'total' => 0,
-                        ];
-                    }
-                    $sellerTotals[$sellerId]['total'] += $item->total_price;
-                }
-            }
-            
-            foreach ($sellerTotals as $data) {
-                $data['seller']->notify(new NewOrderNotification($order, $data['total']));
-            }
-        }
 
         return redirect()->route('buyer.orders')->with('success', 'Order placed successfully!');
     }

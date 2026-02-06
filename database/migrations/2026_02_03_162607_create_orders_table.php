@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('tax_amount', 10, 2)->default(0);
             $table->decimal('shipping_amount', 10, 2)->default(0);
             $table->json('shipping_address');
-            $table->json('billing_address');
+            $table->json('billing_address')->nullable();
             $table->text('notes')->nullable();
             $table->timestamp('shipped_at')->nullable();
             $table->timestamp('delivered_at')->nullable();
