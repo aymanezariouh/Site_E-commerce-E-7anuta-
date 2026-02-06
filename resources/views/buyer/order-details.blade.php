@@ -27,7 +27,7 @@
                                     </span>
                                 </p>
                                 <p><strong>Order Date:</strong> {{ $order->created_at->format('M d, Y') }}</p>
-                                <p><strong>Total Amount:</strong> ${{ $order->total_amount }}</p>
+                                <p><strong>Total Amount:</strong> {{ number_format($order->total_amount, 2) }} €</p>
                             </div>
                         </div>
 
@@ -61,10 +61,10 @@
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     @foreach($order->items as $item)
                                         <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap">{{ $item->product->name }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap">${{ $item->unit_price }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap">{{ $item->product_name ?? $item->product->name }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap">{{ number_format($item->unit_price, 2) }} €</td>
                                             <td class="px-6 py-4 whitespace-nowrap">{{ $item->quantity }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap">${{ $item->total_price }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap">{{ number_format($item->total_price, 2) }} €</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

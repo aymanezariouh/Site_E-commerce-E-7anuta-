@@ -39,9 +39,9 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => 'buyer',
         ]);
 
-        // Assign buyer role to new users
         $user->assignRole('buyer');
 
         event(new Registered($user));

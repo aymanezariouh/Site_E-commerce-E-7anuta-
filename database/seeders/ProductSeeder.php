@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\User;
+use Illuminate\Support\Str;
 
 class ProductSeeder extends Seeder
 {
@@ -14,31 +15,63 @@ class ProductSeeder extends Seeder
         $categories = Category::all();
         $seller = User::role('seller')->first() ?? User::first();
 
+        foreach ($categories as $cat) {
+            Category::firstOrCreate(['name' => $cat['name']]);
+        }
+
+        // Créer un vendeur
+        $seller = User::firstOrCreate(
+            ['email' => 'seller@example.com'],
+            ['name' => 'Seller User', 'password' => bcrypt('password'), 'role' => 'seller']
+        );
+        $seller->assignRole('seller');
+
+        // Créer quelques produits
         $products = [
-            ['name' => 'Smartphone', 'category' => 'Electronics', 'price' => 599.99, 'description' => 'Latest smartphone with advanced features'],
-            ['name' => 'Laptop', 'category' => 'Electronics', 'price' => 999.99, 'description' => 'High-performance laptop for work and gaming'],
-            ['name' => 'T-Shirt', 'category' => 'Clothing', 'price' => 29.99, 'description' => 'Comfortable cotton t-shirt'],
-            ['name' => 'Jeans', 'category' => 'Clothing', 'price' => 79.99, 'description' => 'Classic denim jeans'],
-            ['name' => 'Programming Book', 'category' => 'Books', 'price' => 49.99, 'description' => 'Learn programming fundamentals'],
-            ['name' => 'Garden Tools Set', 'category' => 'Home & Garden', 'price' => 89.99, 'description' => 'Complete set of gardening tools'],
-            ['name' => 'Basketball', 'category' => 'Sports', 'price' => 39.99, 'description' => 'Professional basketball'],
+            [
+                'name' => 'Smartphone Samsung',
+                'description' => 'Smartphone dernière génération avec écran OLED',
+                'price' => 2500.00,
+                'compare_at_price' => 2800.00,
+                'stock_quantity' => 10,
+                'sku' => 'PHONE001',
+                'status' => 'published',
+                'published_at' => now(),
+                'is_active' => true,
+                'category_id' => Category::where('name', 'Électronique')->first()->id,
+                'user_id' => $seller->id,
+            ],
+            [
+                'name' => 'T-shirt Coton',
+                'description' => 'T-shirt 100% coton, confortable et durable',
+                'price' => 150.00,
+                'compare_at_price' => null,
+                'stock_quantity' => 25,
+                'sku' => 'TSHIRT001',
+                'status' => 'published',
+                'published_at' => now(),
+                'is_active' => true,
+                'category_id' => Category::where('name', 'Vêtements')->first()->id,
+                'user_id' => $seller->id,
+            ],
+            [
+                'name' => 'Lampe de Bureau',
+                'description' => 'Lampe LED avec variateur d\'intensité',
+                'price' => 300.00,
+                'compare_at_price' => 350.00,
+                'stock_quantity' => 15,
+                'sku' => 'LAMP001',
+                'status' => 'published',
+                'published_at' => now(),
+                'is_active' => true,
+                'category_id' => Category::where('name', 'Maison')->first()->id,
+                'user_id' => $seller->id,
+            ],
         ];
 
-        foreach ($products as $productData) {
-            $category = $categories->where('name', $productData['category'])->first();
-            
-            Product::firstOrCreate(
-                ['name' => $productData['name']],
-                [
-                    'description' => $productData['description'],
-                    'price' => $productData['price'],
-                    'stock_quantity' => rand(10, 100),
-                    'sku' => 'SKU-' . strtoupper(substr($productData['name'], 0, 3)) . '-' . rand(1000, 9999),
-                    'category_id' => $category?->id,
-                    'user_id' => $seller?->id,
-                    'is_active' => true,
-                ]
-            );
+        foreach ($products as $product) {
+            $product['slug'] = Str::slug($product['name']);
+            Product::firstOrCreate(['sku' => $product['sku']], $product);
         }
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\OrderStatusHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -47,7 +48,7 @@ class SellerOrderController extends Controller
 
         $sellerId = Auth::id();
 
-        $order->load(['user', 'items.product', 'payments']);
+        $order->load(['user', 'items.product', 'payments', 'statusHistories.user']);
 
         // Filter items to show only seller's products
         $sellerItems = $order->items->filter(function ($item) use ($sellerId) {
@@ -56,7 +57,12 @@ class SellerOrderController extends Controller
 
         $sellerTotal = $sellerItems->sum('total_price');
 
-        return view('seller.order-details', compact('order', 'sellerItems', 'sellerTotal'));
+        $availableStatuses = array_filter(
+            ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded'],
+            fn ($status) => $order->canTransitionTo($status)
+        );
+
+        return view('seller.order-details', compact('order', 'sellerItems', 'sellerTotal', 'availableStatuses'));
     }
 
     /**
@@ -67,8 +73,12 @@ class SellerOrderController extends Controller
         $this->authorize('updateStatus', $order);
 
         $validated = $request->validate([
-            'status' => ['required', 'in:pending,processing,shipped,delivered,cancelled'],
+            'status' => ['required', 'in:pending,processing,shipped,delivered,cancelled,refunded'],
         ]);
+
+        if (!$order->canTransitionTo($validated['status'])) {
+            return redirect()->back()->with('error', 'Transition de statut non autorisée.');
+        }
 
         $oldStatus = $order->status;
         $order->status = $validated['status'];
@@ -82,6 +92,14 @@ class SellerOrderController extends Controller
         }
 
         $order->save();
+
+        OrderStatusHistory::create([
+            'order_id' => $order->id,
+            'user_id' => Auth::id(),
+            'old_status' => $oldStatus,
+            'new_status' => $order->status,
+            'note' => 'Seller status update',
+        ]);
 
         $order->loadMissing('user');
         if ($order->user) {
