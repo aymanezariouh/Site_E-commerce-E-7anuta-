@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -12,11 +13,12 @@ use App\Http\Controllers\SellerOrderController;
 use App\Http\Controllers\SellerReviewController;
 use App\Http\Controllers\SellerAnalyticsController;
 use App\Http\Controllers\SellerNotificationController;
+use App\Http\Controllers\OrderController;
 
 Route::get('/', function () {
     return Auth::check()
         ? redirect()->route('dashboard')
-        : redirect()->route('login');
+        : view('welcome');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -28,7 +30,15 @@ Route::get('/admin/dashboard', function () {
 })->middleware(['auth', 'verified', 'role:admin'])->name('admin.dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace');
+    Route::get('/marketplace', [BuyerController::class, 'index'])->name('marketplace');
+    Route::get('/marketplace/{id}', [BuyerController::class, 'show'])->name('marketplace.show');
+    Route::post('/marketplace/{id}/add-to-cart', [BuyerController::class, 'addToCart'])->name('marketplace.addToCart');
+    Route::post('/marketplace/{id}/review', [BuyerController::class, 'addReview'])->name('marketplace.addReview');
+    Route::post('/marketplace/{id}/toggle-like', [BuyerController::class, 'toggleLike'])->name('marketplace.toggleLike');
+
+    Route::get('/orders', function () {
+        return view('orders');
+    })->name('orders');
 });
 
 Route::middleware(['auth', 'verified', 'role:seller', 'seller.active'])->group(function () {
@@ -77,22 +87,19 @@ Route::middleware('auth')->group(function () {
 
 
 Route::middleware(['auth', 'role:buyer'])->group(function() {
-    Route::get('/products', [BuyerController::class, 'index'])->name('buyer.produits');
-    Route::get('/products/{id}', [BuyerController::class, 'show'])->name('buyer.produits.show');
-    Route::post('/products/{id}/add-to-cart', [BuyerController::class, 'addToCart'])->name('buyer.addToCart');
     Route::get('/cart', [BuyerController::class, 'cart'])->name('buyer.cart');
     Route::get('/checkout', [BuyerController::class, 'checkout'])->name('buyer.checkout');
     Route::post('/place-order', [BuyerController::class, 'placeOrder'])->name('buyer.placeOrder');
-    Route::get('/orders', [BuyerController::class, 'orders'])->name('buyer.orders');
-    Route::get('/orders/{id}', [BuyerController::class, 'orderDetails'])->name('buyer.orderDetails');
-    Route::post('/products/{id}/review', [BuyerController::class, 'addReview'])->name('buyer.addReview');
-    Route::post('/products/{id}/toggle-like', [BuyerController::class, 'toggleLike'])->name('buyer.toggleLike');
+    Route::get('/buyer/orders', [BuyerController::class, 'orders'])->name('buyer.orders');
+    Route::get('/buyer/orders/{id}', [BuyerController::class, 'orderDetails'])->name('buyer.orderDetails');
 });
 
-Route::middleware(['auth', 'role:admin'])->group(function() {
-    Route::get('/admin/orders', [App\Http\Controllers\AdminController::class, 'orders'])->name('admin.orders');
-    Route::patch('/admin/orders/{id}/status', [App\Http\Controllers\AdminController::class, 'updateOrderStatus'])->name('admin.updateOrderStatus');
-});
+// Route temporaire pour tester changement de statut
+Route::get('/test-order-status/{orderId}/{status}', function($orderId, $status) {
+    $order = \App\Models\Order::findOrFail($orderId);
+    $order->update(['status' => $status]);
+    return redirect()->route('buyer.orders')->with('success', 'Order status changed to ' . $status . '. Check storage/logs/laravel.log for email!');
+})->middleware('auth')->name('test.orderStatus');
 
 // Routes Admin
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -123,6 +130,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/orders/{order}', [AdminController::class, 'showOrder'])->name('orders.show');
     Route::patch('/orders/{order}/status', [AdminController::class, 'updateOrderStatus'])->name('orders.update-status');
 });
+
+Route::post('/admin/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 
 
 require __DIR__.'/auth.php';
