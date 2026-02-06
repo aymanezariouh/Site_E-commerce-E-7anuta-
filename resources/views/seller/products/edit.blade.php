@@ -3,11 +3,11 @@
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <section class="dash-card px-6 py-6 sm:px-8">
                 <h2 class="dash-title text-2xl text-slate-800">Modifier le produit</h2>
-                <p class="text-sm text-slate-600 mt-1">Mettez a jour les informations.</p>
+                <p class="text-sm text-slate-600 mt-1">Mettez à jour les informations.</p>
             </section>
 
             <div class="dash-card px-6 py-6 sm:px-8">
-                <form method="POST" action="{{ route('seller.products.update', $product) }}" class="space-y-4">
+                <form method="POST" action="{{ route('seller.products.update', $product) }}" class="space-y-4" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div>
@@ -29,6 +29,11 @@
                             <x-input-error :messages="$errors->get('price')" class="mt-2" />
                         </div>
                         <div>
+                            <x-input-label for="compare_at_price" value="Prix barré (optionnel)" />
+                            <x-text-input id="compare_at_price" name="compare_at_price" type="number" step="0.01" min="0" class="mt-1 block w-full" value="{{ old('compare_at_price', $product->compare_at_price) }}" />
+                            <x-input-error :messages="$errors->get('compare_at_price')" class="mt-2" />
+                        </div>
+                        <div>
                             <x-input-label for="stock_quantity" value="Stock" />
                             <x-text-input id="stock_quantity" name="stock_quantity" type="number" min="0" class="mt-1 block w-full" value="{{ old('stock_quantity', $product->stock_quantity) }}" required />
                             <x-input-error :messages="$errors->get('stock_quantity')" class="mt-2" />
@@ -42,9 +47,9 @@
                             <x-input-error :messages="$errors->get('sku')" class="mt-2" />
                         </div>
                         <div>
-                            <x-input-label for="category_id" value="Categorie" />
+                            <x-input-label for="category_id" value="Catégorie" />
                             <select id="category_id" name="category_id" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500" required>
-                                <option value="">Selectionner</option>
+                                <option value="">Sélectionner</option>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}" @selected(old('category_id', $product->category_id) == $category->id)>{{ $category->name }}</option>
                                 @endforeach
@@ -67,18 +72,37 @@
                     </div>
 
                     <div>
-                        <x-input-label for="images" value="Images (URLs separees par virgule)" />
+                        <x-input-label for="images" value="Images (URLs séparées par virgule)" />
                         <x-text-input id="images" name="images" type="text" class="mt-1 block w-full" value="{{ old('images', is_array($product->images) ? implode(', ', $product->images) : '') }}" />
                         <x-input-error :messages="$errors->get('images')" class="mt-2" />
                     </div>
 
-                    <div class="flex items-center gap-2">
-                        <input id="is_active" name="is_active" type="checkbox" value="1" class="rounded border-slate-300 text-teal-600 shadow-sm focus:ring-teal-500" @checked(old('is_active', $product->is_active))>
-                        <label for="is_active" class="text-sm text-slate-600">Produit actif</label>
+                    <div>
+                        <x-input-label for="images_upload" value="Ajouter des images (upload)" />
+                        <input id="images_upload" name="images_upload[]" type="file" accept="image/*" multiple class="mt-1 block w-full text-sm text-slate-700">
+                        <x-input-error :messages="$errors->get('images_upload')" class="mt-2" />
+                        <x-input-error :messages="$errors->get('images_upload.*')" class="mt-2" />
+                        <p class="mt-1 text-xs text-slate-500">Jusqu'à 2 Mo par image. Les uploads s'ajoutent aux images existantes.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <x-input-label for="status" value="Statut" />
+                            <select id="status" name="status" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500" required>
+                                <option value="draft" @selected(old('status', $product->status) === 'draft')>Brouillon</option>
+                                <option value="published" @selected(old('status', $product->status) === 'published')>Publié</option>
+                                <option value="archived" @selected(old('status', $product->status) === 'archived')>Archivé</option>
+                            </select>
+                            <x-input-error :messages="$errors->get('status')" class="mt-2" />
+                        </div>
+                        <div class="flex items-center gap-2 mt-6">
+                            <input id="is_active" name="is_active" type="checkbox" value="1" class="rounded border-slate-300 text-teal-600 shadow-sm focus:ring-teal-500" @checked(old('is_active', $product->is_active))>
+                            <label for="is_active" class="text-sm text-slate-600">Produit actif</label>
+                        </div>
                     </div>
 
                     <div class="flex flex-wrap gap-2">
-                        <button class="rounded-lg bg-teal-600 px-4 py-2 text-sm text-white hover:bg-teal-700" type="submit">Mettre a jour</button>
+                        <button class="rounded-lg bg-teal-600 px-4 py-2 text-sm text-white hover:bg-teal-700" type="submit">Mettre à jour</button>
                         <a class="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-600 hover:bg-slate-50" href="{{ route('seller.stock') }}">Annuler</a>
                     </div>
                 </form>

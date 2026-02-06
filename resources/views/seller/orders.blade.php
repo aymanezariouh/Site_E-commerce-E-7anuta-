@@ -48,6 +48,7 @@
                                                 'shipped' => 'bg-purple-100 text-purple-700',
                                                 'delivered' => 'bg-emerald-100 text-emerald-700',
                                                 'cancelled' => 'bg-rose-100 text-rose-700',
+                                                'refunded' => 'bg-slate-100 text-slate-600',
                                             ];
                                             $statusLabels = [
                                                 'pending' => 'En attente',
@@ -55,6 +56,7 @@
                                                 'shipped' => 'Expédiée',
                                                 'delivered' => 'Livrée',
                                                 'cancelled' => 'Annulée',
+                                                'refunded' => 'Remboursée',
                                             ];
                                         @endphp
                                         <span class="rounded-full px-2 py-1 text-xs {{ $statusColors[$order->status] ?? 'bg-slate-100 text-slate-600' }}">

@@ -7,7 +7,7 @@
             </section>
 
             <div class="dash-card px-6 py-6 sm:px-8">
-                <form method="POST" action="{{ route('seller.products.store') }}" class="space-y-4">
+                <form method="POST" action="{{ route('seller.products.store') }}" class="space-y-4" enctype="multipart/form-data">
                     @csrf
                     <div>
                         <x-input-label for="name" value="Nom" />
@@ -28,6 +28,11 @@
                             <x-input-error :messages="$errors->get('price')" class="mt-2" />
                         </div>
                         <div>
+                            <x-input-label for="compare_at_price" value="Prix barré (optionnel)" />
+                            <x-text-input id="compare_at_price" name="compare_at_price" type="number" step="0.01" min="0" class="mt-1 block w-full" value="{{ old('compare_at_price') }}" />
+                            <x-input-error :messages="$errors->get('compare_at_price')" class="mt-2" />
+                        </div>
+                        <div>
                             <x-input-label for="stock_quantity" value="Stock" />
                             <x-text-input id="stock_quantity" name="stock_quantity" type="number" min="0" class="mt-1 block w-full" value="{{ old('stock_quantity', 0) }}" required />
                             <x-input-error :messages="$errors->get('stock_quantity')" class="mt-2" />
@@ -41,15 +46,15 @@
                             <x-input-error :messages="$errors->get('sku')" class="mt-2" />
                         </div>
                         <div>
-                            <x-input-label for="category_id" value="Categorie" />
+                            <x-input-label for="category_id" value="Catégorie" />
                             <select id="category_id" name="category_id" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500" required>
-                                <option value="">Selectionner</option>
+                                <option value="">Sélectionner</option>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}" @selected(old('category_id') == $category->id)>{{ $category->name }}</option>
                                 @endforeach
                             </select>
                             <x-input-error :messages="$errors->get('category_id')" class="mt-2" />
-                            <p class="text-xs text-slate-500 mt-1">Besoin d'une categorie ? <a class="text-teal-600 hover:text-teal-700" href="{{ route('seller.categories.create') }}">Creer une categorie</a>.</p>
+                            <p class="text-xs text-slate-500 mt-1">Besoin d'une catégorie ? <a class="text-teal-600 hover:text-teal-700" href="{{ route('seller.categories.create') }}">Créer une catégorie</a>.</p>
                         </div>
                     </div>
 
@@ -67,14 +72,33 @@
                     </div>
 
                     <div>
-                        <x-input-label for="images" value="Images (URLs separees par virgule)" />
+                        <x-input-label for="images" value="Images (URLs séparées par virgule)" />
                         <x-text-input id="images" name="images" type="text" class="mt-1 block w-full" value="{{ old('images') }}" />
                         <x-input-error :messages="$errors->get('images')" class="mt-2" />
                     </div>
 
-                    <div class="flex items-center gap-2">
-                        <input id="is_active" name="is_active" type="checkbox" value="1" class="rounded border-slate-300 text-teal-600 shadow-sm focus:ring-teal-500" @checked(old('is_active', true))>
-                        <label for="is_active" class="text-sm text-slate-600">Produit actif</label>
+                    <div>
+                        <x-input-label for="images_upload" value="Images (upload)" />
+                        <input id="images_upload" name="images_upload[]" type="file" accept="image/*" multiple class="mt-1 block w-full text-sm text-slate-700">
+                        <x-input-error :messages="$errors->get('images_upload')" class="mt-2" />
+                        <x-input-error :messages="$errors->get('images_upload.*')" class="mt-2" />
+                        <p class="mt-1 text-xs text-slate-500">Jusqu'à 2 Mo par image.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <x-input-label for="status" value="Statut" />
+                            <select id="status" name="status" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500" required>
+                                <option value="draft" @selected(old('status') === 'draft')>Brouillon</option>
+                                <option value="published" @selected(old('status', 'published') === 'published')>Publié</option>
+                                <option value="archived" @selected(old('status') === 'archived')>Archivé</option>
+                            </select>
+                            <x-input-error :messages="$errors->get('status')" class="mt-2" />
+                        </div>
+                        <div class="flex items-center gap-2 mt-6">
+                            <input id="is_active" name="is_active" type="checkbox" value="1" class="rounded border-slate-300 text-teal-600 shadow-sm focus:ring-teal-500" @checked(old('is_active', true))>
+                            <label for="is_active" class="text-sm text-slate-600">Produit actif</label>
+                        </div>
                     </div>
 
                     <div class="flex flex-wrap gap-2">

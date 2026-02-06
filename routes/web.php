@@ -41,7 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('orders');
 });
 
-Route::middleware(['auth', 'verified', 'role:seller'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:seller', 'seller.active'])->group(function () {
     // Stock & Products
     Route::get('/seller/stock', [SellerProductController::class, 'index'])->name('seller.stock');
     Route::get('/seller/products', [SellerProductController::class, 'index'])->name('seller.products.index');
@@ -49,6 +49,7 @@ Route::middleware(['auth', 'verified', 'role:seller'])->group(function () {
     Route::post('/seller/products', [SellerProductController::class, 'store'])->name('seller.products.store');
     Route::get('/seller/products/{product}/edit', [SellerProductController::class, 'edit'])->name('seller.products.edit');
     Route::put('/seller/products/{product}', [SellerProductController::class, 'update'])->name('seller.products.update');
+    Route::patch('/seller/products/{product}/stock', [SellerProductController::class, 'adjustStock'])->name('seller.products.adjustStock');
     Route::delete('/seller/products/{product}', [SellerProductController::class, 'destroy'])->name('seller.products.destroy');
 
     // Categories

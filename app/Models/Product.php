@@ -11,8 +11,12 @@ class Product extends Model
 
     protected $fillable = [
         'name',
+        'slug',
         'description',
+        'status',
+        'published_at',
         'price',
+        'compare_at_price',
         'stock_quantity',
         'sku',
         'images',
@@ -27,10 +31,16 @@ class Product extends Model
 
     protected $casts = [
         'price' => 'decimal:2',
+        'compare_at_price' => 'decimal:2',
         'weight' => 'decimal:2',
         'images' => 'array',
         'is_active' => 'boolean',
+        'published_at' => 'datetime',
     ];
+
+    public const STATUS_DRAFT = 'draft';
+    public const STATUS_PUBLISHED = 'published';
+    public const STATUS_ARCHIVED = 'archived';
 
     // Relationships
     public function category()
@@ -67,11 +77,16 @@ class Product extends Model
     {
         return $this->hasMany(ProductLike::class);
     }
+    public function stockMovements()
+    {
+        return $this->hasMany(StockMovement::class);
+    }
 
     // Scopes
     public function scopeActive($query)
     {
-        return $query->where('is_active', true);
+        return $query->where('is_active', true)
+            ->where('status', self::STATUS_PUBLISHED);
     }
 
     public function scopeApproved($query)
@@ -87,6 +102,12 @@ class Product extends Model
     public function scopeInStock($query)
     {
         return $query->where('stock_quantity', '>', 0);
+    }
+
+    public function scopePublished($query)
+    {
+        return $query->where('status', self::STATUS_PUBLISHED)
+            ->where('is_active', true);
     }
 
     // Helper methods
