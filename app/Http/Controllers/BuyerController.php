@@ -14,8 +14,10 @@ use App\Models\ProductLike;
 use App\Models\User;
 use App\Notifications\NewOrderNotification;
 use App\Notifications\NewReviewNotification;
+use App\Notifications\OrderConfirmationNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class BuyerController extends Controller
 {
@@ -30,7 +32,7 @@ class BuyerController extends Controller
         $products = $query->get();
         $categories = Category::all();
         
-        return view('buyer.index', compact('products', 'categories'));
+        return view('marketplace', compact('products', 'categories'));
     }
 
     public function show($id)
@@ -75,7 +77,7 @@ class BuyerController extends Controller
         $cart = Cart::with('items.product')->where('user_id', Auth::id())->first();
         
         if (!$cart || $cart->items->isEmpty()) {
-            return redirect()->route('buyer.produits')->with('error', 'Your cart is empty.');
+            return redirect()->route('marketplace')->with('error', 'Your cart is empty.');
         }
         
         return view('buyer.checkout', compact('cart'));
@@ -85,6 +87,7 @@ class BuyerController extends Controller
     {
         $request->validate([
             'full_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
             'address' => 'required|string',
             'city' => 'required|string|max:255',
             'phone' => 'required|string|max:20'
@@ -93,11 +96,12 @@ class BuyerController extends Controller
         $cart = Cart::with('items.product')->where('user_id', Auth::id())->first();
         
         if (!$cart || $cart->items->isEmpty()) {
-            return redirect()->route('buyer.produits')->with('error', 'Your cart is empty.');
+            return redirect()->route('marketplace')->with('error', 'Your cart is empty.');
         }
 
         $shippingAddress = [
             'name' => $request->full_name,
+            'email' => $request->email,
             'address' => $request->address,
             'city' => $request->city,
             'phone' => $request->phone
@@ -132,7 +136,11 @@ class BuyerController extends Controller
             $cart->delete();
         });
 
-        return redirect()->route('buyer.orders')->with('success', 'Order placed successfully!');
+        // Send order confirmation email to the provided email address
+        Notification::route('mail', $shippingAddress['email'])
+            ->notify(new OrderConfirmationNotification($order, $shippingAddress['email']));
+
+        return redirect()->route('buyer.orders')->with('success', 'Order placed successfully! Check your email for confirmation.');
     }
 
     public function orders()

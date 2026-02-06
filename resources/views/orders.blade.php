@@ -8,26 +8,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased bg-gray-100">
-    <!-- Navigation -->
-    <nav class="bg-white border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <a href="{{ route('dashboard') }}" class="text-xl font-semibold text-gray-800">{{ config('app.name', 'Laravel') }}</a>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-gray-900">Dashboard</a>
-                    <a href="{{ route('marketplace') }}" class="text-gray-700 hover:text-gray-900">Marketplace</a>
-                    <a href="{{ route('orders') }}" class="text-gray-700 hover:text-gray-900 font-semibold">Orders</a>
-                    <a href="{{ route('profile.edit') }}" class="text-gray-700 hover:text-gray-900">Profile</a>
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
-                        @csrf
-                        <button type="submit" class="text-gray-700 hover:text-gray-900">Logout</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <x-buyer-nav />
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
