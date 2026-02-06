@@ -36,14 +36,14 @@ class NewReviewNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         $stars = str_repeat('★', $this->review->rating) . str_repeat('☆', 5 - $this->review->rating);
-        
+
         return (new MailMessage)
             ->subject('Nouvel avis sur votre produit - ' . $this->review->product->name)
             ->greeting('Bonjour ' . $notifiable->name . '!')
             ->line('Un client a laissé un avis sur votre produit.')
-            ->line('Produit: ' . $this->review->product->name)
-            ->line('Note: ' . $stars . ' (' . $this->review->rating . '/5)')
-            ->line('Commentaire: ' . ($this->review->comment ?: 'Aucun commentaire'))
+            ->line('Produit : ' . $this->review->product->name)
+            ->line('Note : ' . $stars . ' (' . $this->review->rating . '/5)')
+            ->line('Commentaire : ' . ($this->review->comment ?: 'Aucun commentaire'))
             ->action('Voir les avis', url('/seller/reviews'))
             ->line('Merci d\'utiliser LocalMart!');
     }

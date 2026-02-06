@@ -24,7 +24,7 @@ class SellerAnalyticsController extends Controller
         // Total sales amount from order items
         $totalSales = OrderItem::whereIn('product_id', $productIds)
             ->whereHas('order', function ($query) {
-                $query->whereIn('status', ['paid', 'processing', 'shipped', 'delivered']);
+                $query->whereIn('status', ['processing', 'shipped', 'delivered']);
             })
             ->sum('total_price');
 
@@ -49,7 +49,7 @@ class SellerAnalyticsController extends Controller
             }])
             ->withSum(['orderItems as revenue' => function ($query) {
                 $query->whereHas('order', function ($q) {
-                    $q->whereIn('status', ['paid', 'processing', 'shipped', 'delivered']);
+                    $q->whereIn('status', ['processing', 'shipped', 'delivered']);
                 });
             }], 'total_price')
             ->orderByDesc('sold_quantity')
@@ -77,7 +77,7 @@ class SellerAnalyticsController extends Controller
         // Sales by month (last 6 months)
         $monthlySales = OrderItem::whereIn('product_id', $productIds)
             ->whereHas('order', function ($query) {
-                $query->whereIn('status', ['paid', 'processing', 'shipped', 'delivered'])
+                $query->whereIn('status', ['processing', 'shipped', 'delivered'])
                     ->where('created_at', '>=', now()->subMonths(6));
             })
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
