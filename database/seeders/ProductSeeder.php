@@ -13,7 +13,12 @@ class ProductSeeder extends Seeder
     public function run(): void
     {
         $categories = Category::all();
-        $seller = User::role('seller')->first() ?? User::first();
+        $sellers = User::role('seller')->get();
+
+        if ($sellers->isEmpty()) {
+            $this->command->warn('No sellers found. Creating products with first available user.');
+            $sellers = collect([User::first()]);
+        }
 
         foreach ($categories as $cat) {
             Category::firstOrCreate(['name' => $cat['name']]);
@@ -73,5 +78,10 @@ class ProductSeeder extends Seeder
             $product['slug'] = Str::slug($product['name']);
             Product::firstOrCreate(['sku' => $product['sku']], $product);
         }
+
+        $this->command->info('Products seeded successfully!');
+        $this->command->info('Total products: ' . Product::count());
+        $this->command->info('Active products: ' . Product::where('is_active', true)->count());
+        $this->command->info('Approved products: ' . Product::where('status', 'approved')->count());
     }
 }
