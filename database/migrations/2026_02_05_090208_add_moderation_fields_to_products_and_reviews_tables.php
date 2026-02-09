@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('approved')->after('is_active');
-            $table->text('moderation_reason')->nullable()->after('status');
+            $table->enum('moderation_status', ['pending', 'approved', 'rejected'])->default('approved')->after('is_active');
+            $table->text('moderation_reason')->nullable()->after('moderation_status');
         });
 
         Schema::table('reviews', function (Blueprint $table) {
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending')->after('is_approved');
-            $table->text('moderation_reason')->nullable()->after('status');
+            $table->enum('moderation_status', ['pending', 'approved', 'rejected'])->default('pending')->after('is_approved');
+            $table->text('moderation_reason')->nullable()->after('moderation_status');
         });
     }
 
@@ -28,11 +28,11 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn(['status', 'moderation_reason']);
+            $table->dropColumn(['moderation_status', 'moderation_reason']);
         });
 
         Schema::table('reviews', function (Blueprint $table) {
-            $table->dropColumn(['status', 'moderation_reason']);
+            $table->dropColumn(['moderation_status', 'moderation_reason']);
         });
     }
 };

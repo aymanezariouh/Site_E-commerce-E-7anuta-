@@ -11,8 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasColumn('users', 'suspended_at')) {
+            return;
+        }
+
         Schema::table('users', function (Blueprint $table) {
-            $table->timestamp('suspended_at')->nullable()->after('email_verified_at');
+            if (Schema::hasColumn('users', 'email_verified_at')) {
+                $table->timestamp('suspended_at')->nullable()->after('email_verified_at');
+                return;
+            }
+
+            $table->timestamp('suspended_at')->nullable();
         });
     }
 

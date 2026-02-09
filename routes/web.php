@@ -66,13 +66,13 @@ Route::middleware(['auth', 'verified', 'role:seller', 'seller.active'])->group(f
     Route::get('/seller/orders/{order}', [SellerOrderController::class, 'show'])->name('seller.orders.show');
     Route::patch('/seller/orders/{order}/status', [SellerOrderController::class, 'updateStatus'])->name('seller.orders.updateStatus');
 
-    // Reviews
+    
     Route::get('/seller/reviews', [SellerReviewController::class, 'index'])->name('seller.reviews');
 
-    // Analytics
+    
     Route::get('/seller/analytics', [SellerAnalyticsController::class, 'index'])->name('seller.analytics');
 
-    // Notifications
+    
     Route::get('/seller/notifications', [SellerNotificationController::class, 'index'])->name('seller.notifications');
     Route::patch('/seller/notifications/{id}/read', [SellerNotificationController::class, 'markAsRead'])->name('seller.notifications.markAsRead');
     Route::patch('/seller/notifications/read-all', [SellerNotificationController::class, 'markAllAsRead'])->name('seller.notifications.markAllAsRead');
