@@ -88,10 +88,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-
-
-
 Route::middleware(['auth', 'role:buyer'])->group(function() {
     Route::get('/cart', [BuyerController::class, 'cart'])->name('buyer.cart');
     Route::get('/checkout', [BuyerController::class, 'checkout'])->name('buyer.checkout');
