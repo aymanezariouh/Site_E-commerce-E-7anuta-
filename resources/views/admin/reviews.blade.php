@@ -61,7 +61,7 @@
                         <div class="ml-4">
                             <p class="text-sm font-medium text-gray-500">En Attente</p>
                             <p class="text-2xl font-bold text-gray-900">
-                                {{ $reviews->where('status', 'pending')->count() }}
+                                {{ $reviews->where('moderation_status', 'pending')->count() }}
                             </p>
                         </div>
                     </div>
@@ -77,7 +77,7 @@
                         <div class="ml-4">
                             <p class="text-sm font-medium text-gray-500">Approuvés</p>
                             <p class="text-2xl font-bold text-gray-900">
-                                {{ $reviews->where('status', 'approved')->count() }}
+                                {{ $reviews->where('moderation_status', 'approved')->count() }}
                             </p>
                         </div>
                     </div>
@@ -154,11 +154,11 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                        {{ $review->status === 'approved' ? 'bg-green-100 text-green-800' : 
-                                           ($review->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
-                                        @if($review->status === 'approved')
+                                        {{ $review->moderation_status === 'approved' ? 'bg-green-100 text-green-800' : 
+                                           ($review->moderation_status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
+                                        @if($review->moderation_status === 'approved')
                                             Approuvé
-                                        @elseif($review->status === 'pending')
+                                        @elseif($review->moderation_status === 'pending')
                                             En attente
                                         @else
                                             Rejeté
@@ -170,7 +170,7 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex space-x-2">
-                                        @if($review->status === 'pending')
+                                        @if($review->moderation_status === 'pending')
                                             <form method="POST" action="{{ route('admin.reviews.moderate', $review) }}" class="inline">
                                                 @csrf
                                                 @method('PATCH')
