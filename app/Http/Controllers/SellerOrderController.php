@@ -9,6 +9,18 @@ use Illuminate\Support\Facades\Auth;
 
 class SellerOrderController extends Controller
 {
+    private const SELLER_STATUS_TO_DB = [
+        'pending' => 'pending',
+        'accepted' => 'processing',
+        'shipped' => 'shipped',
+    ];
+
+    private const SELLER_STATUS_LABELS = [
+        'pending' => 'Pending',
+        'accepted' => 'Accepted',
+        'shipped' => 'Shipped',
+    ];
+
     /**
      * Display a list of orders containing the seller's products.
      */
@@ -56,11 +68,7 @@ class SellerOrderController extends Controller
         });
 
         $sellerTotal = $sellerItems->sum('total_price');
-
-        $availableStatuses = array_filter(
-            ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded'],
-            fn ($status) => $order->canTransitionTo($status)
-        );
+        $availableStatuses = $this->sellerAvailableStatuses($order->status);
 
         return view('seller.order-details', compact('order', 'sellerItems', 'sellerTotal', 'availableStatuses'));
     }
@@ -73,21 +81,28 @@ class SellerOrderController extends Controller
         $this->authorize('updateStatus', $order);
 
         $validated = $request->validate([
-            'status' => ['required', 'in:pending,processing,shipped,delivered,cancelled,refunded'],
+            'status' => ['required', 'in:pending,accepted,shipped'],
         ]);
 
-        if (!$order->canTransitionTo($validated['status'])) {
-            return redirect()->back()->with('error', 'Transition de statut non autorisée.');
+        $allowedStatuses = $this->sellerAvailableStatuses($order->status);
+        if (!in_array($validated['status'], $allowedStatuses, true)) {
+            return redirect()->back()->with('error', 'This status transition is not allowed for sellers.');
+        }
+
+        $targetStatus = $this->sellerStatusToDatabaseStatus($validated['status']);
+
+        if (!$order->canTransitionTo($targetStatus)) {
+            return redirect()->back()->with('error', 'This status transition is invalid.');
         }
 
         $oldStatus = $order->status;
-        $order->status = $validated['status'];
+        $order->status = $targetStatus;
 
         // Set timestamps based on status
-        if ($validated['status'] === 'shipped' && !$order->shipped_at) {
+        if ($targetStatus === 'shipped' && !$order->shipped_at) {
             $order->shipped_at = now();
         }
-        if ($validated['status'] === 'delivered' && !$order->delivered_at) {
+        if ($targetStatus === 'delivered' && !$order->delivered_at) {
             $order->delivered_at = now();
         }
 
@@ -106,6 +121,34 @@ class SellerOrderController extends Controller
             $order->user->notify(new \App\Notifications\OrderStatusUpdatedNotification($order, $oldStatus));
         }
 
-        return redirect()->back()->with('success', "Statut de commande mis à jour : {$oldStatus} → {$validated['status']}");
+        $oldStatusLabel = $this->databaseStatusToSellerStatus($oldStatus);
+        $newStatusLabel = $this->databaseStatusToSellerStatus($targetStatus);
+
+        return redirect()->back()->with('success', "Order status updated: {$oldStatusLabel} -> {$newStatusLabel}");
+    }
+
+    private function sellerAvailableStatuses(string $databaseStatus): array
+    {
+        return match ($databaseStatus) {
+            'pending' => ['accepted'],
+            'processing' => ['shipped'],
+            default => [],
+        };
+    }
+
+    private function sellerStatusToDatabaseStatus(string $sellerStatus): string
+    {
+        return self::SELLER_STATUS_TO_DB[$sellerStatus] ?? $sellerStatus;
+    }
+
+    private function databaseStatusToSellerStatus(string $databaseStatus): string
+    {
+        $sellerStatus = array_search($databaseStatus, self::SELLER_STATUS_TO_DB, true);
+
+        if (is_string($sellerStatus) && isset(self::SELLER_STATUS_LABELS[$sellerStatus])) {
+            return self::SELLER_STATUS_LABELS[$sellerStatus];
+        }
+
+        return ucfirst($databaseStatus);
     }
 }
