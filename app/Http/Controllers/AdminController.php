@@ -39,7 +39,7 @@ class AdminController extends Controller
             'total_products' => Product::count(),
             'total_orders' => Order::count(),
             'total_reviews' => Review::count(),
-            'pending_reviews' => Review::where('status', 'pending')->count(),
+            'pending_reviews' => Review::where('moderation_status', 'pending')->count(),
             'recent_orders' => Order::with('user')
                 ->latest()
                 ->take(5)
@@ -144,7 +144,7 @@ class AdminController extends Controller
         ]);
 
         $product->update([
-            'status' => $request->status,
+            'moderation_status' => $request->status,
             'moderation_reason' => $request->reason,
         ]);
 
@@ -184,7 +184,7 @@ class AdminController extends Controller
     public function pendingReviews()
     {
         $reviews = Review::with('user', 'product')
-            ->where('status', 'pending')
+            ->where('moderation_status', 'pending')
             ->latest()
             ->paginate(20);
 
@@ -202,7 +202,7 @@ class AdminController extends Controller
         ]);
 
         $review->update([
-            'status' => $request->status,
+            'moderation_status' => $request->status,
             'moderation_reason' => $request->reason,
         ]);
 

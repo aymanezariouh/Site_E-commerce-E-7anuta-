@@ -24,6 +24,7 @@ class Product extends Model
         'dimensions',
         'is_active',
         'status',
+        'moderation_status',
         'moderation_reason',
         'category_id',
         'user_id',
@@ -91,12 +92,12 @@ class Product extends Model
 
     public function scopeApproved($query)
     {
-        return $query->where('status', 'approved');
+        return $query->where('moderation_status', 'approved');
     }
 
     public function scopePending($query)
     {
-        return $query->where('status', 'pending');
+        return $query->where('moderation_status', 'pending');
     }
 
     public function scopeInStock($query)

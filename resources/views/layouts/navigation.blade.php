@@ -17,11 +17,13 @@
                     <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('buyer.cart') }}">Cart</a>
                     <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('buyer.orders') }}">Orders</a>
                 @endrole
-                @role('seller')
+                @auth
+                    <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('seller.stock') }}">Stock</a>
                     <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('seller.products.index') }}">Products</a>
+                    <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('seller.categories.index') }}">Categories</a>
                     <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('seller.orders') }}">Orders</a>
                     <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('seller.reviews') }}">Reviews</a>
-                @endrole
+                @endauth
                 @role('admin')
                     <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('admin.orders') }}">Manage Orders</a>
                 @endrole
@@ -85,9 +87,15 @@
                     Orders
                 </x-responsive-nav-link>
             @endrole
-            @role('seller')
+            @auth
+                <x-responsive-nav-link :href="route('seller.stock')">
+                    Stock
+                </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('seller.products.index')">
                     Products
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('seller.categories.index')">
+                    Categories
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('seller.orders')">
                     Orders
@@ -95,7 +103,7 @@
                 <x-responsive-nav-link :href="route('seller.reviews')">
                     Reviews
                 </x-responsive-nav-link>
-            @endrole
+            @endauth
             @role('admin')
                 <x-responsive-nav-link :href="route('admin.orders')">
                     Manage Orders
