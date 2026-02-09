@@ -15,18 +15,19 @@ use App\Http\Controllers\SellerAnalyticsController;
 use App\Http\Controllers\SellerNotificationController;
 
 Route::get('/', function () {
-    return Auth::check()
-        ? redirect()->route('dashboard')
-        : view('welcome');
+    if (!Auth::check()) {
+        return redirect()->route('login');
+    }
+
+    return Auth::user()->hasRole('admin')
+        ? redirect()->route('admin.dashboard')
+        : redirect()->route('dashboard');
 });
+
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified', 'role:buyer|seller|moderator'])
     ->name('dashboard');
-
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->middleware(['auth', 'verified', 'role:admin'])->name('admin.dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/marketplace', function () {
@@ -92,7 +93,7 @@ Route::middleware('auth')->group(function () {
 
 
 
-Route::middleware(['auth', 'role:buyer'])->group(function() {
+Route::middleware(['auth', 'role:buyer'])->group(function () {
     Route::get('/products', [BuyerController::class, 'index'])->name('buyer.produits');
     Route::get('/products/{id}', [BuyerController::class, 'show'])->name('buyer.produits.show');
     Route::post('/products/{id}/add-to-cart', [BuyerController::class, 'addToCart'])->name('buyer.addToCart');
@@ -106,8 +107,10 @@ Route::middleware(['auth', 'role:buyer'])->group(function() {
 });
 
 // Routes Admin
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Dashboard & Statistiques
+Route::middleware(['auth', 'verified', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {    // Dashboard & Statistiques
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/statistics', [AdminController::class, 'statistics'])->name('statistics');
 
@@ -136,4 +139,4 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 });
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

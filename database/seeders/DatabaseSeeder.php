@@ -19,21 +19,11 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             RolesAndPermissionsSeeder::class,
+            UserSeeder::class,
             CategorySeeder::class,
             ProductSeeder::class,
             OrderSeeder::class,
             ReviewLikeSeeder::class,
         ]);
-
-        $admin = User::firstOrCreate(
-            ['email' => 'test@example.com'],
-            [
-                'name' => 'Test User',
-                'password' => Hash::make('password'),
-                'email_verified_at' => now(),
-            ]
-        );
-
-        $admin->syncRoles(['admin']);
     }
 }

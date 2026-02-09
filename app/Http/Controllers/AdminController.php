@@ -24,6 +24,41 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
+        // Current month statistics
+        $currentMonth = now()->startOfMonth();
+        $previousMonth = now()->subMonth()->startOfMonth();
+        $previousMonthEnd = now()->subMonth()->endOfMonth();
+
+        // Users statistics
+        $currentUsersCount = User::whereDate('created_at', '>=', $currentMonth)->count();
+        $previousUsersCount = User::whereBetween('created_at', [$previousMonth, $previousMonthEnd])->count();
+        $totalUsers = User::count();
+        $usersChange = $this->calculatePercentageChange($currentUsersCount, $previousUsersCount);
+
+        // Products statistics
+        $currentProductsCount = Product::whereDate('created_at', '>=', $currentMonth)->count();
+        $previousProductsCount = Product::whereBetween('created_at', [$previousMonth, $previousMonthEnd])->count();
+        $totalProducts = Product::where('is_active', true)->count();
+        $productsChange = $this->calculatePercentageChange($currentProductsCount, $previousProductsCount);
+
+        // Orders statistics
+        $currentOrdersCount = Order::whereDate('created_at', '>=', $currentMonth)->count();
+        $previousOrdersCount = Order::whereBetween('created_at', [$previousMonth, $previousMonthEnd])->count();
+        $totalOrders = Order::count();
+        $ordersChange = $this->calculatePercentageChange($currentOrdersCount, $previousOrdersCount);
+
+        // Revenue statistics
+        $currentRevenue = Order::whereDate('created_at', '>=', $currentMonth)
+            ->whereIn('status', ['delivered', 'processing', 'shipped'])
+            ->sum('total_amount');
+        $previousRevenue = Order::whereBetween('created_at', [$previousMonth, $previousMonthEnd])
+            ->whereIn('status', ['delivered', 'processing', 'shipped'])
+            ->sum('total_amount');
+        $totalRevenue = Order::whereIn('status', ['delivered', 'processing', 'shipped'])
+            ->sum('total_amount');
+        $revenueChange = $this->calculatePercentageChange($currentRevenue, $previousRevenue);
+
+        // Additional statistics
         $usersByRole = DB::table('roles')
             ->leftJoin('model_has_roles', function ($join) {
                 $join->on('roles.id', '=', 'model_has_roles.role_id')
@@ -33,24 +68,58 @@ class AdminController extends Controller
             ->groupBy('roles.name')
             ->get();
 
+        $recentOrders = Order::with('user')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        $pendingReviews = Review::where('status', 'pending')->count();
+        $totalReviews = Review::count();
 
         $stats = [
-            'total_users' => User::count(),
-            'total_products' => Product::count(),
-            'total_orders' => Order::count(),
-            'total_reviews' => Review::count(),
-            'pending_reviews' => Review::where('status', 'pending')->count(),
-            'recent_orders' => Order::with('user')
-                ->latest()
-                ->take(5)
-                ->get(),
-            'revenue' => Order::whereIn('status', ['delivered'])
-                ->sum('total_amount'),
-
+            'users' => $totalUsers,
+            'users_change' => [
+                'percentage' => abs($usersChange),
+                'type' => $usersChange >= 0 ? 'increase' : 'decrease',
+                'period' => 'ce mois'
+            ],
+            'products' => $totalProducts,
+            'products_change' => [
+                'percentage' => abs($productsChange),
+                'type' => $productsChange >= 0 ? 'increase' : 'decrease',
+                'period' => 'ce mois'
+            ],
+            'orders' => $totalOrders,
+            'orders_change' => [
+                'percentage' => abs($ordersChange),
+                'type' => $ordersChange >= 0 ? 'increase' : 'decrease',
+                'period' => 'ce mois'
+            ],
+            'revenue' => $totalRevenue,
+            'revenue_change' => [
+                'percentage' => abs($revenueChange),
+                'type' => $revenueChange >= 0 ? 'increase' : 'decrease',
+                'period' => 'ce mois'
+            ],
+            'pending_reviews' => $pendingReviews,
+            'total_reviews' => $totalReviews,
+            'recent_orders' => $recentOrders,
             'users_by_role' => $usersByRole,
         ];
 
         return view('admin.dashboard', compact('stats'));
+    }
+
+    /**
+     * Calculate percentage change between two values
+     */
+    private function calculatePercentageChange($current, $previous)
+    {
+        if ($previous == 0) {
+            return $current > 0 ? 100 : 0;
+        }
+        
+        return (($current - $previous) / $previous) * 100;
     }
 
     /**
