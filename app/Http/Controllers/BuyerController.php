@@ -25,7 +25,9 @@ class BuyerController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::published()->inStock()->with(['category', 'reviews']);
+        // Show all active products - simplified query
+        $query = Product::where('is_active', true)
+            ->with(['category', 'reviews']);
         
         if ($request->category_id) {
             $query->where('category_id', $request->category_id);
@@ -39,7 +41,9 @@ class BuyerController extends Controller
 
     public function show($id)
     {
-        $product = Product::published()->with(['category', 'reviews.user'])->findOrFail($id);
+        $product = Product::where('is_active', true)
+            ->with(['category', 'reviews.user'])
+            ->findOrFail($id);
         $userReview = $product->reviews()->where('user_id', Auth::id())->first();
         
         return view('buyer.show', compact('product', 'userReview'));
@@ -47,7 +51,7 @@ class BuyerController extends Controller
 
     public function addToCart(Request $request, $id)
     {
-        $product = Product::published()->inStock()->findOrFail($id);
+        $product = Product::where('is_active', true)->findOrFail($id);
         $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
         $requestedQty = (int) ($request->quantity ?? 1);
         if ($requestedQty <= 0) {

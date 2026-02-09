@@ -17,13 +17,14 @@ class OrderStatusChanged extends Notification
         $this->order = $order;
     }
 
-    // شنو القناة لي غادي يتبعث منها
+         
+    // chaine li ghadi ytsafet meneha
     public function via($notifiable)
     {
         return ['mail'];
     }
 
-    // محتوى الإيميل
+    // content de email
     public function toMail($notifiable)
     {
         return (new MailMessage)

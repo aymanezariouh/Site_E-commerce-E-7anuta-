@@ -24,6 +24,41 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
+        // Current month statistics
+        $currentMonth = now()->startOfMonth();
+        $previousMonth = now()->subMonth()->startOfMonth();
+        $previousMonthEnd = now()->subMonth()->endOfMonth();
+
+        // Users statistics
+        $currentUsersCount = User::whereDate('created_at', '>=', $currentMonth)->count();
+        $previousUsersCount = User::whereBetween('created_at', [$previousMonth, $previousMonthEnd])->count();
+        $totalUsers = User::count();
+        $usersChange = $this->calculatePercentageChange($currentUsersCount, $previousUsersCount);
+
+        // Products statistics
+        $currentProductsCount = Product::whereDate('created_at', '>=', $currentMonth)->count();
+        $previousProductsCount = Product::whereBetween('created_at', [$previousMonth, $previousMonthEnd])->count();
+        $totalProducts = Product::where('is_active', true)->count();
+        $productsChange = $this->calculatePercentageChange($currentProductsCount, $previousProductsCount);
+
+        // Orders statistics
+        $currentOrdersCount = Order::whereDate('created_at', '>=', $currentMonth)->count();
+        $previousOrdersCount = Order::whereBetween('created_at', [$previousMonth, $previousMonthEnd])->count();
+        $totalOrders = Order::count();
+        $ordersChange = $this->calculatePercentageChange($currentOrdersCount, $previousOrdersCount);
+
+        // Revenue statistics
+        $currentRevenue = Order::whereDate('created_at', '>=', $currentMonth)
+            ->whereIn('status', ['delivered', 'processing', 'shipped'])
+            ->sum('total_amount');
+        $previousRevenue = Order::whereBetween('created_at', [$previousMonth, $previousMonthEnd])
+            ->whereIn('status', ['delivered', 'processing', 'shipped'])
+            ->sum('total_amount');
+        $totalRevenue = Order::whereIn('status', ['delivered', 'processing', 'shipped'])
+            ->sum('total_amount');
+        $revenueChange = $this->calculatePercentageChange($currentRevenue, $previousRevenue);
+
+        // Additional statistics
         $usersByRole = DB::table('roles')
             ->leftJoin('model_has_roles', function ($join) {
                 $join->on('roles.id', '=', 'model_has_roles.role_id')
@@ -33,24 +68,58 @@ class AdminController extends Controller
             ->groupBy('roles.name')
             ->get();
 
+        $recentOrders = Order::with('user')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        $pendingReviews = Review::where('status', 'pending')->count();
+        $totalReviews = Review::count();
 
         $stats = [
-            'total_users' => User::count(),
-            'total_products' => Product::count(),
-            'total_orders' => Order::count(),
-            'total_reviews' => Review::count(),
-            'pending_reviews' => Review::where('moderation_status', 'pending')->count(),
-            'recent_orders' => Order::with('user')
-                ->latest()
-                ->take(5)
-                ->get(),
-            'revenue' => Order::whereIn('status', ['delivered'])
-                ->sum('total_amount'),
-
+            'users' => $totalUsers,
+            'users_change' => [
+                'percentage' => abs($usersChange),
+                'type' => $usersChange >= 0 ? 'increase' : 'decrease',
+                'period' => 'ce mois'
+            ],
+            'products' => $totalProducts,
+            'products_change' => [
+                'percentage' => abs($productsChange),
+                'type' => $productsChange >= 0 ? 'increase' : 'decrease',
+                'period' => 'ce mois'
+            ],
+            'orders' => $totalOrders,
+            'orders_change' => [
+                'percentage' => abs($ordersChange),
+                'type' => $ordersChange >= 0 ? 'increase' : 'decrease',
+                'period' => 'ce mois'
+            ],
+            'revenue' => $totalRevenue,
+            'revenue_change' => [
+                'percentage' => abs($revenueChange),
+                'type' => $revenueChange >= 0 ? 'increase' : 'decrease',
+                'period' => 'ce mois'
+            ],
+            'pending_reviews' => $pendingReviews,
+            'total_reviews' => $totalReviews,
+            'recent_orders' => $recentOrders,
             'users_by_role' => $usersByRole,
         ];
 
         return view('admin.dashboard', compact('stats'));
+    }
+
+    /**
+     * Calculate percentage change between two values
+     */
+    private function calculatePercentageChange($current, $previous)
+    {
+        if ($previous == 0) {
+            return $current > 0 ? 100 : 0;
+        }
+        
+        return (($current - $previous) / $previous) * 100;
     }
 
     /**
@@ -61,7 +130,7 @@ class AdminController extends Controller
         $users = User::with('roles')->latest()->paginate(20);
         $roles = Role::all();
 
-        return view('admin.users.index', compact('users', 'roles'));
+        return view('admin.users', compact('users', 'roles'));
     }
 
     /**
@@ -130,7 +199,7 @@ class AdminController extends Controller
             ->latest()
             ->paginate(20);
 
-        return view('admin.products.index', compact('products'));
+        return view('admin.products', compact('products'));
     }
 
     /**
@@ -175,7 +244,7 @@ class AdminController extends Controller
             ->latest()
             ->paginate(20);
 
-        return view('admin.reviews.index', compact('reviews'));
+        return view('admin.reviews', compact('reviews'));
     }
 
     /**
@@ -266,39 +335,63 @@ class AdminController extends Controller
      */
     public function statistics()
     {
-        $stats = [
-            // Statistiques des ventes
-            'sales' => [
-                'today' => Order::whereDate('created_at', today())->sum('total_amount'),
-                'week' => Order::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->sum('total_amount'),
-                'month' => Order::whereMonth('created_at', now()->month)->sum('total_amount'),
-                'year' => Order::whereYear('created_at', now()->year)->sum('total_amount'),
-            ],
-
-            // Top produits
-            'top_products' => Product::withCount('orderItems')
-                ->orderBy('order_items_count', 'desc')
-                ->take(10)
-                ->get(),
-
-            // Top vendeurs
-            'top_sellers' => User::role('seller')
-                ->withCount('products')
-                ->orderBy('products_count', 'desc')
-                ->take(10)
-                ->get(),
-
-            // Tendances mensuelles
-            'monthly_orders' => Order::select(
-                DB::raw('MONTH(created_at) as month'),
-                DB::raw('COUNT(*) as count'),
-                DB::raw('SUM(total_amount) as revenue')
-            )
-                ->whereYear('created_at', now()->year)
-                ->groupBy('month')
-                ->get(),
+        // KPI Metrics
+        $totalRevenue = Order::whereIn('status', ['delivered', 'processing', 'shipped'])
+            ->sum('total_amount');
+        
+        $totalOrders = Order::count();
+        
+        $newCustomers = User::whereDate('created_at', '>=', now()->subDays(30))
+            ->count();
+        
+        $totalVisitors = User::count(); // Simplified - in production would track sessions
+        $conversionRate = $totalVisitors > 0 ? ($totalOrders / $totalVisitors) * 100 : 0;
+        
+        // Top Products
+        $topProducts = Product::withCount('orderItems')
+            ->orderBy('order_items_count', 'desc')
+            ->take(10)
+            ->get();
+        
+        // Recent Orders
+        $recentOrders = Order::with('user')
+            ->latest()
+            ->take(10)
+            ->get();
+        
+        // Sales Data for Chart (last 30 days)
+        $salesData = [
+            'labels' => [],
+            'data' => []
+        ];
+        
+        for ($i = 29; $i >= 0; $i--) {
+            $date = now()->subDays($i);
+            $salesData['labels'][] = $date->format('M d');
+            $salesData['data'][] = Order::whereDate('created_at', $date->format('Y-m-d'))
+                ->sum('total_amount');
+        }
+        
+        // Orders Data by Status for Pie Chart
+        $ordersData = [
+            'labels' => ['Livrées', 'En cours', 'Annulées', 'En attente'],
+            'data' => [
+                Order::where('status', 'delivered')->count(),
+                Order::whereIn('status', ['processing', 'shipped'])->count(),
+                Order::where('status', 'cancelled')->count(),
+                Order::where('status', 'pending')->count(),
+            ]
         ];
 
-        return view('admin.statistics', compact('stats'));
+        return view('admin.statistics', compact(
+            'totalRevenue', 
+            'totalOrders', 
+            'newCustomers', 
+            'conversionRate',
+            'topProducts',
+            'recentOrders',
+            'salesData',
+            'ordersData'
+        ));
     }
 }

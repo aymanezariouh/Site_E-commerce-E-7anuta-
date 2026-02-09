@@ -13,7 +13,12 @@ class ProductSeeder extends Seeder
     public function run(): void
     {
         $categories = Category::all();
-        $seller = User::role('seller')->first() ?? User::first();
+        $sellers = User::role('seller')->get();
+
+        if ($sellers->isEmpty()) {
+            $this->command->warn('No sellers found. Creating products with first available user.');
+            $sellers = collect([User::first()]);
+        }
 
         foreach ($categories as $cat) {
             Category::firstOrCreate(['name' => $cat['name']]);
@@ -38,7 +43,7 @@ class ProductSeeder extends Seeder
                 'status' => 'published',
                 'published_at' => now(),
                 'is_active' => true,
-                'category_id' => Category::where('name', 'Électronique')->first()->id,
+                'category_id' => Category::where('name', 'Electronics')->first()->id,
                 'user_id' => $seller->id,
             ],
             [
@@ -51,7 +56,7 @@ class ProductSeeder extends Seeder
                 'status' => 'published',
                 'published_at' => now(),
                 'is_active' => true,
-                'category_id' => Category::where('name', 'Vêtements')->first()->id,
+                'category_id' => Category::where('name', 'Clothing')->first()->id,
                 'user_id' => $seller->id,
             ],
             [
@@ -64,7 +69,7 @@ class ProductSeeder extends Seeder
                 'status' => 'published',
                 'published_at' => now(),
                 'is_active' => true,
-                'category_id' => Category::where('name', 'Maison')->first()->id,
+                'category_id' => Category::where('name', 'Home & Garden')->first()->id,
                 'user_id' => $seller->id,
             ],
         ];
@@ -73,5 +78,10 @@ class ProductSeeder extends Seeder
             $product['slug'] = Str::slug($product['name']);
             Product::firstOrCreate(['sku' => $product['sku']], $product);
         }
+
+        $this->command->info('Products seeded successfully!');
+        $this->command->info('Total products: ' . Product::count());
+        $this->command->info('Active products: ' . Product::where('is_active', true)->count());
+        $this->command->info('Published products: ' . Product::where('status', 'published')->count());
     }
 }

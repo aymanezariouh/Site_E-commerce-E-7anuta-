@@ -8,8 +8,26 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased bg-gray-100">
+    {{-- Navigation --}}
     @auth
-    <x-buyer-nav />
+        <x-buyer-nav />
+    @else
+        <nav class="bg-white border-b border-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <a href="{{ route('marketplace') }}" class="text-xl font-bold text-gray-800">
+                            E-7anuta
+                        </a>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <a href="{{ route('login') }}" class="text-sm font-medium text-gray-500 hover:text-gray-700">Login</a>
+                        <a href="{{ route('register') }}" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">Register</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    @endauth
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -44,22 +62,28 @@
                                         <p class="text-sm text-gray-600 mb-2">{{ $product->category->name ?? 'Uncategorized' }}</p>
                                         <p class="text-gray-700 text-sm mb-4">{{ Str::limit($product->description, 100) }}</p>
                                         <div class="flex items-center justify-between">
-                                            <span class="text-xl font-bold text-gray-900">${{ number_format($product->price, 2) }}</span>
+                                            <span class="text-xl font-bold text-gray-900">€{{ number_format($product->price, 2) }}</span>
                                             <div class="flex space-x-2">
-                                                <form action="{{ route('marketplace.addToCart', $product->id) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
-                                                        Add to Cart
-                                                    </button>
-                                                </form>
-                                                <form action="{{ route('marketplace.toggleLike', $product->id) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    <button type="submit" class="bg-red-100 text-red-600 px-3 py-1 rounded text-sm hover:bg-red-200">
-                                                        ♥ Like
-                                                    </button>
-                                                </form>
+                                                @auth
+                                                    <form action="{{ route('marketplace.addToCart', $product->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
+                                                            Panier
+                                                        </button>
+                                                    </form>
+                                                    <form action="{{ route('marketplace.toggleLike', $product->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        <button type="submit" class="bg-red-100 text-red-600 px-3 py-1 rounded text-sm hover:bg-red-200">
+                                                            ♥
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <a href="{{ route('login') }}" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
+                                                        Panier
+                                                    </a>
+                                                @endauth
                                                 <a href="{{ route('marketplace.show', $product->id) }}" class="bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm hover:bg-gray-300">
-                                                    View
+                                                    Voir
                                                 </a>
                                             </div>
                                         </div>
@@ -74,22 +98,13 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                                 </svg>
                             </div>
-                            <h3 class="text-lg font-medium text-gray-900 mb-2">No products available</h3>
-                            <p class="text-gray-500">Check back later for new products.</p>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Aucun produit disponible</h3>
+                            <p class="text-gray-500">Revenez plus tard pour de nouveaux produits.</p>
                         </div>
                     @endif
                 </div>
             </div>
         </div>
     </div>
-    @else
-    <div class="min-h-screen flex items-center justify-center">
-        <div class="text-center">
-            <h1 class="text-2xl font-bold text-gray-900 mb-4">Access Denied</h1>
-            <p class="text-gray-600 mb-4">You must be logged in to access the marketplace.</p>
-            <a href="{{ route('login') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Login</a>
-        </div>
-    </div>
-    @endauth
 </body>
 </html>

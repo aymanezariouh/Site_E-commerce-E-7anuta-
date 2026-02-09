@@ -16,22 +16,28 @@ use App\Http\Controllers\SellerNotificationController;
 use App\Http\Controllers\OrderController;
 
 Route::get('/', function () {
-    return Auth::check()
-        ? redirect()->route('dashboard')
-        : view('welcome');
+    if (!Auth::check()) {
+        return redirect()->route('login');
+    }
+
+    if (Auth::user()->hasRole('admin')) {
+        return redirect()->route('admin.dashboard');
+    }
+    
+    return redirect()->route('marketplace');
 });
+
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified', 'role:buyer|seller|moderator'])
     ->name('dashboard');
 
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->middleware(['auth', 'verified', 'role:admin'])->name('admin.dashboard');
+// Public marketplace - accessible to everyone
+Route::get('/marketplace', [BuyerController::class, 'index'])->name('marketplace');
+Route::get('/marketplace/{id}', [BuyerController::class, 'show'])->name('marketplace.show');
 
+// Protected marketplace actions - require auth
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/marketplace', [BuyerController::class, 'index'])->name('marketplace');
-    Route::get('/marketplace/{id}', [BuyerController::class, 'show'])->name('marketplace.show');
     Route::post('/marketplace/{id}/add-to-cart', [BuyerController::class, 'addToCart'])->name('marketplace.addToCart');
     Route::post('/marketplace/{id}/review', [BuyerController::class, 'addReview'])->name('marketplace.addReview');
     Route::post('/marketplace/{id}/toggle-like', [BuyerController::class, 'toggleLike'])->name('marketplace.toggleLike');
@@ -98,8 +104,10 @@ Route::get('/test-order-status/{orderId}/{status}', function($orderId, $status) 
 })->middleware('auth')->name('test.orderStatus');
 
 // Routes Admin
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Dashboard & Statistiques
+Route::middleware(['auth', 'verified', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {    // Dashboard & Statistiques
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/statistics', [AdminController::class, 'statistics'])->name('statistics');
 
@@ -130,4 +138,4 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 Route::post('/admin/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

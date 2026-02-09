@@ -10,14 +10,14 @@ class OrderController extends Controller
 {
     public function updateStatus(Request $request, $id)
     {
-        // جبدنا order بالـ id
+        // jbedena order b id
         $order = Order::findOrFail($id);
 
-        // بدلنا status
+        // change status
         $order->status = $request->status;
         $order->save();
 
-        // بعث notification للعميل
+        // send notification le3amil
         $order->user->notify(new OrderStatusChanged($order));
 
         return redirect()->back()->with('success', 'Statut mis à jour et email envoyé au client.');

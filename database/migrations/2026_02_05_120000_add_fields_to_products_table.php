@@ -12,10 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->string('slug')->nullable()->unique()->after('name');
-            $table->enum('status', ['draft', 'published', 'archived'])->default('published')->after('description');
-            $table->timestamp('published_at')->nullable()->after('status');
-            $table->decimal('compare_at_price', 10, 2)->nullable()->after('price');
+            // Only add columns that don't exist
+            if (!Schema::hasColumn('products', 'slug')) {
+                $table->string('slug')->nullable()->unique()->after('name');
+            }
+            if (!Schema::hasColumn('products', 'status')) {
+                $table->enum('status', ['draft', 'published', 'archived'])->default('published')->after('description');
+            }
+            if (!Schema::hasColumn('products', 'published_at')) {
+                $table->timestamp('published_at')->nullable()->after('status');
+            }
+            if (!Schema::hasColumn('products', 'compare_at_price')) {
+                $table->decimal('compare_at_price', 10, 2)->nullable()->after('price');
+            }
         });
     }
 

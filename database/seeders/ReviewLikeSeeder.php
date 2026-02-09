@@ -12,7 +12,7 @@ class ReviewLikeSeeder extends Seeder
 {
     public function run(): void
     {
-        $buyers = User::where('role', 'buyer')->get();
+        $buyers = User::role('buyer')->get();
         $products = Product::all();
 
         if ($buyers->isEmpty() || $products->isEmpty()) {
