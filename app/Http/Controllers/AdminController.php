@@ -335,39 +335,63 @@ class AdminController extends Controller
      */
     public function statistics()
     {
-        $stats = [
-            // Statistiques des ventes
-            'sales' => [
-                'today' => Order::whereDate('created_at', today())->sum('total_amount'),
-                'week' => Order::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->sum('total_amount'),
-                'month' => Order::whereMonth('created_at', now()->month)->sum('total_amount'),
-                'year' => Order::whereYear('created_at', now()->year)->sum('total_amount'),
-            ],
-
-            // Top produits
-            'top_products' => Product::withCount('orderItems')
-                ->orderBy('order_items_count', 'desc')
-                ->take(10)
-                ->get(),
-
-            // Top vendeurs
-            'top_sellers' => User::role('seller')
-                ->withCount('products')
-                ->orderBy('products_count', 'desc')
-                ->take(10)
-                ->get(),
-
-            // Tendances mensuelles
-            'monthly_orders' => Order::select(
-                DB::raw('MONTH(created_at) as month'),
-                DB::raw('COUNT(*) as count'),
-                DB::raw('SUM(total_amount) as revenue')
-            )
-                ->whereYear('created_at', now()->year)
-                ->groupBy('month')
-                ->get(),
+        // KPI Metrics
+        $totalRevenue = Order::whereIn('status', ['delivered', 'processing', 'shipped'])
+            ->sum('total_amount');
+        
+        $totalOrders = Order::count();
+        
+        $newCustomers = User::whereDate('created_at', '>=', now()->subDays(30))
+            ->count();
+        
+        $totalVisitors = User::count(); // Simplified - in production would track sessions
+        $conversionRate = $totalVisitors > 0 ? ($totalOrders / $totalVisitors) * 100 : 0;
+        
+        // Top Products
+        $topProducts = Product::withCount('orderItems')
+            ->orderBy('order_items_count', 'desc')
+            ->take(10)
+            ->get();
+        
+        // Recent Orders
+        $recentOrders = Order::with('user')
+            ->latest()
+            ->take(10)
+            ->get();
+        
+        // Sales Data for Chart (last 30 days)
+        $salesData = [
+            'labels' => [],
+            'data' => []
+        ];
+        
+        for ($i = 29; $i >= 0; $i--) {
+            $date = now()->subDays($i);
+            $salesData['labels'][] = $date->format('M d');
+            $salesData['data'][] = Order::whereDate('created_at', $date->format('Y-m-d'))
+                ->sum('total_amount');
+        }
+        
+        // Orders Data by Status for Pie Chart
+        $ordersData = [
+            'labels' => ['Livrées', 'En cours', 'Annulées', 'En attente'],
+            'data' => [
+                Order::where('status', 'delivered')->count(),
+                Order::whereIn('status', ['processing', 'shipped'])->count(),
+                Order::where('status', 'cancelled')->count(),
+                Order::where('status', 'pending')->count(),
+            ]
         ];
 
-        return view('admin.statistics', compact('stats'));
+        return view('admin.statistics', compact(
+            'totalRevenue', 
+            'totalOrders', 
+            'newCustomers', 
+            'conversionRate',
+            'topProducts',
+            'recentOrders',
+            'salesData',
+            'ordersData'
+        ));
     }
 }

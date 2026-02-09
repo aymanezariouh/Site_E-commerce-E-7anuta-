@@ -20,9 +20,11 @@ Route::get('/', function () {
         return redirect()->route('login');
     }
 
-    return Auth::user()->hasRole('admin')
-        ? redirect()->route('admin.dashboard')
-        : redirect()->route('dashboard');
+    if (Auth::user()->hasRole('admin')) {
+        return redirect()->route('admin.dashboard');
+    }
+    
+    return redirect()->route('marketplace');
 });
 
 
@@ -30,9 +32,12 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified', 'role:buyer|seller|moderator'])
     ->name('dashboard');
 
+// Public marketplace - accessible to everyone
+Route::get('/marketplace', [BuyerController::class, 'index'])->name('marketplace');
+Route::get('/marketplace/{id}', [BuyerController::class, 'show'])->name('marketplace.show');
+
+// Protected marketplace actions - require auth
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/marketplace', [BuyerController::class, 'index'])->name('marketplace');
-    Route::get('/marketplace/{id}', [BuyerController::class, 'show'])->name('marketplace.show');
     Route::post('/marketplace/{id}/add-to-cart', [BuyerController::class, 'addToCart'])->name('marketplace.addToCart');
     Route::post('/marketplace/{id}/review', [BuyerController::class, 'addReview'])->name('marketplace.addReview');
     Route::post('/marketplace/{id}/toggle-like', [BuyerController::class, 'toggleLike'])->name('marketplace.toggleLike');

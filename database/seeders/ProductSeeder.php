@@ -43,7 +43,7 @@ class ProductSeeder extends Seeder
                 'status' => 'published',
                 'published_at' => now(),
                 'is_active' => true,
-                'category_id' => Category::where('name', 'Électronique')->first()->id,
+                'category_id' => Category::where('name', 'Electronics')->first()->id,
                 'user_id' => $seller->id,
             ],
             [
@@ -56,7 +56,7 @@ class ProductSeeder extends Seeder
                 'status' => 'published',
                 'published_at' => now(),
                 'is_active' => true,
-                'category_id' => Category::where('name', 'Vêtements')->first()->id,
+                'category_id' => Category::where('name', 'Clothing')->first()->id,
                 'user_id' => $seller->id,
             ],
             [
@@ -69,7 +69,7 @@ class ProductSeeder extends Seeder
                 'status' => 'published',
                 'published_at' => now(),
                 'is_active' => true,
-                'category_id' => Category::where('name', 'Maison')->first()->id,
+                'category_id' => Category::where('name', 'Home & Garden')->first()->id,
                 'user_id' => $seller->id,
             ],
         ];
@@ -82,6 +82,6 @@ class ProductSeeder extends Seeder
         $this->command->info('Products seeded successfully!');
         $this->command->info('Total products: ' . Product::count());
         $this->command->info('Active products: ' . Product::where('is_active', true)->count());
-        $this->command->info('Approved products: ' . Product::where('status', 'approved')->count());
+        $this->command->info('Published products: ' . Product::where('status', 'published')->count());
     }
 }

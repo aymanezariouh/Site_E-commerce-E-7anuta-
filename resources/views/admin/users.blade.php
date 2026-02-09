@@ -135,19 +135,141 @@
                                     {{ $user->created_at->format('d/m/Y') }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <div class="flex space-x-2">
+                                    <div class="flex items-center justify-end gap-2" x-data="{ showRoleModal: false, showDropdown: false }">
+                                        {{-- View Button --}}
                                         <a href="{{ route('admin.users.show', $user) }}" 
-                                           class="text-indigo-600 hover:text-indigo-900">Voir</a>
+                                           class="inline-flex items-center px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-md hover:bg-indigo-200 transition-colors duration-200"
+                                           title="Voir les détails">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                            Voir
+                                        </a>
                                         
                                         @if(!$user->hasRole('admin'))
-                                        <form method="POST" action="{{ route('admin.users.toggle-status', $user) }}" class="inline">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit" 
-                                                    class="{{ $user->trashed() ? 'text-green-600 hover:text-green-900' : 'text-yellow-600 hover:text-yellow-900' }}">
-                                                {{ $user->trashed() ? 'Activer' : 'Suspendre' }}
+                                        {{-- Actions Dropdown --}}
+                                        <div class="relative">
+                                            <button @click="showDropdown = !showDropdown" 
+                                                    class="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors duration-200"
+                                                    title="Actions">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                                </svg>
                                             </button>
-                                        </form>
+                                            
+                                            {{-- Dropdown Menu --}}
+                                            <div x-show="showDropdown" 
+                                                 @click.outside="showDropdown = false"
+                                                 x-transition:enter="transition ease-out duration-100"
+                                                 x-transition:enter-start="transform opacity-0 scale-95"
+                                                 x-transition:enter-end="transform opacity-100 scale-100"
+                                                 x-transition:leave="transition ease-in duration-75"
+                                                 x-transition:leave-start="transform opacity-100 scale-100"
+                                                 x-transition:leave-end="transform opacity-0 scale-95"
+                                                 class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10"
+                                                 style="display: none;">
+                                                
+                                                <div class="py-1">
+                                                    <button @click="showRoleModal = true; showDropdown = false" 
+                                                            class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 flex items-center">
+                                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                        </svg>
+                                                        Changer le rôle
+                                                    </button>
+                                                    
+                                                    <form method="POST" action="{{ route('admin.users.toggle-status', $user) }}">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <button type="submit" 
+                                                                class="w-full text-left px-4 py-2 text-sm {{ $user->trashed() ? 'text-green-700 hover:bg-green-50' : 'text-yellow-700 hover:bg-yellow-50' }} flex items-center">
+                                                            @if($user->trashed())
+                                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                                </svg>
+                                                                Activer le compte
+                                                            @else
+                                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                                                                </svg>
+                                                                Suspendre le compte
+                                                            @endif
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Role Change Modal -->
+                                        <div x-show="showRoleModal" 
+                                             x-cloak
+                                             class="fixed inset-0 z-50 overflow-y-auto" 
+                                             style="display: none;">
+                                            <div class="flex items-center justify-center min-h-screen px-4">
+                                                <div class="fixed inset-0 bg-gray-900 bg-opacity-50 transition-opacity" 
+                                                     @click="showRoleModal = false"></div>
+                                                
+                                                <div class="relative bg-white rounded-xl shadow-2xl px-6 py-6 max-w-md w-full">
+                                                    <div class="flex items-center justify-between mb-4">
+                                                        <h3 class="text-xl font-semibold text-gray-900">
+                                                            Changer le rôle
+                                                        </h3>
+                                                        <button @click="showRoleModal = false" class="text-gray-400 hover:text-gray-600">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                    
+                                                    <p class="text-sm text-gray-600 mb-4">
+                                                        Sélectionnez un nouveau rôle pour <strong>{{ $user->name }}</strong>
+                                                    </p>
+                                                    
+                                                    <form method="POST" action="{{ route('admin.users.update-role', $user) }}">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        
+                                                        <div class="space-y-2">
+                                                            @foreach($roles->where('name', '!=', 'admin') as $role)
+                                                            <label class="flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-200
+                                                                {{ $user->hasRole($role->name) ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50' }}">
+                                                                <input type="radio" 
+                                                                       name="role" 
+                                                                       value="{{ $role->name }}" 
+                                                                       {{ $user->hasRole($role->name) ? 'checked' : '' }}
+                                                                       class="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                                                                <div class="ml-3">
+                                                                    <span class="text-sm font-semibold text-gray-900">{{ ucfirst($role->name) }}</span>
+                                                                    <p class="text-xs text-gray-500">
+                                                                        @if($role->name === 'buyer')
+                                                                            Peut acheter des produits
+                                                                        @elseif($role->name === 'seller')
+                                                                            Peut vendre des produits
+                                                                        @elseif($role->name === 'moderator')
+                                                                            Peut modérer le contenu
+                                                                        @endif
+                                                                    </p>
+                                                                </div>
+                                                            </label>
+                                                            @endforeach
+                                                        </div>
+                                                        
+                                                        <div class="mt-6 flex gap-3">
+                                                            <button type="submit" 
+                                                                    class="flex-1 bg-indigo-600 text-white px-4 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition-colors duration-200">
+                                                                Enregistrer
+                                                            </button>
+                                                            <button type="button" 
+                                                                    @click="showRoleModal = false"
+                                                                    class="flex-1 bg-gray-100 text-gray-700 px-4 py-2.5 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200">
+                                                                Annuler
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                         @endif
                                     </div>
                                 </td>

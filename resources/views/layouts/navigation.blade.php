@@ -17,13 +17,13 @@
                     <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('buyer.cart') }}">Cart</a>
                     <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('buyer.orders') }}">Orders</a>
                 @endrole
-                @auth
+                @role('seller')
                     <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('seller.stock') }}">Stock</a>
-                    <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('seller.products.index') }}">Products</a>
+                    <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('seller.products.index') }}">My Products</a>
                     <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('seller.categories.index') }}">Categories</a>
-                    <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('seller.orders') }}">Orders</a>
+                    <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('seller.orders') }}">My Orders</a>
                     <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('seller.reviews') }}">Reviews</a>
-                @endauth
+                @endrole
                 @role('admin')
                     <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('admin.orders') }}">Manage Orders</a>
                 @endrole
@@ -87,23 +87,23 @@
                     Orders
                 </x-responsive-nav-link>
             @endrole
-            @auth
+            @role('seller')
                 <x-responsive-nav-link :href="route('seller.stock')">
                     Stock
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('seller.products.index')">
-                    Products
+                    My Products
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('seller.categories.index')">
                     Categories
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('seller.orders')">
-                    Orders
+                    My Orders
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('seller.reviews')">
                     Reviews
                 </x-responsive-nav-link>
-            @endauth
+            @endrole
             @role('admin')
                 <x-responsive-nav-link :href="route('admin.orders')">
                     Manage Orders
