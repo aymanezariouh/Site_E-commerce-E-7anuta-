@@ -10,7 +10,7 @@
 <body class="font-sans antialiased bg-gray-100">
     {{-- Navigation --}}
     @auth
-        <x-buyer-nav />
+        @include('layouts.navigation')
     @else
         <nav class="bg-white border-b border-gray-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

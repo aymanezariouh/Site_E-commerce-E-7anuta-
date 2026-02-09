@@ -10,7 +10,7 @@
             </div>
 
             <!-- Navigation Links -->
-            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex sm:items-center">
                 <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('dashboard') }}">Dashboard</a>
                 @role('buyer')
                     <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('marketplace') }}">Products</a>
@@ -18,11 +18,45 @@
                     <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('buyer.orders') }}">Orders</a>
                 @endrole
                 @role('seller')
-                    <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('seller.stock') }}">Stock</a>
-                    <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('seller.products.index') }}">My Products</a>
-                    <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('seller.categories.index') }}">Categories</a>
-                    <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('seller.orders') }}">My Orders</a>
-                    <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('seller.reviews') }}">Reviews</a>
+                    <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('marketplace') }}">Marketplace</a>
+                    <div class="inline-flex items-center">
+                        <x-dropdown align="left" width="48">
+                            <x-slot name="trigger">
+                                <button class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none transition duration-150 ease-in-out">
+                                    <span>Seller</span>
+                                    <svg class="ms-1 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </x-slot>
+                            <x-slot name="content">
+                                <x-dropdown-link :href="route('seller.products.index')">
+                                    Products
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('seller.products.create')">
+                                    Add Product
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('seller.categories.index')">
+                                    Categories
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('seller.orders')">
+                                    Orders
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('seller.stock')">
+                                    Stock
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('seller.reviews')">
+                                    Reviews
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('seller.analytics')">
+                                    Analytics
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('seller.notifications')">
+                                    Notifications
+                                </x-dropdown-link>
+                            </x-slot>
+                        </x-dropdown>
+                    </div>
                 @endrole
                 @role('admin')
                     <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('admin.orders') }}">Manage Orders</a>
@@ -88,20 +122,32 @@
                 </x-responsive-nav-link>
             @endrole
             @role('seller')
-                <x-responsive-nav-link :href="route('seller.stock')">
-                    Stock
+                <x-responsive-nav-link :href="route('marketplace')">
+                    Marketplace
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('seller.products.index')">
-                    My Products
+                    Products
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('seller.products.create')">
+                    Add Product
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('seller.categories.index')">
                     Categories
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('seller.orders')">
-                    My Orders
+                    Orders
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('seller.stock')">
+                    Stock
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('seller.reviews')">
                     Reviews
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('seller.analytics')">
+                    Analytics
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('seller.notifications')">
+                    Notifications
                 </x-responsive-nav-link>
             @endrole
             @role('admin')
