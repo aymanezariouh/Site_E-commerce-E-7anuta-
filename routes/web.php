@@ -16,18 +16,19 @@ use App\Http\Controllers\SellerNotificationController;
 use App\Http\Controllers\OrderController;
 
 Route::get('/', function () {
-    return Auth::check()
-        ? redirect()->route('dashboard')
-        : view('welcome');
+    if (!Auth::check()) {
+        return redirect()->route('login');
+    }
+
+    return Auth::user()->hasRole('admin')
+        ? redirect()->route('admin.dashboard')
+        : redirect()->route('dashboard');
 });
+
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified', 'role:buyer|seller|moderator'])
     ->name('dashboard');
-
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->middleware(['auth', 'verified', 'role:admin'])->name('admin.dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/marketplace', [BuyerController::class, 'index'])->name('marketplace');
@@ -102,8 +103,10 @@ Route::get('/test-order-status/{orderId}/{status}', function($orderId, $status) 
 })->middleware('auth')->name('test.orderStatus');
 
 // Routes Admin
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Dashboard & Statistiques
+Route::middleware(['auth', 'verified', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {    // Dashboard & Statistiques
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/statistics', [AdminController::class, 'statistics'])->name('statistics');
 
@@ -134,4 +137,4 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 Route::post('/admin/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
