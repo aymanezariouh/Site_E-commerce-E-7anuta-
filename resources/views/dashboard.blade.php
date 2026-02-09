@@ -9,26 +9,7 @@
 </head>
 <body class="font-sans antialiased bg-gray-100">
     @auth
-    <!-- Navigation -->
-    <nav class="bg-white border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <a href="{{ route('dashboard') }}" class="text-xl font-semibold text-gray-800">{{ config('app.name', 'Laravel') }}</a>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-gray-900 font-semibold">Dashboard</a>
-                    <a href="{{ route('marketplace') }}" class="text-gray-700 hover:text-gray-900">Marketplace</a>
-                    <a href="{{ route('orders') }}" class="text-gray-700 hover:text-gray-900">Orders</a>
-                    <a href="{{ route('profile.edit') }}" class="text-gray-700 hover:text-gray-900">Profile</a>
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
-                        @csrf
-                        <button type="submit" class="text-gray-700 hover:text-gray-900">Logout</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <x-buyer-nav />
     <div class="py-10 dashboard-bg">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="space-y-8">
@@ -44,9 +25,6 @@
                         <div class="flex flex-wrap gap-2">
                             @role('buyer')
                                 <span class="dash-pill">Client actif</span>
-                            @endrole
-                            @role('seller')
-                                <span class="dash-pill">Vendeur</span>
                             @endrole
                             @role('moderator')
                                 <span class="dash-pill">Moderateur</span>
@@ -89,19 +67,6 @@
                                 <x-buyer.notifications />
                             </section>
                         @endrole
-
-                        @role('seller')
-                            <section class="space-y-6">
-                                <x-seller.marketplace-quick />
-                                <x-seller.liked-products-quick />
-                            </section>
-                        @endrole
-
-                        @role('seller')
-                            <section class="space-y-6">
-                                <x-seller.products-module />
-                            </section>
-                        @endrole
                     </div>
 
                     <aside class="space-y-6">
@@ -135,11 +100,13 @@
 
                         <div class="dash-card p-4">
                             <h4 class="dash-title text-base text-slate-800">Conseils</h4>
-                            <ul class="mt-3 space-y-2 text-sm text-slate-600">
-                                <li>Ajoutez 3 nouveaux produits cette semaine.</li>
-                                <li>Repondez aux avis pour gagner en confiance.</li>
-                                <li>Verifiez votre stock avant le weekend.</li>
-                            </ul>
+                            @role('buyer')
+                                <ul class="mt-3 space-y-2 text-sm text-slate-600">
+                                    <li>Explorez le marketplace pour de nouveaux produits.</li>
+                                    <li>Consultez vos commandes regulierement.</li>
+                                    <li>Laissez des avis sur vos achats.</li>
+                                </ul>
+                            @endrole
                         </div>
                     </aside>
                 </div>

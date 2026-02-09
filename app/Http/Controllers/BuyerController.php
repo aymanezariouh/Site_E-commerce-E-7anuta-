@@ -12,16 +12,20 @@ use App\Models\Category;
 use App\Models\Review;
 use App\Models\ProductLike;
 use App\Models\User;
+use App\Models\StockMovement;
+use App\Models\OrderStatusHistory;
 use App\Notifications\NewOrderNotification;
 use App\Notifications\NewReviewNotification;
+use App\Notifications\OrderConfirmationNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class BuyerController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::active()->inStock()->with(['category', 'reviews']);
+        $query = Product::published()->inStock()->with(['category', 'reviews']);
         
         if ($request->category_id) {
             $query->where('category_id', $request->category_id);
@@ -30,12 +34,12 @@ class BuyerController extends Controller
         $products = $query->get();
         $categories = Category::all();
         
-        return view('buyer.index', compact('products', 'categories'));
+        return view('marketplace', compact('products', 'categories'));
     }
 
     public function show($id)
     {
-        $product = Product::with(['category', 'reviews.user'])->findOrFail($id);
+        $product = Product::published()->with(['category', 'reviews.user'])->findOrFail($id);
         $userReview = $product->reviews()->where('user_id', Auth::id())->first();
         
         return view('buyer.show', compact('product', 'userReview'));
@@ -43,20 +47,31 @@ class BuyerController extends Controller
 
     public function addToCart(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::published()->inStock()->findOrFail($id);
         $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
+        $requestedQty = (int) ($request->quantity ?? 1);
+        if ($requestedQty <= 0) {
+            $requestedQty = 1;
+        }
         
         $cartItem = CartItem::where('cart_id', $cart->id)
             ->where('product_id', $product->id)
             ->first();
             
         if ($cartItem) {
-            $cartItem->increment('quantity', $request->quantity ?? 1);
+            $newQty = $cartItem->quantity + $requestedQty;
+            if ($newQty > $product->stock_quantity) {
+                return redirect()->back()->with('error', 'Quantité demandée supérieure au stock disponible.');
+            }
+            $cartItem->update(['quantity' => $newQty]);
         } else {
+            if ($requestedQty > $product->stock_quantity) {
+                return redirect()->back()->with('error', 'Quantité demandée supérieure au stock disponible.');
+            }
             CartItem::create([
                 'cart_id' => $cart->id,
                 'product_id' => $product->id,
-                'quantity' => $request->quantity ?? 1,
+                'quantity' => $requestedQty,
                 'price' => $product->price
             ]);
         }
@@ -75,7 +90,7 @@ class BuyerController extends Controller
         $cart = Cart::with('items.product')->where('user_id', Auth::id())->first();
         
         if (!$cart || $cart->items->isEmpty()) {
-            return redirect()->route('buyer.produits')->with('error', 'Your cart is empty.');
+            return redirect()->route('marketplace')->with('error', 'Your cart is empty.');
         }
         
         return view('buyer.checkout', compact('cart'));
@@ -85,6 +100,7 @@ class BuyerController extends Controller
     {
         $request->validate([
             'full_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
             'address' => 'required|string',
             'city' => 'required|string|max:255',
             'phone' => 'required|string|max:20'
@@ -93,11 +109,12 @@ class BuyerController extends Controller
         $cart = Cart::with('items.product')->where('user_id', Auth::id())->first();
         
         if (!$cart || $cart->items->isEmpty()) {
-            return redirect()->route('buyer.produits')->with('error', 'Your cart is empty.');
+            return redirect()->route('marketplace')->with('error', 'Your cart is empty.');
         }
 
         $shippingAddress = [
             'name' => $request->full_name,
+            'email' => $request->email,
             'address' => $request->address,
             'city' => $request->city,
             'phone' => $request->phone
@@ -105,39 +122,76 @@ class BuyerController extends Controller
 
         $order = null;
         
-        DB::transaction(function () use ($cart, $shippingAddress, &$order) {
-            $order = Order::create([
-                'order_number' => Order::generateOrderNumber(),
-                'user_id' => Auth::id(),
-                'status' => 'pending',
-                'total_amount' => $cart->total_amount,
-                'shipping_address' => $shippingAddress,
-                'billing_address' => $shippingAddress,
-            ]);
-
-            foreach ($cart->items as $item) {
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item->product_id,
-                    'quantity' => $item->quantity,
-                    'unit_price' => $item->price,
-                    'total_price' => $item->price * $item->quantity,
+        try {
+            DB::transaction(function () use ($cart, $request, &$order) {
+                $order = Order::create([
+                    'order_number' => Order::generateOrderNumber(),
+                    'user_id' => Auth::id(),
+                    'status' => 'pending',
+                    'total_amount' => $cart->total_amount,
+                    'shipping_address' => $request->shipping_address,
+                    'billing_address' => $request->billing_address ?? $request->shipping_address,
                 ]);
-                
-                // Decrease stock
-                $item->product->decrement('stock_quantity', $item->quantity);
-            }
 
-            $cart->items()->delete();
-            $cart->delete();
-        });
+                foreach ($cart->items as $item) {
+                    $product = Product::whereKey($item->product_id)->lockForUpdate()->first();
+                    if (
+                        !$product
+                        || $product->status !== \App\Models\Product::STATUS_PUBLISHED
+                        || !$product->is_active
+                        || $product->stock_quantity < $item->quantity
+                    ) {
+                        throw new \RuntimeException('Stock insuffisant pour ' . ($product?->name ?? 'ce produit'));
+                    }
 
-        return redirect()->route('buyer.orders')->with('success', 'Order placed successfully!');
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'product_id' => $item->product_id,
+                        'product_name' => $item->product->name,
+                        'quantity' => $item->quantity,
+                        'unit_price' => $item->price,
+                        'total_price' => $item->price * $item->quantity,
+                    ]);
+                    
+                    // Decrease stock
+                    $product->decrement('stock_quantity', $item->quantity);
+
+                    StockMovement::create([
+                        'product_id' => $product->id,
+                        'user_id' => Auth::id(),
+                        'delta' => -$item->quantity,
+                        'reason' => 'order_' . $order->order_number,
+                    ]);
+                }
+
+                OrderStatusHistory::create([
+                    'order_id' => $order->id,
+                    'user_id' => Auth::id(),
+                    'old_status' => null,
+                    'new_status' => 'pending',
+                    'note' => 'Order created',
+                ]);
+
+                $cart->items()->delete();
+                $cart->delete();
+            });
+        } catch (\RuntimeException $e) {
+            return redirect()->route('buyer.cart')->with('error', $e->getMessage());
+        }
+
+        // Send order confirmation email to the provided email address
+        Notification::route('mail', $shippingAddress['email'])
+            ->notify(new OrderConfirmationNotification($order, $shippingAddress['email']));
+
+        return redirect()->route('buyer.orders')->with('success', 'Order placed successfully! Check your email for confirmation.');
     }
 
     public function orders()
     {
-        $orders = Order::where('user_id', Auth::id())->with('items.product')->orderBy('created_at', 'desc')->get();
+        $orders = Order::where('user_id', Auth::id())
+            ->with(['items.product', 'payments'])
+            ->orderBy('created_at', 'desc')
+            ->get();
         return view('buyer.orders', compact('orders'));
     }
 

@@ -14,7 +14,7 @@ class MarketplaceController extends Controller
     public function index(Request $request)
     {
         $query = Product::with(['category', 'vendor', 'reviews'])
-            ->active()
+            ->published()
             ->inStock();
 
         // Filter by category
@@ -51,3 +51,4 @@ class MarketplaceController extends Controller
         return view('buyer.marketplace', compact('products', 'categories'));
     }
 }
+                

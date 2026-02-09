@@ -78,6 +78,7 @@
                                 'shipped' => ['label' => 'Expédiées', 'color' => 'bg-purple-500'],
                                 'delivered' => ['label' => 'Livrées', 'color' => 'bg-emerald-500'],
                                 'cancelled' => ['label' => 'Annulées', 'color' => 'bg-rose-500'],
+                                'refunded' => ['label' => 'Remboursées', 'color' => 'bg-slate-400'],
                             ];
                         @endphp
                         @foreach ($statusLabels as $status => $info)

@@ -47,6 +47,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'role' => 'string',
+            'suspended_at' => 'datetime',
         ];
     }
 
@@ -59,6 +60,11 @@ class User extends Authenticatable
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(ProductLike::class);
     }
 
     public function carts()
@@ -74,22 +80,27 @@ class User extends Authenticatable
     // Helper methods
     public function isAdmin()
     {
-        return $this->role === 'admin';
+        return $this->hasRole('admin') || $this->role === 'admin';
     }
 
     public function isModerator()
     {
-        return $this->role === 'moderator';
+        return $this->hasRole('moderator') || $this->role === 'moderator';
     }
 
     public function isSeller()
     {
-        return $this->role === 'seller';
+        return $this->hasRole('seller') || $this->role === 'seller';
     }
 
     public function isBuyer()
     {
-        return $this->role === 'buyer';
+        return $this->hasRole('buyer') || $this->role === 'buyer';
+    }
+
+    public function isSuspended(): bool
+    {
+        return (bool) $this->suspended_at;
     }
 
     // Equivalent of: hasPermission(p: Permission): bool

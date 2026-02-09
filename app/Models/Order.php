@@ -67,6 +67,11 @@ class Order extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function statusHistories()
+    {
+        return $this->hasMany(OrderStatusHistory::class);
+    }
+
     // Scopes
     public function scopeByStatus($query, $status)
     {
@@ -77,6 +82,22 @@ class Order extends Model
     public function getSubtotalAttribute()
     {
         return $this->total_amount - $this->tax_amount - $this->shipping_amount;
+    }
+
+    public function canTransitionTo(string $newStatus): bool
+    {
+        $current = $this->status;
+
+        $allowed = [
+            'pending' => ['processing', 'cancelled'],
+            'processing' => ['shipped', 'cancelled'],
+            'shipped' => ['delivered'],
+            'delivered' => [],
+            'cancelled' => [],
+            'refunded' => [],
+        ];
+
+        return in_array($newStatus, $allowed[$current] ?? [], true);
     }
 
     public static function generateOrderNumber()

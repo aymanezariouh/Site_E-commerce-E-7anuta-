@@ -13,6 +13,7 @@ use App\Http\Controllers\SellerOrderController;
 use App\Http\Controllers\SellerReviewController;
 use App\Http\Controllers\SellerAnalyticsController;
 use App\Http\Controllers\SellerNotificationController;
+use App\Http\Controllers\OrderController;
 
 Route::get('/', function () {
     if (!Auth::check()) {
@@ -30,26 +31,18 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/marketplace', function () {
-        $mockProducts = collect(range(1, 28))->map(function (int $index) {
-            return [
-                'name' => "Produit {$index}",
-                'category' => $index % 3 === 0 ? 'Mode' : ($index % 2 === 0 ? 'Tech' : 'Maison'),
-                'price' => number_format(9 + ($index * 2), 2),
-                'badge' => $index % 4 === 0 ? 'Promo' : ($index % 3 === 0 ? 'Top vente' : 'Nouveau'),
-                'summary' => 'Description rapide du produit.',
-            ];
-        });
-
-        return view('buyer.marketplace', ['products' => $mockProducts]);
-    })->name('marketplace');
+    Route::get('/marketplace', [BuyerController::class, 'index'])->name('marketplace');
+    Route::get('/marketplace/{id}', [BuyerController::class, 'show'])->name('marketplace.show');
+    Route::post('/marketplace/{id}/add-to-cart', [BuyerController::class, 'addToCart'])->name('marketplace.addToCart');
+    Route::post('/marketplace/{id}/review', [BuyerController::class, 'addReview'])->name('marketplace.addReview');
+    Route::post('/marketplace/{id}/toggle-like', [BuyerController::class, 'toggleLike'])->name('marketplace.toggleLike');
 
     Route::get('/orders', function () {
         return view('orders');
     })->name('orders');
 });
 
-Route::middleware(['auth', 'verified', 'role:seller'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:seller', 'seller.active'])->group(function () {
     // Stock & Products
     Route::get('/seller/stock', [SellerProductController::class, 'index'])->name('seller.stock');
     Route::get('/seller/products', [SellerProductController::class, 'index'])->name('seller.products.index');
@@ -57,6 +50,7 @@ Route::middleware(['auth', 'verified', 'role:seller'])->group(function () {
     Route::post('/seller/products', [SellerProductController::class, 'store'])->name('seller.products.store');
     Route::get('/seller/products/{product}/edit', [SellerProductController::class, 'edit'])->name('seller.products.edit');
     Route::put('/seller/products/{product}', [SellerProductController::class, 'update'])->name('seller.products.update');
+    Route::patch('/seller/products/{product}/stock', [SellerProductController::class, 'adjustStock'])->name('seller.products.adjustStock');
     Route::delete('/seller/products/{product}', [SellerProductController::class, 'destroy'])->name('seller.products.destroy');
 
     // Categories
@@ -93,18 +87,20 @@ Route::middleware('auth')->group(function () {
 
 
 
-Route::middleware(['auth', 'role:buyer'])->group(function () {
-    Route::get('/products', [BuyerController::class, 'index'])->name('buyer.produits');
-    Route::get('/products/{id}', [BuyerController::class, 'show'])->name('buyer.produits.show');
-    Route::post('/products/{id}/add-to-cart', [BuyerController::class, 'addToCart'])->name('buyer.addToCart');
+Route::middleware(['auth', 'role:buyer'])->group(function() {
     Route::get('/cart', [BuyerController::class, 'cart'])->name('buyer.cart');
     Route::get('/checkout', [BuyerController::class, 'checkout'])->name('buyer.checkout');
     Route::post('/place-order', [BuyerController::class, 'placeOrder'])->name('buyer.placeOrder');
     Route::get('/buyer/orders', [BuyerController::class, 'orders'])->name('buyer.orders');
     Route::get('/buyer/orders/{id}', [BuyerController::class, 'orderDetails'])->name('buyer.orderDetails');
-    Route::post('/products/{id}/review', [BuyerController::class, 'addReview'])->name('buyer.addReview');
-    Route::post('/products/{id}/toggle-like', [BuyerController::class, 'toggleLike'])->name('buyer.toggleLike');
 });
+
+// Route temporaire pour tester changement de statut
+Route::get('/test-order-status/{orderId}/{status}', function($orderId, $status) {
+    $order = \App\Models\Order::findOrFail($orderId);
+    $order->update(['status' => $status]);
+    return redirect()->route('buyer.orders')->with('success', 'Order status changed to ' . $status . '. Check storage/logs/laravel.log for email!');
+})->middleware('auth')->name('test.orderStatus');
 
 // Routes Admin
 Route::middleware(['auth', 'verified', 'role:admin'])
@@ -137,6 +133,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])
     Route::get('/orders/{order}', [AdminController::class, 'showOrder'])->name('orders.show');
     Route::patch('/orders/{order}/status', [AdminController::class, 'updateOrderStatus'])->name('orders.update-status');
 });
+
+Route::post('/admin/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 
 
 require __DIR__ . '/auth.php';

@@ -8,7 +8,7 @@
     </div>
     <div class="mt-4 text-sm text-slate-600">
         <p>Produits stock faible: <span class="font-semibold text-slate-800">{{ $lowStockCount ?? 0 }}</span></p>
-        <p class="text-xs text-slate-500 mt-1">Seuil configurable par categorie.</p>
+        <p class="text-xs text-slate-500 mt-1">Seuil configurable par catégorie.</p>
     </div>
     <div class="mt-4 flex flex-wrap gap-2">
         <a class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50" href="{{ route('seller.products.index') }}">Voir produits</a>
