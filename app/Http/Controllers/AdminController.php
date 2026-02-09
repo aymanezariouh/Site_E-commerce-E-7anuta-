@@ -130,7 +130,7 @@ class AdminController extends Controller
         $users = User::with('roles')->latest()->paginate(20);
         $roles = Role::all();
 
-        return view('admin.users.index', compact('users', 'roles'));
+        return view('admin.users', compact('users', 'roles'));
     }
 
     /**
@@ -199,7 +199,7 @@ class AdminController extends Controller
             ->latest()
             ->paginate(20);
 
-        return view('admin.products.index', compact('products'));
+        return view('admin.products', compact('products'));
     }
 
     /**
@@ -244,7 +244,7 @@ class AdminController extends Controller
             ->latest()
             ->paginate(20);
 
-        return view('admin.reviews.index', compact('reviews'));
+        return view('admin.reviews', compact('reviews'));
     }
 
     /**
