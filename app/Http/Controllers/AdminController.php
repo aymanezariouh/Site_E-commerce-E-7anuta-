@@ -15,7 +15,18 @@ class AdminController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth', 'role:admin']);
+        $this->middleware(['auth', 'role:admin|moderator']);
+        $this->middleware('role:admin')->only([
+            'dashboard',
+            'statistics',
+            'updateUserRole',
+            'deleteUser',
+            'deleteProduct',
+            'deleteReview',
+            'orders',
+            'showOrder',
+            'updateOrderStatus',
+        ]);
     }
 
 
@@ -203,12 +214,12 @@ class AdminController extends Controller
     }
 
     /**
-     * Modérer un produit (approuver/rejeter)
+     * Modérer un produit (approuver/rejeter/mettre en attente/suspendre)
      */
     public function moderateProduct(Request $request, Product $product)
     {
         $request->validate([
-            'status' => 'required|in:approved,rejected,pending',
+            'status' => 'required|in:approved,rejected,pending,suspended',
             'reason' => 'nullable|string|max:500',
         ]);
 
@@ -266,7 +277,7 @@ class AdminController extends Controller
     public function moderateReview(Request $request, Review $review)
     {
         $request->validate([
-            'status' => 'required|in:approved,rejected,pending',
+            'status' => 'required|in:approved,rejected,pending,suspended',
             'reason' => 'nullable|string|max:500',
         ]);
 
