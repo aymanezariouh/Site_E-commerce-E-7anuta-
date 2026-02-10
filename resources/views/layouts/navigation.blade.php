@@ -11,11 +11,19 @@
 
             <!-- Navigation Links -->
             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex sm:items-center">
-                <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('dashboard') }}">Dashboard</a>
+                <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    Dashboard
+                </x-nav-link>
                 @role('buyer')
-                    <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('marketplace') }}">Products</a>
-                    <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('buyer.cart') }}">Cart</a>
-                    <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('buyer.orders') }}">Orders</a>
+                    <x-nav-link :href="route('marketplace')" :active="request()->routeIs('marketplace*')">
+                        Marketplace
+                    </x-nav-link>
+                    <x-nav-link :href="route('buyer.cart')" :active="request()->routeIs('buyer.cart')">
+                        Cart
+                    </x-nav-link>
+                    <x-nav-link :href="route('buyer.orders')" :active="request()->routeIs('buyer.orders') || request()->routeIs('buyer.orderDetails')">
+                        Orders
+                    </x-nav-link>
                 @endrole
                 @role('seller')
                     <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('marketplace') }}">Marketplace</a>
@@ -107,17 +115,17 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')">
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 Dashboard
             </x-responsive-nav-link>
             @role('buyer')
-                <x-responsive-nav-link :href="route('marketplace')">
-                    Products
+                <x-responsive-nav-link :href="route('marketplace')" :active="request()->routeIs('marketplace*')">
+                    Marketplace
                 </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('buyer.cart')">
+                <x-responsive-nav-link :href="route('buyer.cart')" :active="request()->routeIs('buyer.cart')">
                     Cart
                 </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('buyer.orders')">
+                <x-responsive-nav-link :href="route('buyer.orders')" :active="request()->routeIs('buyer.orders') || request()->routeIs('buyer.orderDetails')">
                     Orders
                 </x-responsive-nav-link>
             @endrole
