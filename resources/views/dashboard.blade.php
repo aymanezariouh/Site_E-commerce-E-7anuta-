@@ -9,7 +9,11 @@
 </head>
 <body class="font-sans antialiased bg-gray-100">
     @auth
-    <x-buyer-nav />
+    @role('moderator')
+        <x-moderator-nav />
+    @else
+        <x-buyer-nav />
+    @endrole
     <div class="py-10 dashboard-bg">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="space-y-8">
