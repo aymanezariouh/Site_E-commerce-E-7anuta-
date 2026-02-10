@@ -101,12 +101,12 @@
                 @if($product->reviews->count() > 0)
                     <div class="mt-2 flex items-center gap-1">
                         <span class="text-amber-500 text-sm">
-                            @php $avgRating = $product->reviews->where('is_approved', true)->avg('rating') ?? 0; @endphp
+                            @php $avgRating = $product->reviews->where('moderation_status', 'approved')->avg('rating') ?? 0; @endphp
                             @for($i = 1; $i <= 5; $i++)
                                 @if($i <= round($avgRating))★@else☆@endif
                             @endfor
                         </span>
-                        <span class="text-xs text-slate-500">({{ $product->reviews->where('is_approved', true)->count() }})</span>
+                        <span class="text-xs text-slate-500">({{ $product->reviews->where('moderation_status', 'approved')->count() }})</span>
                     </div>
                 @endif
                 

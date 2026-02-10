@@ -25,8 +25,8 @@ class SellerReviewController extends Controller
         $stats = [
             'total' => Review::whereHas('product', fn($q) => $q->where('user_id', $sellerId))->count(),
             'average_rating' => Review::whereHas('product', fn($q) => $q->where('user_id', $sellerId))->avg('rating') ?? 0,
-            'approved' => Review::whereHas('product', fn($q) => $q->where('user_id', $sellerId))->where('is_approved', true)->count(),
-            'pending' => Review::whereHas('product', fn($q) => $q->where('user_id', $sellerId))->where('is_approved', false)->count(),
+            'approved' => Review::whereHas('product', fn($q) => $q->where('user_id', $sellerId))->where('moderation_status', 'approved')->count(),
+            'pending' => Review::whereHas('product', fn($q) => $q->where('user_id', $sellerId))->where('moderation_status', 'pending')->count(),
         ];
 
         return view('seller.reviews', compact('reviews', 'stats'));

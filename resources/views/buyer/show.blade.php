@@ -164,7 +164,7 @@
                         @if($product->reviews->count() > 0)
                             <div class="space-y-4">
                                 <h5 class="font-medium text-lg">Customer Reviews ({{ $product->total_reviews }})</h5>
-                                @foreach($product->reviews->where('is_approved', true) as $review)
+                                @foreach($product->reviews->where('moderation_status', 'approved') as $review)
                                     <div class="border-b pb-4 last:border-b-0">
                                         <div class="flex items-center justify-between mb-2">
                                             <div class="flex items-center">
