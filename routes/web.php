@@ -136,7 +136,7 @@ Route::middleware(['auth', 'verified', 'role:moderator'])
     });
 
 // Routes Admin
-Route::middleware(['auth', 'verified', 'role:admin'])
+Route::middleware(['auth', 'verified', 'role:admin|moderator'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {    // Dashboard & Statistiques

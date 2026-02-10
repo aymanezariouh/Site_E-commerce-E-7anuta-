@@ -18,13 +18,13 @@ return new class extends Migration
         if (!$hasModStatus) {
             // Add moderation_status column
             Schema::table('products', function (Blueprint $table) {
-                $table->enum('moderation_status', ['pending', 'approved', 'rejected'])
+                $table->enum('moderation_status', ['pending', 'approved', 'rejected', 'suspended'])
                     ->default('approved')
                     ->after('is_active');
             });
             
             // Copy current status values to moderation_status
-            DB::statement("UPDATE products SET moderation_status = status WHERE status IN ('pending', 'approved', 'rejected')");
+            DB::statement("UPDATE products SET moderation_status = status WHERE status IN ('pending', 'approved', 'rejected', 'suspended')");
         }
         
         // Change status column to VARCHAR temporarily
@@ -42,6 +42,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement("ALTER TABLE products MODIFY COLUMN status ENUM('pending', 'approved', 'rejected') DEFAULT 'approved'");
+        DB::statement("ALTER TABLE products MODIFY COLUMN status ENUM('pending', 'approved', 'rejected', 'suspended') DEFAULT 'approved'");
     }
 };
