@@ -14,6 +14,7 @@ use App\Http\Controllers\SellerReviewController;
 use App\Http\Controllers\SellerAnalyticsController;
 use App\Http\Controllers\SellerNotificationController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ModeratorController;
 
 Route::get('/', function () {
     if (!Auth::check()) {
@@ -102,6 +103,37 @@ Route::get('/test-order-status/{orderId}/{status}', function($orderId, $status) 
     $order->update(['status' => $status]);
     return redirect()->route('buyer.orders')->with('success', 'Order status changed to ' . $status . '. Check storage/logs/laravel.log for email!');
 })->middleware('auth')->name('test.orderStatus');
+
+// Test user roles
+Route::get('/test-roles', function() {
+    $user = Auth::user();
+    return [
+        'user_id' => $user->id,
+        'name' => $user->name,
+        'roles' => $user->roles->pluck('name'),
+        'has_buyer_role' => $user->hasRole('buyer'),
+        'has_moderator_role' => $user->hasRole('moderator'),
+    ];
+})->middleware('auth');
+
+// Routes Moderator
+Route::middleware(['auth', 'verified', 'role:moderator'])
+    ->prefix('moderator')
+    ->name('moderator.')
+    ->group(function () {
+        Route::get('/reviews', [ModeratorController::class, 'reviews'])->name('reviews');
+        Route::patch('/reviews/{id}/hide', [ModeratorController::class, 'hideReview'])->name('reviews.hide');
+        Route::patch('/reviews/{id}/show', [ModeratorController::class, 'showReview'])->name('reviews.show');
+        Route::delete('/reviews/{id}', [ModeratorController::class, 'deleteReview'])->name('reviews.delete');
+        
+        Route::get('/users', [ModeratorController::class, 'users'])->name('users');
+        Route::patch('/users/{id}/suspend', [ModeratorController::class, 'suspendUser'])->name('users.suspend');
+        Route::patch('/users/{id}/unsuspend', [ModeratorController::class, 'unsuspendUser'])->name('users.unsuspend');
+        
+        Route::get('/products', [ModeratorController::class, 'products'])->name('products');
+        Route::patch('/products/{id}/suspend', [ModeratorController::class, 'suspendProduct'])->name('products.suspend');
+        Route::patch('/products/{id}/unsuspend', [ModeratorController::class, 'unsuspendProduct'])->name('products.unsuspend');
+    });
 
 // Routes Admin
 Route::middleware(['auth', 'verified', 'role:admin'])
