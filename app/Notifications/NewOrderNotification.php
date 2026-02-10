@@ -4,11 +4,10 @@ namespace App\Notifications;
 
 use App\Models\Order;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NewOrderNotification extends Notification implements ShouldQueue
+class NewOrderNotification extends Notification
 {
     use Queueable;
 
@@ -29,7 +28,7 @@ class NewOrderNotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        return ['mail'];
     }
 
     /**
@@ -37,15 +36,21 @@ class NewOrderNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $this->order->loadMissing('user');
+        $shippingAddress = is_array($this->order->shipping_address) ? $this->order->shipping_address : [];
+        $customerName = $shippingAddress['name'] ?? ($this->order->user->name ?? 'N/A');
+        $customerEmail = $shippingAddress['email'] ?? ($this->order->user->email ?? 'N/A');
+
         return (new MailMessage)
-            ->subject('Nouvelle commande reçue - ' . $this->order->order_number)
-            ->greeting('Bonjour ' . $notifiable->name . '!')
-            ->line('Vous avez reçu une nouvelle commande.')
-            ->line('Numéro de commande : ' . $this->order->order_number)
-            ->line('Client : ' . $this->order->user->name)
-            ->line('Montant de vos produits : ' . number_format($this->sellerTotal, 2) . ' €')
-            ->action('Voir la commande', url('/seller/orders/' . $this->order->id))
-            ->line('Merci d\'utiliser LocalMart!');
+            ->subject('New order received - ' . $this->order->order_number)
+            ->greeting('Hello ' . $notifiable->name . '!')
+            ->line('You received a new order for your products.')
+            ->line('Order number: ' . $this->order->order_number)
+            ->line('Customer: ' . $customerName)
+            ->line('Customer email: ' . $customerEmail)
+            ->line('Total for your products: ' . number_format($this->sellerTotal, 2) . ' EUR')
+            ->action('View order', url('/seller/orders/' . $this->order->id))
+            ->line('Please prepare shipment as soon as possible.');
     }
 
     /**
@@ -59,7 +64,7 @@ class NewOrderNotification extends Notification implements ShouldQueue
             'order_number' => $this->order->order_number,
             'customer_name' => $this->order->user->name,
             'seller_total' => $this->sellerTotal,
-            'message' => 'Nouvelle commande #' . $this->order->order_number . ' de ' . $this->order->user->name,
+            'message' => 'New order #' . $this->order->order_number . ' from ' . $this->order->user->name,
         ];
     }
 }

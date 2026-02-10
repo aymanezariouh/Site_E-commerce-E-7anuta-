@@ -1,3 +1,18 @@
+@php
+    $canShop = Auth::check() && Auth::user()->hasAnyRole(['buyer', 'seller', 'moderator']);
+    $cartCount = 0;
+
+    if ($canShop) {
+        $activeCart = \App\Models\Cart::with('items:id,cart_id,quantity')
+            ->where('user_id', Auth::id())
+            ->where('status', 'active')
+            ->latest('id')
+            ->first();
+
+        $cartCount = $activeCart ? (int) $activeCart->items->sum('quantity') : 0;
+    }
+@endphp
+
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -18,15 +33,14 @@
                     <x-nav-link :href="route('marketplace')" :active="request()->routeIs('marketplace*')">
                         Marketplace
                     </x-nav-link>
-                    <x-nav-link :href="route('buyer.cart')" :active="request()->routeIs('buyer.cart')">
-                        Cart
-                    </x-nav-link>
                     <x-nav-link :href="route('buyer.orders')" :active="request()->routeIs('buyer.orders') || request()->routeIs('buyer.orderDetails')">
                         Orders
                     </x-nav-link>
                 @endrole
                 @role('seller')
-                    <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('marketplace') }}">Marketplace</a>
+                    <x-nav-link :href="route('marketplace')" :active="request()->routeIs('marketplace*')">
+                        Marketplace
+                    </x-nav-link>
                     <div class="inline-flex items-center">
                         <x-dropdown align="left" width="48">
                             <x-slot name="trigger">
@@ -66,13 +80,44 @@
                         </x-dropdown>
                     </div>
                 @endrole
+                @role('moderator')
+                    <x-nav-link :href="route('marketplace')" :active="request()->routeIs('marketplace*')">
+                        Marketplace
+                    </x-nav-link>
+                    <x-nav-link :href="route('moderator.reviews')" :active="request()->routeIs('moderator.reviews*')">
+                        Reviews
+                    </x-nav-link>
+                    <x-nav-link :href="route('moderator.users')" :active="request()->routeIs('moderator.users*')">
+                        Users
+                    </x-nav-link>
+                    <x-nav-link :href="route('moderator.products')" :active="request()->routeIs('moderator.products*')">
+                        Products
+                    </x-nav-link>
+                @endrole
                 @role('admin')
                     <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" href="{{ route('admin.orders') }}">Manage Orders</a>
                 @endrole
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div class="hidden sm:flex sm:items-center sm:ms-6 sm:gap-3">
+                @if($canShop)
+                    <a
+                        href="{{ route('buyer.cart') }}"
+                        class="relative inline-flex items-center justify-center rounded-full border border-slate-200 p-2 text-gray-500 hover:bg-slate-50 hover:text-gray-700 transition"
+                        title="Cart"
+                        aria-label="Cart"
+                    >
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m1.6 8L5.4 5m1.6 8L9 19h6m-6 0a1 1 0 102 0m4 0a1 1 0 102 0"></path>
+                        </svg>
+                        @if ($cartCount > 0)
+                            <span class="absolute -top-1 -right-1 rounded-full bg-emerald-600 px-1.5 py-0.5 text-[10px] font-semibold leading-none text-white">
+                                {{ $cartCount > 99 ? '99+' : $cartCount }}
+                            </span>
+                        @endif
+                    </a>
+                @endif
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
@@ -92,9 +137,12 @@
 
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
+                            <button
+                                type="submit"
+                                class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                            >
                                 {{ __('Log Out') }}
-                            </x-dropdown-link>
+                            </button>
                         </form>
                     </x-slot>
                 </x-dropdown>
@@ -133,6 +181,9 @@
                 <x-responsive-nav-link :href="route('marketplace')">
                     Marketplace
                 </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('buyer.cart')" :active="request()->routeIs('buyer.cart')">
+                    Cart
+                </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('seller.products.index')">
                     Products
                 </x-responsive-nav-link>
@@ -158,6 +209,23 @@
                     Notifications
                 </x-responsive-nav-link>
             @endrole
+            @role('moderator')
+                <x-responsive-nav-link :href="route('marketplace')" :active="request()->routeIs('marketplace*')">
+                    Marketplace
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('buyer.cart')" :active="request()->routeIs('buyer.cart')">
+                    Cart
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('moderator.reviews')" :active="request()->routeIs('moderator.reviews*')">
+                    Reviews
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('moderator.users')" :active="request()->routeIs('moderator.users*')">
+                    Users
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('moderator.products')" :active="request()->routeIs('moderator.products*')">
+                    Products
+                </x-responsive-nav-link>
+            @endrole
             @role('admin')
                 <x-responsive-nav-link :href="route('admin.orders')">
                     Manage Orders
@@ -179,9 +247,12 @@
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
+                    <button
+                        type="submit"
+                        class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out"
+                    >
                         {{ __('Log Out') }}
-                    </x-responsive-nav-link>
+                    </button>
                 </form>
             </div>
         </div>

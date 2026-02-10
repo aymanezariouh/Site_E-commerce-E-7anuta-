@@ -5,10 +5,10 @@
 MAIL_MAILER=smtp
 MAIL_HOST=sandbox.smtp.mailtrap.io
 MAIL_PORT=2525
-MAIL_USERNAME=your_mailtrap_username
-MAIL_PASSWORD=your_mailtrap_password
-MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS="noreply@e-7anuta.com"
+MAIL_USERNAME=768ffa5b55eb9f
+MAIL_PASSWORD=62e1ed74fd866c
+MAIL_SCHEME=tls
+MAIL_FROM_ADDRESS=noreply@e-7anuta.com
 MAIL_FROM_NAME="E-7anuta Store"
 
 # For Gmail SMTP (production)
@@ -17,7 +17,7 @@ MAIL_FROM_NAME="E-7anuta Store"
 # MAIL_PORT=587
 # MAIL_USERNAME=your_gmail@gmail.com
 # MAIL_PASSWORD=your_app_password
-# MAIL_ENCRYPTION=tls
+# MAIL_SCHEME=tls
 # MAIL_FROM_ADDRESS="noreply@yourdomain.com"
 # MAIL_FROM_NAME="Your Store Name"
 
@@ -27,6 +27,10 @@ MAIL_FROM_NAME="E-7anuta Store"
 # MAIL_PORT=587
 # MAIL_USERNAME=apikey
 # MAIL_PASSWORD=your_sendgrid_api_key
-# MAIL_ENCRYPTION=tls
+# MAIL_SCHEME=tls
 # MAIL_FROM_ADDRESS="noreply@yourdomain.com"
 # MAIL_FROM_NAME="Your Store Name"
+
+# Important for queued notifications:
+# QUEUE_CONNECTION=database
+# Run: php artisan queue:work
