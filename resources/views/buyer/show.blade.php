@@ -1,110 +1,115 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'Laravel') }} - {{ $product->name }}</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="font-sans antialiased bg-gray-100">
-    @auth
-    <x-buyer-nav />
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+<x-app-layout>
+    <div class="py-12 bg-shop-gray-50 min-h-screen">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             @if(session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                    {{ session('success') }}
+                <div class="rounded-xl bg-green-50 border border-green-200 p-4 mb-6 flex items-center gap-3">
+                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    <p class="text-green-700 text-sm font-medium">{{ session('success') }}</p>
                 </div>
             @endif
-            
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <h3 class="text-lg font-medium">{{ $product->name }}</h3>
-                            <p class="text-gray-600 mt-2">{{ $product->description }}</p>
-                            <p class="text-sm text-gray-500">Category: {{ $product->category->name ?? 'N/A' }}</p>
-                            <p class="text-2xl font-bold text-green-600 mt-4">${{ number_format($product->price, 2) }}</p>
-                            <p class="text-sm text-gray-500">Stock: {{ $product->stock_quantity }} available</p>
-                            
-                            <!-- Rating Display -->
-                            <div class="flex items-center mt-3">
-                                <div class="flex items-center">
-                                    @for($i = 1; $i <= 5; $i++)
-                                        <span class="text-lg {{ $i <= $product->average_rating ? 'text-yellow-400' : 'text-gray-300' }}">★</span>
-                                    @endfor
-                                </div>
-                                <span class="text-sm text-gray-600 ml-2">
-                                    {{ number_format($product->average_rating, 1) }}/5 
-                                    ({{ $product->total_reviews }} {{ $product->total_reviews == 1 ? 'review' : 'reviews' }})
-                                </span>
-                            </div>
-                            
-                            <!-- Likes Display -->
-                            <div class="flex items-center mt-2">
-                                <svg class="w-4 h-4 text-red-500 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Product Image -->
+                <div class="space-y-4">
+                    <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 overflow-hidden relative group">
+                        @if(count($product->images ?? []) > 0)
+                            <img src="{{ $product->images[0] }}" alt="{{ $product->name }}" class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-500">
+                        @else
+                            <div class="w-full h-96 bg-shop-gray-100 flex items-center justify-center text-shop-gray-400">
+                                <svg class="h-20 w-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
-                                <span class="text-sm text-gray-600">{{ $product->total_likes }} {{ $product->total_likes == 1 ? 'like' : 'likes' }}</span>
                             </div>
-                            
-                            <!-- Like Button -->
-                            <form action="{{ route('marketplace.toggleLike', $product->id) }}" method="POST" class="mt-4">
-                                @csrf
-                                <button type="submit" class="flex items-center space-x-2 px-4 py-2 rounded-lg border transition-colors {{ $product->isLikedByUser(Auth::id()) ? 'bg-red-50 border-red-200 text-red-600' : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-red-50 hover:border-red-200 hover:text-red-600' }}">
-                                    <svg class="w-5 h-5" fill="{{ $product->isLikedByUser(Auth::id()) ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                                    </svg>
-                                    <span class="font-medium">{{ $product->isLikedByUser(Auth::id()) ? 'Unlike' : 'Like' }}</span>
-                                </button>
-                            </form>
+                        @endif
+                        
+                        <!-- Like Button (Overlay) -->
+                        @auth
+                            <div class="absolute top-4 right-4">
+                                <form action="{{ route('marketplace.toggleLike', $product->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="bg-white rounded-full p-3 shadow-lg hover:bg-shop-gray-50 transition-colors {{ $product->isLikedByUser(Auth::id()) ? 'text-red-500' : 'text-shop-gray-400 hover:text-red-500' }}">
+                                        <svg class="w-6 h-6" fill="{{ $product->isLikedByUser(Auth::id()) ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+                        @endauth
+                    </div>
+                </div>
+
+                <!-- Product Details -->
+                <div class="space-y-8">
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-50 text-brand-700">
+                                {{ $product->category->name ?? 'Collection' }}
+                            </span>
+                            <div class="flex items-center text-sm text-shop-gray-500">
+                                <svg class="w-4 h-4 text-amber-400 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <span class="font-medium text-shop-gray-900">{{ number_format($product->average_rating, 1) }}</span>
+                                <span class="mx-1">·</span>
+                                <span>{{ $product->total_reviews }} avis</span>
+                            </div>
                         </div>
-                        <div>
-                            <form action="{{ route('marketplace.addToCart', $product->id) }}" method="POST">
-                                @csrf
-                                <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-700">Quantity</label>
-                                    <input type="number" name="quantity" value="1" min="1" max="{{ $product->stock_quantity }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        
+                        <h1 class="text-4xl font-bold font-display text-shop-gray-900 mb-4">{{ $product->name }}</h1>
+                        <p class="text-shop-gray-600 text-lg leading-relaxed">{{ $product->description }}</p>
+                    </div>
+
+                    <div class="flex items-end gap-4">
+                        <span class="text-4xl font-bold text-shop-gray-900 font-display">{{ number_format($product->price, 2) }} MAD</span>
+                        @if($product->compare_at_price)
+                            <span class="text-xl text-shop-gray-400 line-through mb-1">{{ number_format($product->compare_at_price, 2) }} MAD</span>
+                        @endif
+                    </div>
+
+                    <div class="border-t border-b border-shop-gray-100 py-6 space-y-4">
+                        <form action="{{ route('marketplace.addToCart', $product->id) }}" method="POST" class="flex flex-col sm:flex-row gap-4">
+                            @csrf
+                            <div class="w-32">
+                                <label for="quantity" class="sr-only">Quantité</label>
+                                <div class="relative rounded-xl border border-shop-gray-200 bg-white">
+                                    <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ $product->stock_quantity }}" class="block w-full border-0 py-3 pl-4 pr-10 text-shop-gray-900 focus:ring-0 sm:text-sm rounded-xl" placeholder="1">
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <span class="text-shop-gray-400 text-xs">/ {{ $product->stock_quantity }}</span>
+                                    </div>
                                 </div>
-                                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                    Add to Cart
-                                </button>
-                            </form>
-                        </div>
+                            </div>
+                            <button type="submit" class="flex-1 bg-brand-600 border border-transparent rounded-xl py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 shadow-lg shadow-brand-500/30 transition-all hover:-translate-y-0.5" {{ $product->stock_quantity < 1 ? 'disabled' : '' }}>
+                                {{ $product->stock_quantity < 1 ? 'Rupture de stock' : 'Ajouter au panier' }}
+                            </button>
+                        </form>
                     </div>
 
                     <!-- Reviews Section -->
-                    <div class="mt-8">
-                        <h4 class="text-lg font-medium mb-4">Reviews</h4>
+                    <div>
+                        <h3 class="text-2xl font-bold font-display text-shop-gray-900 mb-6">Avis Clients</h3>
                         
-                        <!-- Add Review Form -->
-                        @if(!$userReview)
-                            <form action="{{ route('marketplace.addReview', $product->id) }}" method="POST" class="mb-6 p-4 border rounded" id="review">
-                                @csrf
-                                <h5 class="font-medium mb-4">Add Your Review</h5>
-                                <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
-                                    <div class="flex items-center space-x-1" id="star-rating">
-                                        @for($i = 1; $i <= 5; $i++)
-                                            <button type="button" class="star-btn text-2xl text-gray-300 hover:text-yellow-400 focus:outline-none" data-rating="{{ $i }}">
-                                                ★
-                                            </button>
-                                        @endfor
+                        @if(!$userReview && Auth::check())
+                            <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 p-6 mb-8">
+                                <h4 class="text-lg font-bold text-shop-gray-900 mb-4">Donnez votre avis</h4>
+                                <form action="{{ route('marketplace.addReview', $product->id) }}" method="POST" id="review">
+                                    @csrf
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-shop-gray-700 mb-2">Note</label>
+                                        <div class="flex items-center space-x-1" id="star-rating">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                <button type="button" class="star-btn text-2xl text-gray-300 hover:text-amber-400 focus:outline-none transition-colors" data-rating="{{ $i }}">★</button>
+                                            @endfor
+                                        </div>
+                                        <input type="hidden" name="rating" id="rating-input" required>
                                     </div>
-                                    <input type="hidden" name="rating" id="rating-input" required>
-                                    <p class="text-sm text-gray-500 mt-1">Click on stars to rate</p>
-                                </div>
-                                <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-700">Comment</label>
-                                    <textarea name="comment" rows="3" placeholder="Share your experience with this product..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
-                                </div>
-                                <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                                    Submit Review
-                                </button>
-                            </form>
-                            
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-shop-gray-700 mb-2">Commentaire</label>
+                                        <textarea name="comment" rows="3" class="w-full rounded-xl border-shop-gray-200 shadow-sm focus:border-brand-500 focus:ring-brand-500" placeholder="Partagez votre expérience..."></textarea>
+                                    </div>
+                                    <button type="submit" class="bg-shop-gray-900 text-white rounded-xl py-2 px-6 font-medium hover:bg-black transition-colors">
+                                        Publier l'avis
+                                    </button>
+                                </form>
+                            </div>
+                            <!-- JS for stars embedded/inline via script tag at bottom -->
                             <script>
                                 document.addEventListener('DOMContentLoaded', function() {
                                     const stars = document.querySelectorAll('.star-btn');
@@ -114,94 +119,64 @@
                                         star.addEventListener('click', function() {
                                             const rating = parseInt(this.dataset.rating);
                                             ratingInput.value = rating;
-                                            
-                                            stars.forEach((s, i) => {
-                                                if (i < rating) {
-                                                    s.classList.remove('text-gray-300');
-                                                    s.classList.add('text-yellow-400');
-                                                } else {
-                                                    s.classList.remove('text-yellow-400');
-                                                    s.classList.add('text-gray-300');
-                                                }
-                                            });
+                                            updateStars(rating);
                                         });
                                         
                                         star.addEventListener('mouseover', function() {
-                                            const rating = parseInt(this.dataset.rating);
-                                            stars.forEach((s, i) => {
-                                                if (i < rating) {
-                                                    s.classList.add('text-yellow-300');
-                                                } else {
-                                                    s.classList.remove('text-yellow-300');
-                                                }
-                                            });
+                                            updateStars(parseInt(this.dataset.rating), true);
                                         });
                                         
                                         star.addEventListener('mouseleave', function() {
-                                            stars.forEach(s => s.classList.remove('text-yellow-300'));
+                                            const currentRating = ratingInput.value ? parseInt(ratingInput.value) : 0;
+                                            updateStars(currentRating);
                                         });
                                     });
+
+                                    function updateStars(rating, hover = false) {
+                                        stars.forEach((s, i) => {
+                                             if (i < rating) {
+                                                s.classList.remove('text-gray-300');
+                                                s.classList.add(hover ? 'text-amber-300' : 'text-amber-400');
+                                            } else {
+                                                s.classList.remove('text-amber-400', 'text-amber-300');
+                                                s.classList.add('text-gray-300');
+                                            }
+                                        });
+                                    }
                                 });
                             </script>
-                        @else
-                            <div class="mb-6 p-4 border rounded bg-green-50">
-                                <h5 class="font-medium mb-2">Your Review</h5>
-                                <div class="flex items-center mb-2">
-                                    <span class="text-sm mr-2">Your Rating:</span>
-                                    @for($i = 1; $i <= 5; $i++)
-                                        <span class="text-lg {{ $i <= $userReview->rating ? 'text-yellow-400' : 'text-gray-300' }}">★</span>
-                                    @endfor
-                                    <span class="text-sm ml-2">({{ $userReview->rating }}/5)</span>
-                                </div>
-                                @if($userReview->comment)
-                                    <p class="text-sm text-gray-700">{{ $userReview->comment }}</p>
-                                @endif
-                                <p class="text-xs text-gray-500 mt-2">Reviewed on {{ $userReview->created_at->format('M d, Y') }}</p>
-                            </div>
                         @endif
 
-                        <!-- Display Reviews -->
-                        @if($product->reviews->count() > 0)
-                            <div class="space-y-4">
-                                <h5 class="font-medium text-lg">Customer Reviews ({{ $product->total_reviews }})</h5>
-                                @foreach($product->reviews->where('moderation_status', 'approved') as $review)
-                                    <div class="border-b pb-4 last:border-b-0">
-                                        <div class="flex items-center justify-between mb-2">
-                                            <div class="flex items-center">
-                                                <strong class="text-gray-900">{{ $review->user->name }}</strong>
-                                                <div class="flex items-center ml-3">
-                                                    @for($i = 1; $i <= 5; $i++)
-                                                        <span class="text-sm {{ $i <= $review->rating ? 'text-yellow-400' : 'text-gray-300' }}">★</span>
-                                                    @endfor
-                                                    <span class="text-sm text-gray-600 ml-1">({{ $review->rating }}/5)</span>
-                                                </div>
+                        <div class="space-y-4">
+                             @forelse($product->reviews->where('moderation_status', 'approved') as $review)
+                                <div class="bg-white rounded-xl p-6 border border-shop-gray-100 shadow-sm">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center gap-3">
+                                            <div class="h-8 w-8 rounded-full bg-shop-gray-100 flex items-center justify-center text-xs font-bold text-shop-gray-500">
+                                                {{ substr($review->user->name, 0, 1) }}
                                             </div>
-                                            <span class="text-xs text-gray-400">{{ $review->created_at->format('M d, Y') }}</span>
+                                            <span class="font-semibold text-shop-gray-900">{{ $review->user->name }}</span>
                                         </div>
-                                        @if($review->comment)
-                                            <p class="text-gray-700 text-sm leading-relaxed">{{ $review->comment }}</p>
-                                        @endif
+                                        <div class="flex text-amber-400 text-sm">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                @if($i <= $review->rating) <span>★</span> @else <span class="text-gray-200">★</span> @endif
+                                            @endfor
+                                        </div>
                                     </div>
-                                @endforeach
-                            </div>
-                        @else
-                            <div class="text-center py-8 text-gray-500">
-                                <p>No reviews yet. Be the first to review this product!</p>
-                            </div>
-                        @endif
+                                    @if($review->comment)
+                                        <p class="text-shop-gray-600 text-sm">{{ $review->comment }}</p>
+                                    @endif
+                                    <p class="text-xs text-shop-gray-400 mt-3">{{ $review->created_at->format('d/m/Y') }}</p>
+                                </div>
+                             @empty
+                                <div class="text-center py-8 bg-shop-gray-50 rounded-2xl border border-shop-gray-100 border-dashed">
+                                    <p class="text-shop-gray-500">Aucun avis pour le moment.</p>
+                                </div>
+                             @endforelse
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    @else
-    <div class="min-h-screen flex items-center justify-center">
-        <div class="text-center">
-            <h1 class="text-2xl font-bold text-gray-900 mb-4">Access Denied</h1>
-            <p class="text-gray-600 mb-4">You must be logged in to view this product.</p>
-            <a href="{{ route('login') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Login</a>
-        </div>
-    </div>
-    @endauth
-</body>
-</html>
+</x-app-layout>

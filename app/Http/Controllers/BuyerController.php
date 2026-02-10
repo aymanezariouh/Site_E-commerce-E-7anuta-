@@ -89,6 +89,30 @@ class BuyerController extends Controller
         return view('buyer.cart', compact('cart'));
     }
 
+    public function removeFromCart($itemId)
+    {
+        $cart = Cart::where('user_id', Auth::id())->first();
+        if (!$cart) {
+            return redirect()->route('buyer.cart')->with('error', 'Your cart is empty.');
+        }
+
+        $item = CartItem::where('id', $itemId)
+            ->where('cart_id', $cart->id)
+            ->first();
+
+        if (!$item) {
+            return redirect()->route('buyer.cart')->with('error', 'Item not found in your cart.');
+        }
+
+        $item->delete();
+
+        if ($cart->items()->count() === 0) {
+            $cart->delete();
+        }
+
+        return redirect()->route('buyer.cart')->with('success', 'Item removed from cart.');
+    }
+
     public function checkout()
     {
         $cart = Cart::with('items.product')->where('user_id', Auth::id())->first();

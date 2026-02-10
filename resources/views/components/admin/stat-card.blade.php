@@ -1,18 +1,20 @@
-@props(['title', 'value', 'icon' => null, 'type' => null, 'color' => 'blue', 'change' => null, 'trend' => null, 'url' => null])
+@props(['title', 'value', 'icon' => null, 'type' => null, 'color' => 'brand', 'change' => null, 'trend' => null, 'url' => null])
 
 @php
     $colorClasses = [
-        'blue' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-600'],
-        'green' => ['bg' => 'bg-green-100', 'text' => 'text-green-600'],
-        'yellow' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-600'],
-        'purple' => ['bg' => 'bg-purple-100', 'text' => 'text-purple-600'],
-        'red' => ['bg' => 'bg-red-100', 'text' => 'text-red-600'],
-        'gray' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-600'],
+        'brand' => ['bg' => 'bg-brand-50', 'text' => 'text-brand-600', 'ring' => 'ring-brand-100'],
+        'blue' => ['bg' => 'bg-blue-50', 'text' => 'text-blue-600', 'ring' => 'ring-blue-100'],
+        'green' => ['bg' => 'bg-green-50', 'text' => 'text-green-600', 'ring' => 'ring-green-100'],
+        'yellow' => ['bg' => 'bg-amber-50', 'text' => 'text-amber-600', 'ring' => 'ring-amber-100'],
+        'purple' => ['bg' => 'bg-purple-50', 'text' => 'text-purple-600', 'ring' => 'ring-purple-100'],
+        'red' => ['bg' => 'bg-red-50', 'text' => 'text-red-600', 'ring' => 'ring-red-100'],
+        'gray' => ['bg' => 'bg-shop-gray-50', 'text' => 'text-shop-gray-600', 'ring' => 'ring-shop-gray-100'],
     ];
     
-    $currentColor = $colorClasses[$color] ?? $colorClasses['blue'];
+    $currentColor = $colorClasses[$color] ?? $colorClasses['brand'];
     $bgClass = $currentColor['bg'];
     $textClass = $currentColor['text'];
+    $ringClass = $currentColor['ring'];
     
     $icons = [
         'users' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z',
@@ -30,10 +32,8 @@
     // Handle both array format and simple numeric format for change
     if ($change !== null) {
         if (is_array($change)) {
-            // Array format: ['type' => 'increase', 'percentage' => 5.2, 'period' => 'ce mois']
             $changeData = $change;
         } else {
-            // Simple numeric format: 5.2 or -2.1
             $changeData = [
                 'type' => $trend === 'down' || (float)$change < 0 ? 'decrease' : 'increase',
                 'percentage' => abs((float)$change),
@@ -44,32 +44,35 @@
 @endphp
 
 {{-- Admin Statistics Card Component --}}
-<div class="bg-white rounded-lg shadow-sm p-6 border {{ $url ? 'hover:shadow-md transition-shadow cursor-pointer' : '' }}"
+<div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 p-6 {{ $url ? 'hover:shadow-card hover:-translate-y-1 transition-all duration-300 cursor-pointer' : '' }}"
      @if($url) onclick="window.location.href='{{ $url }}'" @endif>
-    <div class="flex items-center justify-between">
-        <div class="flex-1">
-            <p class="text-sm font-medium text-gray-500 mb-1">{{ $title }}</p>
-            <p class="text-3xl font-bold text-gray-900">{{ $value }}</p>
+    <div class="flex items-start justify-between">
+        <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-shop-gray-500 uppercase tracking-wider mb-2 font-display">{{ $title }}</p>
+            <p class="text-3xl font-bold text-shop-gray-900 leading-tight">{{ $value }}</p>
             
             @if($change)
-                <p class="text-xs mt-1 {{ $changeData['type'] === 'increase' ? 'text-green-600' : 'text-red-600' }}">
-                    @if($changeData['type'] === 'increase')
-                        <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17l9.2-9.2M17 17V7H7" />
-                        </svg>
-                    @else
-                        <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 7l-9.2 9.2M7 7v10h10" />
-                        </svg>
-                    @endif
-                    {{ $changeData['percentage'] }}% depuis {{ $changeData['period'] }}
-                </p>
+                <div class="flex items-center mt-2.5">
+                    <span class="inline-flex items-center text-xs font-bold px-2 py-0.5 rounded-full {{ $changeData['type'] === 'increase' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                        @if($changeData['type'] === 'increase')
+                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                        @else
+                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+                            </svg>
+                        @endif
+                        {{ $changeData['percentage'] }}%
+                    </span>
+                    <span class="text-xs text-shop-gray-400 ml-2">depuis {{ $changeData['period'] }}</span>
+                </div>
             @endif
         </div>
 
         <div class="flex-shrink-0 ml-4">
-            <div class="w-12 h-12 rounded-full flex items-center justify-center {{ $bgClass }}">
-                <svg class="w-6 h-6 {{ $textClass }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center {{ $bgClass }} ring-4 {{ $ringClass }} shadow-inner transition-colors duration-300 group-hover:scale-110">
+                <svg class="w-7 h-7 {{ $textClass }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $iconPath }}" />
                 </svg>
             </div>

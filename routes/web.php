@@ -91,6 +91,7 @@ Route::middleware('auth')->group(function () {
 });
 Route::middleware(['auth', 'role:buyer|seller|moderator'])->group(function() {
     Route::get('/cart', [BuyerController::class, 'cart'])->name('buyer.cart');
+    Route::delete('/cart/items/{id}', [BuyerController::class, 'removeFromCart'])->name('buyer.cart.remove');
     Route::get('/checkout', [BuyerController::class, 'checkout'])->name('buyer.checkout');
     Route::post('/place-order', [BuyerController::class, 'placeOrder'])->name('buyer.placeOrder');
     Route::get('/buyer/orders', [BuyerController::class, 'orders'])->name('buyer.orders');
