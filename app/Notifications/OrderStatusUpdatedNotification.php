@@ -37,15 +37,22 @@ class OrderStatusUpdatedNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $order = $this->order->loadMissing('user');
+        $customerName = $order->user->name ?? $notifiable->name;
+        $customerEmail = $order->user->email ?? ($notifiable->email ?? 'N/A');
+
         return (new MailMessage)
-            ->subject('Statut de commande mis à jour - ' . $this->order->order_number)
-            ->greeting('Bonjour ' . $notifiable->name . '!')
-            ->line('Le statut de votre commande a changé.')
-            ->line('Commande : ' . $this->order->order_number)
-            ->line('Ancien statut : ' . $this->oldStatus)
-            ->line('Nouveau statut : ' . $this->order->status)
-            ->action('Voir vos commandes', url('/orders'))
-            ->line('Merci d\'utiliser LocalMart!');
+            ->subject('Order Status Updated - ' . $order->order_number)
+            ->greeting('Hello ' . $customerName . '!')
+            ->line('Your order status has changed.')
+            ->line('Order Number: ' . $order->order_number)
+            ->line('Customer Name: ' . $customerName)
+            ->line('Customer Email: ' . $customerEmail)
+            ->line('Previous Status: ' . $this->oldStatus)
+            ->line('New Status: ' . $order->status)
+            ->line('Order Total: $' . number_format((float) $order->total_amount, 2))
+            ->action('View your orders', url('/orders'))
+            ->line('Thank you for using LocalMart.');
     }
 
     /**
@@ -59,7 +66,7 @@ class OrderStatusUpdatedNotification extends Notification implements ShouldQueue
             'order_number' => $this->order->order_number,
             'old_status' => $this->oldStatus,
             'new_status' => $this->order->status,
-            'message' => 'Statut de commande mis à jour : ' . $this->oldStatus . ' → ' . $this->order->status,
+            'message' => 'Order status updated: ' . $this->oldStatus . ' -> ' . $this->order->status,
         ];
     }
 }

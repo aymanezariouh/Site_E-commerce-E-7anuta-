@@ -166,6 +166,30 @@ class BuyerController extends Controller
             \Log::error('Email failed: ' . $e->getMessage());
         }
 
+        // Notify each seller involved in the order.
+        try {
+            $order->loadMissing(['user', 'items.product.vendor']);
+
+            $itemsBySeller = $order->items
+                ->filter(function ($item) {
+                    return $item->product && $item->product->vendor;
+                })
+                ->groupBy(function ($item) {
+                    return $item->product->vendor->id;
+                });
+
+            foreach ($itemsBySeller as $sellerItems) {
+                $seller = $sellerItems->first()->product->vendor;
+                $sellerTotal = (float) $sellerItems->sum(function ($item) {
+                    return (float) $item->total_price;
+                });
+
+                $seller->notify(new NewOrderNotification($order, $sellerTotal));
+            }
+        } catch (\Exception $e) {
+            \Log::error('Seller notification failed: ' . $e->getMessage());
+        }
+
         return redirect()->route('buyer.orders')->with([
             'success' => 'Order placed successfully! Check your email for confirmation.',
             'test_order_id' => $order->id

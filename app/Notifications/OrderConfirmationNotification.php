@@ -27,14 +27,32 @@ class OrderConfirmationNotification extends Notification
 
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-            ->subject('Order Confirmation - Order #' . $this->order->order_number)
-            ->greeting('Hello ' . $this->order->shipping_address['name'] . '!')
+        $order = $this->order->loadMissing(['items.product', 'user']);
+        $shippingAddress = is_array($order->shipping_address) ? $order->shipping_address : [];
+
+        $customerName = $shippingAddress['name'] ?? ($order->user->name ?? 'Customer');
+        $customerEmail = $shippingAddress['email'] ?? $this->customerEmail ?? ($order->user->email ?? 'N/A');
+
+        $mail = (new MailMessage)
+            ->subject('Order Confirmation - Order #' . $order->order_number)
+            ->greeting('Hello ' . $customerName . '!')
             ->line('Thank you for your order. Your order has been received and is being processed.')
-            ->line('Order Number: ' . $this->order->order_number)
-            ->line('Total Amount: $' . number_format($this->order->total_amount, 2))
-            ->line('Status: ' . ucfirst($this->order->status))
-            ->action('View Order Details', url('/buyer/orders/' . $this->order->id))
+            ->line('Order Number: ' . $order->order_number)
+            ->line('Customer Name: ' . $customerName)
+            ->line('Customer Email: ' . $customerEmail)
+            ->line('Total Amount: $' . number_format((float) $order->total_amount, 2))
+            ->line('Status: ' . ucfirst($order->status));
+
+        if ($order->items->isNotEmpty()) {
+            $mail->line('Items:');
+            foreach ($order->items as $item) {
+                $itemName = $item->product_name ?: ($item->product->name ?? 'Product');
+                $mail->line('- ' . $itemName . ' x' . $item->quantity . ' ($' . number_format((float) $item->unit_price, 2) . ')');
+            }
+        }
+
+        return $mail
+            ->action('View Order Details', url('/buyer/orders/' . $order->id))
             ->line('We will notify you when your order is shipped.')
             ->line('Thank you for shopping with us!');
     }
