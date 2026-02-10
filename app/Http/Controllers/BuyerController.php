@@ -201,7 +201,6 @@ class BuyerController extends Controller
             [
                 'rating' => $request->rating,
                 'comment' => $request->comment,
-                'is_approved' => true,
                 'moderation_status' => 'approved',
             ]
         );

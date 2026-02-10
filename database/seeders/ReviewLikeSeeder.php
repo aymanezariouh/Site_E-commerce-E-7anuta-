@@ -46,7 +46,7 @@ class ReviewLikeSeeder extends Seeder
                     [
                         'rating' => rand(3, 5), // Ratings between 3-5
                         'comment' => $comments[array_rand($comments)],
-                        'is_approved' => true,
+                        'moderation_status' => 'approved',
                     ]
                 );
             }

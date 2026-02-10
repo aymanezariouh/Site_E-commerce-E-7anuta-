@@ -9,11 +9,7 @@
 </head>
 <body class="font-sans antialiased bg-gray-100">
     @auth
-    @role('moderator')
-        <x-moderator-nav />
-    @else
-        <x-buyer-nav />
-    @endrole
+    @include('layouts.navigation')
     <div class="py-10 dashboard-bg">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="space-y-8">
@@ -29,6 +25,9 @@
                         <div class="flex flex-wrap gap-2">
                             @role('buyer')
                                 <span class="dash-pill">Client actif</span>
+                            @endrole
+                            @role('seller')
+                                <span class="dash-pill">Vendeur</span>
                             @endrole
                             @role('moderator')
                                 <span class="dash-pill">Moderateur</span>
@@ -62,6 +61,21 @@
                         <div id="order-details" class="sr-only"></div>
                         <div id="reviews" class="sr-only"></div>
                         <div id="analytics" class="sr-only"></div>
+                        @role('seller')
+                            <section class="dash-card px-6 py-6 sm:px-8">
+                                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                                    <div>
+                                        <h4 class="dash-title text-lg text-slate-800">Espace vendeur</h4>
+                                        <p class="mt-1 text-sm text-slate-600">Creez un nouveau produit ou gerez votre catalogue.</p>
+                                    </div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <a class="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800" href="{{ route('seller.products.create') }}">Creer un produit</a>
+                                        <a class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50" href="{{ route('seller.products.index') }}">Mes produits</a>
+                                        <a class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50" href="{{ route('seller.categories.index') }}">Categories</a>
+                                    </div>
+                                </div>
+                            </section>
+                        @endrole
                         @role('buyer')
                             <section id="marketplace" class="space-y-6">
                                 <x-buyer.marketplace />
