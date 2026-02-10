@@ -55,7 +55,7 @@
                         </div>
                         
                         <div class="flex items-center justify-between mt-4">
-                            <form action="{{ route('buyer.addToCart', $product->id) }}" method="POST" class="flex items-center">
+                            <form action="{{ route('marketplace.addToCart', $product->id) }}" method="POST" class="flex items-center">
                                 @csrf
                                 <input type="number" name="quantity" value="1" min="1" max="{{ $product->stock_quantity }}" class="border rounded px-2 py-1 w-16 mr-2">
                                 <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">
@@ -63,7 +63,7 @@
                                 </button>
                             </form>
                             
-                            <form action="{{ route('buyer.toggleLike', $product->id) }}" method="POST">
+                            <form action="{{ route('marketplace.toggleLike', $product->id) }}" method="POST">
                                 @csrf
                                 <button type="submit" class="p-2 rounded-full transition-colors {{ $product->isLikedByUser(Auth::id()) ? 'text-red-500 bg-red-50' : 'text-gray-400 hover:text-red-500 hover:bg-red-50' }}">
                                     <svg class="w-5 h-5" fill="{{ $product->isLikedByUser(Auth::id()) ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,7 +73,7 @@
                             </form>
                         </div>
 
-                        <a href="{{ route('buyer.produits.show', $product->id) }}" class="text-blue-600 mt-2 inline-block">
+                        <a href="{{ route('marketplace.show', $product->id) }}" class="text-blue-600 mt-2 inline-block">
                             View Details
                         </a>
                     </div>
