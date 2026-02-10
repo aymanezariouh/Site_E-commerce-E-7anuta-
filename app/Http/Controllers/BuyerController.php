@@ -14,6 +14,7 @@ use App\Models\ProductLike;
 use App\Models\User;
 use App\Models\StockMovement;
 use App\Models\OrderStatusHistory;
+use App\Notifications\AdminAlertNotification;
 use App\Notifications\NewOrderNotification;
 use App\Notifications\NewReviewNotification;
 use App\Notifications\OrderConfirmationNotification;
@@ -166,6 +167,18 @@ class BuyerController extends Controller
             \Log::error('Email failed: ' . $e->getMessage());
         }
 
+        $admins = User::role('admin')->whereKeyNot(Auth::id())->get();
+        if ($admins->isNotEmpty()) {
+            Notification::send(
+                $admins,
+                new AdminAlertNotification(
+                    'new_order',
+                    'Nouvelle commande #' . $order->order_number . ' par ' . $order->user->name,
+                    route('admin.orders.show', $order)
+                )
+            );
+        }
+
         return redirect()->route('buyer.orders')->with([
             'success' => 'Order placed successfully! Check your email for confirmation.',
             'test_order_id' => $order->id
@@ -209,6 +222,18 @@ class BuyerController extends Controller
         if ($product->vendor) {
             $review->load(['user', 'product']);
             $product->vendor->notify(new NewReviewNotification($review));
+        }
+
+        $admins = User::role('admin')->whereKeyNot(Auth::id())->get();
+        if ($admins->isNotEmpty()) {
+            Notification::send(
+                $admins,
+                new AdminAlertNotification(
+                    'new_review',
+                    'Nouvel avis sur ' . $product->name . ' (' . $review->rating . '★)',
+                    route('admin.reviews')
+                )
+            );
         }
 
         return redirect()->back()->with('success', 'Review added successfully!');

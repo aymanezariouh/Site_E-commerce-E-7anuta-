@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\OrderStatusHistory;
+use App\Models\User;
+use App\Notifications\AdminAlertNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 
 class SellerOrderController extends Controller
 {
@@ -119,6 +122,18 @@ class SellerOrderController extends Controller
         $order->loadMissing('user');
         if ($order->user) {
             $order->user->notify(new \App\Notifications\OrderStatusUpdatedNotification($order, $oldStatus));
+        }
+
+        $admins = User::role('admin')->whereKeyNot(Auth::id())->get();
+        if ($admins->isNotEmpty()) {
+            Notification::send(
+                $admins,
+                new AdminAlertNotification(
+                    'order_status_changed',
+                    'Statut de commande #' . $order->order_number . ' : ' . $oldStatus . ' -> ' . $order->status,
+                    route('admin.orders.show', $order)
+                )
+            );
         }
 
         $oldStatusLabel = $this->databaseStatusToSellerStatus($oldStatus);
