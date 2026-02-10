@@ -68,7 +68,7 @@ class SellerAnalyticsController extends Controller
 
         // Average rating across all seller's products
         $averageRating = Review::whereIn('product_id', $productIds)
-            ->where('is_approved', true)
+            ->where('moderation_status', 'approved')
             ->avg('rating') ?? 0;
 
         // Total reviews

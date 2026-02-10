@@ -38,7 +38,7 @@ class Review extends Model
     // Scopes
     public function scopeApproved($query)
     {
-        return $query->where('is_approved', true);
+        return $query->where('moderation_status', 'approved');
     }
 
     public function scopeByRating($query, $rating)

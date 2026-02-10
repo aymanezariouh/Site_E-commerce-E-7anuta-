@@ -73,10 +73,12 @@
                                     </td>
                                     <td class="px-4 py-3">{{ $review->created_at->format('d/m/Y') }}</td>
                                     <td class="px-4 py-3">
-                                        @if ($review->is_approved)
+                                        @if ($review->moderation_status === 'approved')
                                             <span class="rounded-full px-2 py-1 text-xs bg-emerald-100 text-emerald-700">Approuvé</span>
-                                        @else
+                                        @elseif ($review->moderation_status === 'pending')
                                             <span class="rounded-full px-2 py-1 text-xs bg-amber-100 text-amber-700">En attente</span>
+                                        @else
+                                            <span class="rounded-full px-2 py-1 text-xs bg-red-100 text-red-700">Rejeté</span>
                                         @endif
                                     </td>
                                 </tr>

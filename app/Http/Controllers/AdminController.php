@@ -73,7 +73,7 @@ class AdminController extends Controller
             ->take(5)
             ->get();
 
-        $pendingReviews = Review::where('status', 'pending')->count();
+        $pendingReviews = Review::where('moderation_status', 'pending')->count();
         $totalReviews = Review::count();
 
         $stats = [
