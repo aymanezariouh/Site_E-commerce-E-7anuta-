@@ -59,7 +59,7 @@
                                             <td class="px-6 py-4">
                                                 <div class="flex items-center gap-4">
                                                     @php
-                                                        $image = is_array($item->product->images) && count($item->product->images) ? $item->product->images[0] : null;
+                                                        $image = $item->product->primary_image;
                                                     @endphp
                                                     @if ($image)
                                                         <img class="h-12 w-12 rounded-lg object-cover border border-shop-gray-200" src="{{ $image }}" alt="{{ $item->product->name }}">
@@ -167,6 +167,62 @@
                             </div>
                         </form>
                     </div>
+
+                    <!-- Payment Status -->
+                    @if($order->payments->isNotEmpty())
+                        @php $payment = $order->payments->first(); @endphp
+                        <div class="bg-white rounded-xl shadow-soft border border-shop-gray-100 p-6">
+                            <h5 class="text-lg font-bold text-shop-gray-900 font-display mb-4">Statut Paiement</h5>
+                            
+                            <div class="flex items-center justify-center p-4 rounded-lg border-2
+                                @if($payment->status === 'completed') bg-green-50 border-green-200
+                                @elseif($payment->status === 'pending') bg-yellow-50 border-yellow-200
+                                @elseif($payment->status === 'failed') bg-red-50 border-red-200
+                                @else bg-gray-50 border-gray-200
+                                @endif">
+                                <div class="text-center">
+                                    <div class="mb-2">
+                                        @if($payment->status === 'completed')
+                                            <svg class="w-8 h-8 mx-auto text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        @elseif($payment->status === 'pending')
+                                            <svg class="w-8 h-8 mx-auto text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        @elseif($payment->status === 'failed')
+                                            <svg class="w-8 h-8 mx-auto text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        @else
+                                            <svg class="w-8 h-8 mx-auto text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        @endif
+                                    </div>
+                                    <span class="text-sm font-bold uppercase tracking-wide
+                                        @if($payment->status === 'completed') text-green-800
+                                        @elseif($payment->status === 'pending') text-yellow-800
+                                        @elseif($payment->status === 'failed') text-red-800
+                                        @else text-gray-800
+                                        @endif">
+                                        @if($payment->status === 'completed')
+                                            ✓ Payé
+                                        @elseif($payment->status === 'pending')
+                                            ⏳ En attente
+                                        @elseif($payment->status === 'failed')
+                                            ✗ Échoué
+                                        @else
+                                            {{ ucfirst($payment->status) }}
+                                        @endif
+                                    </span>
+                                    <p class="text-xs text-shop-gray-500 mt-2">
+                                        @if($payment->payment_method === 'cod')
+                                            Paiement à la livraison
+                                        @elseif($payment->payment_method === 'bank_transfer')
+                                            Virement bancaire
+                                        @elseif($payment->payment_method === 'card')
+                                            Carte bancaire
+                                        @else
+                                            {{ ucfirst($payment->payment_method) }}
+                                        @endif
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
 
                     <!-- Customer Info -->
                     <div class="bg-white rounded-xl shadow-soft border border-shop-gray-100 p-6">

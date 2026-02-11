@@ -172,6 +172,55 @@
                         </div>
                     </div>
 
+                    <!-- Payment Information -->
+                    @if($order->payments->isNotEmpty())
+                        @php $payment = $order->payments->first(); @endphp
+                        <div class="mt-8">
+                            <h3 class="text-lg font-medium mb-4">Informations de paiement</h3>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-sm text-gray-500">Méthode</p>
+                                        <p class="font-medium text-gray-900">
+                                            @if($payment->payment_method === 'cod')
+                                                💵 Paiement à la livraison
+                                            @elseif($payment->payment_method === 'bank_transfer')
+                                                🏦 Virement bancaire
+                                            @elseif($payment->payment_method === 'card')
+                                                💳 Carte bancaire
+                                            @else
+                                                {{ ucfirst($payment->payment_method) }}
+                                            @endif
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-500">Statut</p>
+                                        <p>
+                                            <span class="px-2 py-1 rounded text-sm
+                                                @if($payment->status === 'completed') bg-green-100 text-green-800
+                                                @elseif($payment->status === 'pending') bg-yellow-100 text-yellow-800
+                                                @elseif($payment->status === 'failed') bg-red-100 text-red-800
+                                                @else bg-gray-100 text-gray-800
+                                                @endif">
+                                                {{ ucfirst($payment->status) }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                    @if($payment->transaction_id)
+                                    <div>
+                                        <p class="text-sm text-gray-500">Référence</p>
+                                        <p class="font-mono text-sm text-gray-900">{{ $payment->transaction_id }}</p>
+                                    </div>
+                                    @endif
+                                    <div>
+                                        <p class="text-sm text-gray-500">Montant</p>
+                                        <p class="font-medium text-gray-900">{{ number_format($payment->amount, 2) }} MAD</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- Order Items -->
                     <div class="mt-8">
                         <h3 class="text-lg font-medium mb-4">Order Items</h3>

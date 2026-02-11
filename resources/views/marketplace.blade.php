@@ -98,8 +98,8 @@
                         <div class="group bg-white rounded-2xl shadow-soft hover:shadow-card transition-all duration-300 flex flex-col h-full border border-shop-gray-100 overflow-hidden transform hover:-translate-y-1">
                             <!-- Image Area -->
                             <div class="relative aspect-w-4 aspect-h-3 bg-shop-gray-100 overflow-hidden">
-                                @if($product->image_path)
-                                    <img src="{{ Storage::url($product->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-center object-cover group-hover:scale-105 transition-transform duration-500">
+                                @if($product->primary_image)
+                                    <img src="{{ $product->primary_image }}" alt="{{ $product->name }}" class="w-full h-full object-center object-cover group-hover:scale-105 transition-transform duration-500">
                                 @else
                                     <div class="w-full h-48 bg-shop-gray-100 flex items-center justify-center text-shop-gray-400">
                                         <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -146,14 +146,22 @@
                                 </p>
                                 
                                 <div class="flex items-center justify-between pt-4 border-t border-shop-gray-100 mt-auto">
-                                    <span class="text-xl font-bold text-shop-gray-900 font-display">
-                                        €{{ number_format($product->price, 2) }}
-                                    </span>
+                                    <div class="flex flex-col">
+                                        <span class="text-xl font-bold text-shop-gray-900 font-display">
+                                            {{ number_format($product->price, 2) }} MAD
+                                        </span>
+                                        @if($product->stock_quantity <= 0)
+                                            <span class="text-xs font-bold text-red-600">Rupture de stock</span>
+                                        @endif
+                                    </div>
                                     
                                     @auth
                                         <form action="{{ route('marketplace.addToCart', $product->id) }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="inline-flex items-center gap-1 bg-shop-gray-900 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-brand-600 transition-colors shadow-sm">
+                                            <input type="hidden" name="quantity" value="1">
+                                            <button type="submit" 
+                                                class="inline-flex items-center gap-1 px-4 py-2 rounded-full text-sm font-medium transition-colors shadow-sm {{ $product->stock_quantity > 0 ? 'bg-shop-gray-900 text-white hover:bg-brand-600' : 'bg-gray-300 text-gray-500 cursor-not-allowed' }}"
+                                                {{ $product->stock_quantity <= 0 ? 'disabled' : '' }}>
                                                 <span>Add</span>
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />

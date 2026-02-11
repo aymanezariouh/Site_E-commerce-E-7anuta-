@@ -12,8 +12,8 @@
                 <!-- Product Image -->
                 <div class="space-y-4">
                     <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 overflow-hidden relative group">
-                        @if(count($product->images ?? []) > 0)
-                            <img src="{{ $product->images[0] }}" alt="{{ $product->name }}" class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-500">
+                        @if($product->primary_image)
+                            <img src="{{ $product->primary_image }}" alt="{{ $product->name }}" class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-500">
                         @else
                             <div class="w-full h-96 bg-shop-gray-100 flex items-center justify-center text-shop-gray-400">
                                 <svg class="h-20 w-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">

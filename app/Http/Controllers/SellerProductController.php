@@ -8,7 +8,6 @@ use App\Models\StockMovement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class SellerProductController extends Controller
@@ -242,6 +241,9 @@ class SellerProductController extends Controller
         }
 
         $list = array_values(array_filter(array_map('trim', explode(',', $images))));
+        $list = array_values(array_filter($list, function ($image) {
+            return $this->isValidImageReference($image);
+        }));
 
         return $list ?: null;
     }
@@ -277,7 +279,7 @@ class SellerProductController extends Controller
                 continue;
             }
             $stored = $file->store('products', 'public');
-            $paths[] = Storage::disk('public')->url($stored);
+            $paths[] = '/storage/' . ltrim($stored, '/');
         }
 
         return $paths;
@@ -291,5 +293,16 @@ class SellerProductController extends Controller
         ))));
 
         return $merged ?: null;
+    }
+
+    private function isValidImageReference(string $image): bool
+    {
+        if (filter_var($image, FILTER_VALIDATE_URL)) {
+            return true;
+        }
+
+        return str_starts_with($image, '/storage/')
+            || str_starts_with($image, 'storage/')
+            || str_starts_with($image, 'products/');
     }
 }

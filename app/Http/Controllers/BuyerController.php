@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Order;
+use App\Models\Payment;
 use App\Models\OrderItem;
 use App\Models\Cart;
 use App\Models\CartItem;
@@ -134,7 +135,8 @@ class BuyerController extends Controller
             'email' => 'required|email|max:255',
             'address' => 'required|string',
             'city' => 'required|string|max:255',
-            'phone' => 'required|string|max:20'
+            'phone' => 'required|string|max:20',
+            'payment_method' => 'required|in:cod,bank_transfer,card',
         ]);
 
         $cart = Cart::with('items.product')->where('user_id', Auth::id())->first();
@@ -152,9 +154,10 @@ class BuyerController extends Controller
         ];
 
         $order = null;
+        $paymentMethod = $request->payment_method;
         
         try {
-            DB::transaction(function () use ($cart, $shippingAddress, &$order) {
+            DB::transaction(function () use ($cart, $shippingAddress, $paymentMethod, &$order) {
                 $order = Order::create([
                     'order_number' => Order::generateOrderNumber(),
                     'user_id' => Auth::id(),
@@ -175,6 +178,16 @@ class BuyerController extends Controller
                     
                     $item->product->decrement('stock_quantity', $item->quantity);
                 }
+
+                // Create payment record
+                Payment::create([
+                    'order_id' => $order->id,
+                    'payment_method' => $paymentMethod,
+                    'amount' => $cart->total_amount,
+                    'status' => $paymentMethod === 'cod' ? 'completed' : 'pending',
+                    'transaction_id' => $paymentMethod !== 'cod' ? 'TXN-' . strtoupper(uniqid()) : null,
+                    'processed_at' => $paymentMethod === 'cod' ? now() : null,
+                ]);
 
                 $cart->items()->delete();
                 $cart->delete();
@@ -217,7 +230,8 @@ class BuyerController extends Controller
 
         return redirect()->route('buyer.orders')->with([
             'success' => 'Order placed successfully! Check your email for confirmation.',
-            'test_order_id' => $order->id
+            'payment_method' => $paymentMethod,
+            'payment_status' => $paymentMethod === 'cod' ? 'completed' : 'pending'
         ]);
     }
 
@@ -232,7 +246,7 @@ class BuyerController extends Controller
 
     public function orderDetails($id)
     {
-        $order = Order::with('items.product')->where('user_id', Auth::id())->findOrFail($id);
+        $order = Order::with(['items.product', 'payments'])->where('user_id', Auth::id())->findOrFail($id);
         return view('buyer.order-details', compact('order'));
     }
 
