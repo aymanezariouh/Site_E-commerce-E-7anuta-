@@ -23,8 +23,6 @@ class Review extends Model
         'rating' => 'integer',
         'is_approved' => 'boolean',
     ];
-
-    // Relationships
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -34,8 +32,6 @@ class Review extends Model
     {
         return $this->belongsTo(Product::class);
     }
-
-    // Scopes
     public function scopeApproved($query)
     {
         return $query->where('moderation_status', 'approved');

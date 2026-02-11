@@ -9,7 +9,7 @@
             @endif
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                <!-- Product Image -->
+
                 <div class="space-y-4">
                     <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 overflow-hidden relative group">
                         @if($product->primary_image)
@@ -21,8 +21,7 @@
                                 </svg>
                             </div>
                         @endif
-                        
-                        <!-- Like Button (Overlay) -->
+
                         @auth
                             <div class="absolute top-4 right-4">
                                 <form action="{{ route('marketplace.toggleLike', $product->id) }}" method="POST">
@@ -38,7 +37,6 @@
                     </div>
                 </div>
 
-                <!-- Product Details -->
                 <div class="space-y-8">
                     <div>
                         <div class="flex items-center gap-2 mb-2">
@@ -52,7 +50,7 @@
                                 <span>{{ $product->total_reviews }} avis</span>
                             </div>
                         </div>
-                        
+
                         <h1 class="text-4xl font-bold font-display text-shop-gray-900 mb-4">{{ $product->name }}</h1>
                         <p class="text-shop-gray-600 text-lg leading-relaxed">{{ $product->description }}</p>
                     </div>
@@ -82,10 +80,9 @@
                         </form>
                     </div>
 
-                    <!-- Reviews Section -->
                     <div>
                         <h3 class="text-2xl font-bold font-display text-shop-gray-900 mb-6">Avis Clients</h3>
-                        
+
                         @if(!$userReview && Auth::check())
                             <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 p-6 mb-8">
                                 <h4 class="text-lg font-bold text-shop-gray-900 mb-4">Donnez votre avis</h4>
@@ -109,23 +106,23 @@
                                     </button>
                                 </form>
                             </div>
-                            <!-- JS for stars embedded/inline via script tag at bottom -->
+
                             <script>
                                 document.addEventListener('DOMContentLoaded', function() {
                                     const stars = document.querySelectorAll('.star-btn');
                                     const ratingInput = document.getElementById('rating-input');
-                                    
+
                                     stars.forEach((star, index) => {
                                         star.addEventListener('click', function() {
                                             const rating = parseInt(this.dataset.rating);
                                             ratingInput.value = rating;
                                             updateStars(rating);
                                         });
-                                        
+
                                         star.addEventListener('mouseover', function() {
                                             updateStars(parseInt(this.dataset.rating), true);
                                         });
-                                        
+
                                         star.addEventListener('mouseleave', function() {
                                             const currentRating = ratingInput.value ? parseInt(ratingInput.value) : 0;
                                             updateStars(currentRating);

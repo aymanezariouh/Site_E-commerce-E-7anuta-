@@ -4,7 +4,7 @@
             <h1 class="text-3xl font-bold font-display text-shop-gray-900 mb-8 text-center">Checkout</h1>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                 <!-- Order Summary (Right column on desktop) -->
+
                 <div class="lg:col-span-1 lg:order-last">
                     <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 p-6 sticky top-24">
                         <h2 class="text-lg font-bold text-shop-gray-900 font-display mb-6">Récapitulatif</h2>
@@ -39,16 +39,14 @@
                     </div>
                 </div>
 
-                <!-- Checkout Form -->
                 <div class="lg:col-span-2">
                     <form action="{{ route('buyer.placeOrder') }}" method="POST" x-data="{ paymentMethod: 'cod' }">
                         @csrf
 
-                        <!-- Shipping Info -->
                         <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 overflow-hidden mb-6">
                             <div class="p-6 sm:p-8">
                                 <h2 class="text-xl font-bold text-shop-gray-900 font-display mb-6">Informations de livraison</h2>
-                                
+
                                 <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                                     <div class="sm:col-span-6">
                                         <label for="full_name" class="block text-sm font-medium text-shop-gray-700">Nom complet</label>
@@ -88,15 +86,14 @@
                             </div>
                         </div>
 
-                        <!-- Payment Method Selection -->
                         <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 overflow-hidden mb-6">
                             <div class="p-6 sm:p-8">
                                 <h2 class="text-xl font-bold text-shop-gray-900 font-display mb-6">Méthode de paiement</h2>
                                 <input type="hidden" name="payment_method" :value="paymentMethod">
 
                                 <div class="space-y-4">
-                                    <!-- COD -->
-                                    <label @click="paymentMethod = 'cod'" 
+
+                                    <label @click="paymentMethod = 'cod'"
                                            class="relative flex items-start p-4 rounded-xl border-2 cursor-pointer transition-all duration-200"
                                            :class="paymentMethod === 'cod' ? 'border-brand-500 bg-brand-50/50 shadow-sm' : 'border-shop-gray-200 hover:border-shop-gray-300'">
                                         <div class="flex items-center h-5 mt-0.5">
@@ -119,8 +116,7 @@
                                         </div>
                                     </label>
 
-                                    <!-- Bank Transfer -->
-                                    <label @click="paymentMethod = 'bank_transfer'" 
+                                    <label @click="paymentMethod = 'bank_transfer'"
                                            class="relative flex flex-col p-4 rounded-xl border-2 cursor-pointer transition-all duration-200"
                                            :class="paymentMethod === 'bank_transfer' ? 'border-brand-500 bg-brand-50/50 shadow-sm' : 'border-shop-gray-200 hover:border-shop-gray-300'">
                                         <div class="flex items-start">
@@ -143,7 +139,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- Bank details (shown when selected) -->
+
                                         <div x-show="paymentMethod === 'bank_transfer'" x-transition class="mt-4 ml-9 p-4 rounded-lg bg-blue-50 border border-blue-100">
                                             <p class="text-xs font-bold text-blue-900 mb-2">Informations bancaires :</p>
                                             <div class="space-y-1 text-xs text-blue-800">
@@ -155,8 +151,7 @@
                                         </div>
                                     </label>
 
-                                    <!-- Card Payment -->
-                                    <label @click="paymentMethod = 'card'" 
+                                    <label @click="paymentMethod = 'card'"
                                            class="relative flex flex-col p-4 rounded-xl border-2 cursor-pointer transition-all duration-200"
                                            :class="paymentMethod === 'card' ? 'border-brand-500 bg-brand-50/50 shadow-sm' : 'border-shop-gray-200 hover:border-shop-gray-300'">
                                         <div class="flex items-start">
@@ -179,7 +174,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- Card fields (shown when selected) -->
+
                                         <div x-show="paymentMethod === 'card'" x-transition class="mt-4 ml-9 space-y-4">
                                             <div>
                                                 <label class="block text-xs font-medium text-shop-gray-700 mb-1">Numéro de carte</label>
@@ -210,8 +205,7 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Submit -->
+
                         <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 overflow-hidden">
                             <div class="p-6 sm:p-8">
                                 <button type="submit" class="w-full bg-brand-600 border border-transparent rounded-xl py-3 px-4 flex items-center justify-center text-lg font-bold text-white hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 shadow-lg shadow-brand-500/30 transition-all hover:-translate-y-0.5">

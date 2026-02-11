@@ -29,7 +29,7 @@
                     @forelse ($notifications as $notification)
                         <div class="group p-6 {{ $notification->read_at ? 'bg-white' : 'bg-brand-50/30' }} hover:bg-shop-gray-50/80 transition-colors">
                             <div class="flex items-start gap-4">
-                                <!-- Icon -->
+
                                 <div class="flex-shrink-0 mt-1">
                                     @if (($notification->data['type'] ?? '') === 'new_order')
                                         <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center ring-4 ring-white">
@@ -58,7 +58,6 @@
                                     @endif
                                 </div>
 
-                                <!-- Content -->
                                 <div class="flex-1 min-w-0">
                                     <div class="flex justify-between items-start">
                                         <p class="text-sm font-semibold text-shop-gray-900 group-hover:text-brand-700 transition-colors">
@@ -68,21 +67,21 @@
                                             {{ $notification->created_at->diffForHumans() }}
                                         </span>
                                     </div>
-                                    
+
                                     @if (($notification->data['type'] ?? '') === 'new_order' && isset($notification->data['order_id']))
-                                        <a href="{{ route('seller.orders.show', $notification->data['order_id']) }}" 
+                                        <a href="{{ route('seller.orders.show', $notification->data['order_id']) }}"
                                            class="inline-flex items-center mt-2 text-xs font-medium text-brand-600 hover:text-brand-800 transition-colors">
                                             Voir la commande
                                             <svg class="ml-1 w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                                         </a>
                                     @elseif (($notification->data['type'] ?? '') === 'new_review')
-                                        <a href="{{ route('seller.reviews') }}" 
+                                        <a href="{{ route('seller.reviews') }}"
                                            class="inline-flex items-center mt-2 text-xs font-medium text-brand-600 hover:text-brand-800 transition-colors">
                                             Voir les avis
                                             <svg class="ml-1 w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                                         </a>
                                     @elseif (($notification->data['type'] ?? '') === 'stock_alert')
-                                         <a href="{{ route('seller.stock') }}" 
+                                         <a href="{{ route('seller.stock') }}"
                                            class="inline-flex items-center mt-2 text-xs font-medium text-brand-600 hover:text-brand-800 transition-colors">
                                             Gérer le stock
                                             <svg class="ml-1 w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
@@ -90,7 +89,6 @@
                                     @endif
                                 </div>
 
-                                <!-- Actions -->
                                 <div class="flex items-center self-center ml-2">
                                     @if (!$notification->read_at)
                                         <form method="POST" action="{{ route('seller.notifications.markAsRead', $notification->id) }}">

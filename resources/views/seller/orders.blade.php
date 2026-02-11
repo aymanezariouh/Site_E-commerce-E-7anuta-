@@ -1,28 +1,27 @@
 <x-app-layout>
     <div class="py-8 bg-shop-gray-50 min-h-screen">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-            
-            <!-- Header with Actions -->
+
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 animate-fade-in-up">
                 <div>
                     <h2 class="text-3xl font-bold font-display text-shop-gray-900 tracking-tight">Commandes</h2>
                     <p class="mt-1 text-shop-gray-500 text-lg">Gérez et traitez les commandes de vos clients.</p>
                 </div>
-                
+
                 <div class="flex items-center gap-3">
                     <div class="relative group">
                          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                              <svg class="w-5 h-5 text-shop-gray-400 group-focus-within:text-brand-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                          </div>
-                         <input type="text" placeholder="Rechercher commande..." 
+                         <input type="text" placeholder="Rechercher commande..."
                                class="pl-10 pr-4 py-2.5 rounded-xl border-shop-gray-200 focus:border-brand-500 focus:ring-brand-500 w-full sm:w-64 text-sm shadow-sm transition-all">
                     </div>
-                    
+
                     <button class="flex items-center space-x-2 px-4 py-2.5 bg-white border border-shop-gray-200 rounded-xl text-shop-gray-700 hover:bg-shop-gray-50 font-bold shadow-sm transition-all text-sm">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
                         <span>Filtrer</span>
                     </button>
-                    
+
                     <button class="flex items-center space-x-2 px-4 py-2.5 bg-brand-600 text-white rounded-xl hover:bg-brand-700 font-bold shadow-lg shadow-brand-500/30 transition-all text-sm">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         <span>Exporter</span>
@@ -31,23 +30,22 @@
             </div>
 
             @if (session('success'))
-                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)" 
+                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
                      class="rounded-xl bg-emerald-50 border border-emerald-100 p-4 flex items-center gap-3 animate-fade-in-up">
                     <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                     <p class="text-emerald-800 text-sm font-bold">{{ session('success') }}</p>
                 </div>
             @endif
 
-            <!-- Orders Table Card -->
             <div class="bg-white rounded-3xl shadow-soft border border-shop-gray-100 overflow-hidden animate-fade-in-up" style="animation-delay: 100ms;">
-                <!-- Table Header -->
+
                 <div class="px-6 py-5 border-b border-shop-gray-100 bg-shop-gray-50/30 flex items-center justify-between">
                     <div>
                         <h3 class="text-lg font-bold text-shop-gray-900 font-display">Toutes les commandes</h3>
                         <p class="text-sm text-shop-gray-500">{{ $orders->total() }} résultats trouvés</p>
                     </div>
                     <div class="flex gap-2">
-                        <!-- Pagination Summary -->
+
                         <span class="text-sm text-shop-gray-500">Page {{ $orders->currentPage() }} sur {{ $orders->lastPage() }}</span>
                     </div>
                 </div>

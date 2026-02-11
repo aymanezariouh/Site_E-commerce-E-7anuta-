@@ -41,7 +41,7 @@ class Order extends Model
             if ($order->isDirty('status')) {
                 $oldStatus = $order->getOriginal('status');
                 $newStatus = $order->status;
-                
+
                 if ($oldStatus !== $newStatus) {
                     Mail::to($order->user->email)->send(
                         new OrderStatusChanged($order, $oldStatus, $newStatus)
@@ -50,8 +50,6 @@ class Order extends Model
             }
         });
     }
-
-    // Relationships
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -71,14 +69,10 @@ class Order extends Model
     {
         return $this->hasMany(OrderStatusHistory::class);
     }
-
-    // Scopes
     public function scopeByStatus($query, $status)
     {
         return $query->where('status', $status);
     }
-
-    // Helper methods
     public function getSubtotalAttribute()
     {
         return $this->total_amount - $this->tax_amount - $this->shipping_amount;

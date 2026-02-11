@@ -16,15 +16,10 @@ class OrderStatusChanged extends Notification
     {
         $this->order = $order;
     }
-
-         
-    // chaine li ghadi ytsafet meneha
     public function via($notifiable)
     {
         return ['mail'];
     }
-
-    // content de email
     public function toMail($notifiable)
     {
         return (new MailMessage)

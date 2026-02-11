@@ -17,7 +17,7 @@
                         <h3 class="text-lg font-medium text-gray-900">My Orders</h3>
                         <p class="text-sm text-gray-600">Track and manage your orders</p>
                     </div>
-                    
+
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6 text-center">
                             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-gray-100 mb-4">

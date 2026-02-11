@@ -12,8 +12,7 @@
                     {{ session('success') }}
                 </div>
             @endif
-            
-            <!-- Category Filter -->
+
             <div class="mb-6">
                 <form method="GET" class="flex gap-4">
                     <select name="category_id" class="border rounded px-3 py-2">
@@ -35,8 +34,7 @@
                         <p class="text-sm text-gray-600">{{ $product->description }}</p>
                         <p class="text-sm text-gray-500">Category: {{ $product->category->name ?? 'N/A' }}</p>
                         <p class="mt-2 font-medium text-lg text-green-600">${{ number_format($product->price, 2) }}</p>
-                        
-                        <!-- Rating and Likes -->
+
                         <div class="mt-2 space-y-1">
                             <div class="flex items-center">
                                 @for($i = 1; $i <= 5; $i++)
@@ -53,7 +51,7 @@
                                 <span class="text-xs text-gray-600">{{ $product->total_likes }} likes</span>
                             </div>
                         </div>
-                        
+
                         <div class="flex items-center justify-between mt-4">
                             <form action="{{ route('marketplace.addToCart', $product->id) }}" method="POST" class="flex items-center">
                                 @csrf
@@ -62,7 +60,7 @@
                                     Add to Cart
                                 </button>
                             </form>
-                            
+
                             <form action="{{ route('marketplace.toggleLike', $product->id) }}" method="POST">
                                 @csrf
                                 <button type="submit" class="p-2 rounded-full transition-colors {{ $product->isLikedByUser(Auth::id()) ? 'text-red-500 bg-red-50' : 'text-gray-400 hover:text-red-500 hover:bg-red-50' }}">

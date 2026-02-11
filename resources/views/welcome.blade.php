@@ -7,17 +7,15 @@
 
         <title>{{ config('app.name', 'E-7anuta') }}</title>
 
-        <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
         <link href="https://fonts.bunny.net/css?family=playfair-display:400,600,700&display=swap" rel="stylesheet" />
 
-        <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased h-full flex flex-col text-shop-gray-800">
-        <!-- Navigation (Simplified for guest/welcome) -->
-        <header x-data="{ scrolled: false }" 
+
+        <header x-data="{ scrolled: false }"
                 @scroll.window="scrolled = (window.pageYOffset > 20)"
                 :class="{ 'bg-white/80 backdrop-blur-md shadow-soft': scrolled, 'bg-transparent': !scrolled }"
                 class="fixed top-0 w-full z-50 transition-all duration-300">
@@ -55,13 +53,13 @@
         </header>
 
         <main class="flex-grow">
-            <!-- Hero Section -->
+
             <div class="relative bg-shop-gray-900 overflow-hidden h-screen min-h-[600px] flex items-center">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" alt="Shop Interior" class="w-full h-full object-cover opacity-40">
                     <div class="absolute inset-0 bg-gradient-to-t from-shop-gray-900 via-shop-gray-900/40 to-transparent"></div>
                 </div>
-                
+
                 <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
                     <div class="max-w-3xl">
                         <h1 class="text-5xl md:text-7xl font-bold text-white font-display leading-tight mb-6 animate-fade-in-up">
@@ -83,7 +81,6 @@
                 </div>
             </div>
 
-            <!-- Featured Categories -->
             <section id="collections" class="py-24 bg-white">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="text-center mb-16">
@@ -92,7 +89,7 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <!-- Collection 1 -->
+
                         <div class="group relative rounded-2xl overflow-hidden cursor-pointer shadow-card h-96">
                             <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Electronics" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
@@ -105,7 +102,6 @@
                             </div>
                         </div>
 
-                        <!-- Collection 2 -->
                         <div class="group relative rounded-2xl overflow-hidden cursor-pointer shadow-card h-96">
                             <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Fashion" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
@@ -118,7 +114,6 @@
                             </div>
                         </div>
 
-                        <!-- Collection 3 -->
                         <div class="group relative rounded-2xl overflow-hidden cursor-pointer shadow-card h-96">
                             <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Home & Living" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
@@ -134,7 +129,6 @@
                 </div>
             </section>
 
-             <!-- Why Choose Us -->
              <section id="about" class="py-24 bg-shop-gray-50 border-y border-shop-gray-200">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="text-center mb-16">

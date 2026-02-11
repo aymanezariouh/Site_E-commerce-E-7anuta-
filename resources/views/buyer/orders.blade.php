@@ -56,7 +56,7 @@
                     </div>
                 </div>
             @endif
-            
+
             @if($orders->count() > 0)
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
@@ -64,7 +64,7 @@
                             <h3 class="text-lg font-medium text-gray-900">Order History</h3>
                             <p class="text-sm text-gray-600">Track and manage your orders</p>
                         </div>
-                        
+
                         <div class="space-y-4">
                             @foreach($orders as $order)
                                 <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
@@ -86,8 +86,7 @@
                                             </span>
                                         </div>
                                     </div>
-                                    
-                                    <!-- Order Items Summary -->
+
                                     <div class="mb-4">
                                         <div class="flex flex-wrap gap-2">
                                             @foreach($order->items->take(3) as $item)
@@ -108,8 +107,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    
-                                    <!-- Status Progress -->
+
                                     <div class="mb-4">
                                         <div class="flex items-center space-x-2">
                                             <div class="flex-1 bg-gray-200 rounded-full h-2">
@@ -131,8 +129,7 @@
                                             </span>
                                         </div>
                                     </div>
-                                    
-                                    <!-- Actions -->
+
                                     <div class="flex items-center justify-between">
                                         <div class="text-sm text-gray-600">
                                             @if($order->status == 'pending')
@@ -173,7 +170,7 @@
                                                 </span>
                                             @endif
                                         </div>
-                                        
+
                                         <div class="flex space-x-2">
                                             <a href="{{ route('buyer.orderDetails', $order->id) }}" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -182,7 +179,7 @@
                                                 </svg>
                                                 View Details
                                             </a>
-                                            
+
                                             @if($order->status == 'delivered' && $order->items->first() && $order->items->first()->product)
                                                 <a href="{{ route('marketplace.show', $order->items->first()->product->id) }}#review" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                                     <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">

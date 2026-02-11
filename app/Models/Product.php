@@ -43,8 +43,6 @@ class Product extends Model
     public const STATUS_DRAFT = 'draft';
     public const STATUS_PUBLISHED = 'published';
     public const STATUS_ARCHIVED = 'archived';
-
-    // Relationships
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -83,8 +81,6 @@ class Product extends Model
     {
         return $this->hasMany(StockMovement::class);
     }
-
-    // Scopes
     public function scopeActive($query)
     {
         return $query->where('is_active', true)
@@ -111,8 +107,6 @@ class Product extends Model
         return $query->where('status', self::STATUS_PUBLISHED)
             ->where('is_active', true);
     }
-
-    // Helper methods
     public function getPrimaryImageAttribute(): ?string
     {
         $images = is_array($this->images) ? $this->images : [];

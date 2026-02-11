@@ -13,28 +13,16 @@ class NewOrderNotification extends Notification
 
     protected Order $order;
     protected float $sellerTotal;
-
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct(Order $order, float $sellerTotal)
+public function __construct(Order $order, float $sellerTotal)
     {
         $this->order = $order;
         $this->sellerTotal = $sellerTotal;
     }
-
-    /**
-     * Get the notification's delivery channels.
-     */
-    public function via(object $notifiable): array
+public function via(object $notifiable): array
     {
         return ['mail'];
     }
-
-    /**
-     * Get the mail representation of the notification.
-     */
-    public function toMail(object $notifiable): MailMessage
+public function toMail(object $notifiable): MailMessage
     {
         $this->order->loadMissing('user');
         $shippingAddress = is_array($this->order->shipping_address) ? $this->order->shipping_address : [];
@@ -52,11 +40,7 @@ class NewOrderNotification extends Notification
             ->action('View order', url('/seller/orders/' . $this->order->id))
             ->line('Please prepare shipment as soon as possible.');
     }
-
-    /**
-     * Get the array representation of the notification.
-     */
-    public function toArray(object $notifiable): array
+public function toArray(object $notifiable): array
     {
         return [
             'type' => 'new_order',

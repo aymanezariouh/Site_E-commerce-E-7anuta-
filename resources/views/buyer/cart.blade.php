@@ -12,7 +12,7 @@
 
             @if($cart && $cart->items->count() > 0)
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <!-- Cart Items -->
+
                     <div class="lg:col-span-2 space-y-4">
                         @foreach($cart->items as $item)
                             <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 p-4 sm:p-6 flex items-center gap-6">
@@ -51,11 +51,10 @@
                         @endforeach
                     </div>
 
-                    <!-- Order Summary -->
                     <div class="lg:col-span-1">
                         <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 p-6 sticky top-24">
                             <h2 class="text-lg font-bold text-shop-gray-900 font-display mb-6">Résumé de la commande</h2>
-                            
+
                             <div class="space-y-4">
                                 <div class="flex items-center justify-between border-b border-shop-gray-100 pb-4">
                                     <div class="text-sm text-shop-gray-600">Sous-total</div>

@@ -19,14 +19,10 @@ class Category extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
-
-    // Relationships
     public function products()
     {
         return $this->hasMany(Product::class);
     }
-
-    // Scopes
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
