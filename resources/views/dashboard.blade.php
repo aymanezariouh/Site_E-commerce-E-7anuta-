@@ -1,38 +1,60 @@
 <x-app-layout>
     <div class="py-8 bg-shop-gray-50 min-h-screen">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-            
-            <!-- Welcome Section with Glassmorphism & Gradient -->
-            <section class="relative rounded-3xl overflow-hidden shadow-2xl animate-fade-in-up">
-                <!-- Background Gradient -->
-                <div class="absolute inset-0 bg-gradient-to-r from-brand-600 to-brand-800"></div>
-                <!-- Abstract Shapes -->
-                <div class="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl"></div>
-                <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-40 h-40 bg-brand-400 opacity-20 rounded-full blur-2xl"></div>
-                
-                <div class="relative z-10 p-8 sm:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                    <div class="text-white">
-                        <div class="flex items-center gap-3 mb-2 opacity-90">
-                            <span class="text-sm font-bold uppercase tracking-widest">Tableau de bord</span>
-                            <span class="w-1 h-1 rounded-full bg-white"></span>
-                            <span class="text-xs font-medium bg-white/20 px-2 py-0.5 rounded-full backdrop-blur-sm border border-white/10">
-                                {{ now()->format('d M Y') }}
-                            </span>
+            <!-- Welcome Section -->
+            <section class="relative overflow-hidden rounded-3xl border border-shop-gray-200 bg-white shadow-soft animate-fade-in-up">
+                <div class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-brand-600 via-brand-500 to-brand-700"></div>
+                <div class="absolute -right-24 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-brand-100/80 blur-3xl"></div>
+                <div class="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-brand-50/70 to-transparent"></div>
+
+                <div class="relative z-10 p-8 sm:p-10 lg:p-12">
+                    <div class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+                        <div class="max-w-2xl">
+                            <div class="mb-4 flex flex-wrap items-center gap-3 text-xs uppercase tracking-widest text-shop-gray-500">
+                                <span class="font-semibold">Tableau de bord</span>
+                                <span class="h-1 w-1 rounded-full bg-shop-gray-300"></span>
+                                <span class="inline-flex items-center rounded-full border border-shop-gray-200 bg-shop-gray-50 px-3 py-1 text-xs font-semibold normal-case tracking-normal text-shop-gray-600">
+                                    {{ now()->format('d M Y') }}
+                                </span>
+                            </div>
+
+                            <h1 class="text-4xl font-display font-bold leading-tight text-shop-gray-900 sm:text-5xl">
+                                Bonjour, {{ Auth::user()->name }}
+                            </h1>
+
+                            <p class="mt-3 text-base text-shop-gray-600 sm:text-lg">
+                                @role('seller')
+                                    Vous avez <span class="font-bold text-shop-gray-900">{{ $sellerPendingOrdersCount }}</span> commande(s) en attente.
+                                    Priorisez celles d'aujourd'hui.
+                                @else
+                                    Retrouvez vos commandes, favoris et activite recente en un seul endroit.
+                                @endrole
+                            </p>
+
+                            @role('seller')
+                                <div class="mt-6 grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+                                    <div class="rounded-2xl border border-shop-gray-200 bg-shop-gray-50/80 px-4 py-3">
+                                        <p class="text-xs font-semibold uppercase tracking-widest text-shop-gray-500">Commandes en attente</p>
+                                        <p class="mt-1 text-2xl font-bold text-shop-gray-900">{{ $sellerPendingOrdersCount }}</p>
+                                    </div>
+                                    <div class="rounded-2xl border border-shop-gray-200 bg-shop-gray-50/80 px-4 py-3">
+                                        <p class="text-xs font-semibold uppercase tracking-widest text-shop-gray-500">Produits actifs</p>
+                                        <p class="mt-1 text-2xl font-bold text-shop-gray-900">{{ $sellerActiveProductsCount }}</p>
+                                    </div>
+                                </div>
+                            @endrole
                         </div>
-                        <h1 class="text-4xl font-bold font-display leading-tight mb-2">
-                            Bonjour, {{ Auth::user()->name }} 👋
-                        </h1>
-                        <p class="text-brand-100 text-lg max-w-xl">
-                            Voici un aperçu de vos performances aujourd'hui. Vous avez <span class="font-bold text-white">3 nouvelles commandes</span> à traiter.
-                        </p>
-                    </div>
-                    
-                    <div class="flex gap-3">
+
                         @role('seller')
-                             <a href="{{ route('seller.products.create') }}" class="px-5 py-3 bg-white text-brand-700 rounded-xl font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                                Ajouter Produit
-                            </a>
+                            <div class="flex flex-wrap gap-3">
+                                <a href="{{ route('seller.products.create') }}" class="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-5 py-3 text-sm font-bold text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-lg">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                    Ajouter produit
+                                </a>
+                                <a href="{{ route('seller.orders') }}" class="inline-flex items-center gap-2 rounded-xl border border-shop-gray-300 bg-white px-5 py-3 text-sm font-bold text-shop-gray-700 transition-colors hover:bg-shop-gray-50 hover:text-shop-gray-900">
+                                    Voir commandes
+                                </a>
+                            </div>
                         @endrole
                     </div>
                 </div>
@@ -210,3 +232,4 @@
         </div>
     </div>
 </x-app-layout>
+
