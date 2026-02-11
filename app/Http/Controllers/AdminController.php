@@ -7,8 +7,11 @@ use App\Models\User;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\Review;
+use App\Notifications\AdminAlertNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Spatie\Permission\Models\Role;
 
 class AdminController extends Controller
@@ -335,6 +338,18 @@ class AdminController extends Controller
         ]);
 
         $order->update(['status' => $request->status]);
+
+        $admins = User::role('admin')->whereKeyNot(Auth::id())->get();
+        if ($admins->isNotEmpty()) {
+            Notification::send(
+                $admins,
+                new AdminAlertNotification(
+                    'order_status_changed',
+                    'Statut de commande #' . $order->order_number . ' mis a jour: ' . $order->status,
+                    route('admin.orders.show', $order)
+                )
+            );
+        }
 
         return redirect()
             ->back()
