@@ -129,7 +129,7 @@
                                             @if ($order->status === 'pending')
                                                 <form method="POST" action="{{ route('seller.orders.updateStatus', $order) }}">
                                                     @csrf @method('PATCH')
-                                                    <input type="hidden" name="status" value="processing">
+                                                    <input type="hidden" name="status" value="accepted">
                                                     <button type="submit" class="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all" title="Accepter la commande">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                                     </button>

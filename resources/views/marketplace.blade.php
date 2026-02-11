@@ -146,14 +146,22 @@
                                 </p>
                                 
                                 <div class="flex items-center justify-between pt-4 border-t border-shop-gray-100 mt-auto">
-                                    <span class="text-xl font-bold text-shop-gray-900 font-display">
-                                        €{{ number_format($product->price, 2) }}
-                                    </span>
+                                    <div class="flex flex-col">
+                                        <span class="text-xl font-bold text-shop-gray-900 font-display">
+                                            {{ number_format($product->price, 2) }} MAD
+                                        </span>
+                                        @if($product->stock_quantity <= 0)
+                                            <span class="text-xs font-bold text-red-600">Rupture de stock</span>
+                                        @endif
+                                    </div>
                                     
                                     @auth
                                         <form action="{{ route('marketplace.addToCart', $product->id) }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="inline-flex items-center gap-1 bg-shop-gray-900 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-brand-600 transition-colors shadow-sm">
+                                            <input type="hidden" name="quantity" value="1">
+                                            <button type="submit" 
+                                                class="inline-flex items-center gap-1 px-4 py-2 rounded-full text-sm font-medium transition-colors shadow-sm {{ $product->stock_quantity > 0 ? 'bg-shop-gray-900 text-white hover:bg-brand-600' : 'bg-gray-300 text-gray-500 cursor-not-allowed' }}"
+                                                {{ $product->stock_quantity <= 0 ? 'disabled' : '' }}>
                                                 <span>Add</span>
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />

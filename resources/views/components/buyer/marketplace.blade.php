@@ -112,14 +112,14 @@
                 
                 <div class="mt-4 flex items-center justify-between">
                     <div>
-                        <p class="text-base font-bold text-slate-800">{{ number_format($product->price, 2) }} €</p>
+                        <p class="text-base font-bold text-slate-800">{{ number_format($product->price, 2) }} MAD</p>
                         <p class="text-xs text-slate-500">
                             @if($product->stock_quantity > 10)
                                 En stock
                             @elseif($product->stock_quantity > 0)
                                 Plus que {{ $product->stock_quantity }}
                             @else
-                                Rupture
+                                <span class="text-red-600 font-bold">Rupture de stock</span>
                             @endif
                         </p>
                     </div>
@@ -127,7 +127,9 @@
                         <form action="{{ route('marketplace.addToCart', $product->id) }}" method="POST">
                             @csrf
                             <input type="hidden" name="quantity" value="1">
-                            <button type="submit" class="rounded-lg bg-teal-600 px-3 py-1 text-xs text-white hover:bg-teal-700">
+                            <button type="submit" 
+                                class="rounded-lg px-3 py-1 text-xs text-white {{ $product->stock_quantity > 0 ? 'bg-teal-600 hover:bg-teal-700' : 'bg-slate-300 cursor-not-allowed' }}"
+                                {{ $product->stock_quantity <= 0 ? 'disabled' : '' }}>
                                 Ajouter
                             </button>
                         </form>

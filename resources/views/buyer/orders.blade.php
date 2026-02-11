@@ -13,27 +13,45 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if(session('test_order_id'))
-                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+            @if(session('success'))
+                <div class="rounded-xl border-l-4 p-4 mb-6
+                    @if(session('payment_status') === 'completed') bg-green-50 border-green-400
+                    @else bg-yellow-50 border-yellow-400
+                    @endif">
                     <div class="flex">
                         <div class="flex-shrink-0">
-                            <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                            </svg>
+                            @if(session('payment_status') === 'completed')
+                                <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                            @else
+                                <svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                </svg>
+                            @endif
                         </div>
-                        <div class="ml-3 flex-1">
-                            <p class="text-sm text-blue-700 font-medium mb-2">🎉 Order placed successfully! Test status changes:</p>
-                            <div class="flex flex-wrap gap-2">
-                                <a href="{{ route('test.orderStatus', [session('test_order_id'), 'processing']) }}" class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-white bg-blue-600 hover:bg-blue-700">
-                                    → Processing
-                                </a>
-                                <a href="{{ route('test.orderStatus', [session('test_order_id'), 'shipped']) }}" class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-white bg-purple-600 hover:bg-purple-700">
-                                    → Shipped
-                                </a>
-                                <a href="{{ route('test.orderStatus', [session('test_order_id'), 'delivered']) }}" class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-white bg-green-600 hover:bg-green-700">
-                                    → Delivered
-                                </a>
-                            </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium
+                                @if(session('payment_status') === 'completed') text-green-800
+                                @else text-yellow-800
+                                @endif">
+                                {{ session('success') }}
+                            </p>
+                            <p class="text-sm mt-1
+                                @if(session('payment_status') === 'completed') text-green-700
+                                @else text-yellow-700
+                                @endif">
+                                @if(session('payment_status') === 'completed')
+                                    ✓ Paiement confirmé ({{ session('payment_method') === 'cod' ? 'Paiement à la livraison' : 'Payé' }})
+                                @else
+                                    ⏳ Paiement en attente
+                                    @if(session('payment_method') === 'bank_transfer')
+                                        — Veuillez effectuer le virement bancaire
+                                    @elseif(session('payment_method') === 'card')
+                                        — Votre paiement est en cours de traitement
+                                    @endif
+                                @endif
+                            </p>
                         </div>
                     </div>
                 </div>
