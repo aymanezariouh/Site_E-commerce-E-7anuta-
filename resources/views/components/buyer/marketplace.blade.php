@@ -12,16 +12,15 @@
             <h5 class="dash-title text-lg text-slate-800">Marketplace</h5>
             <p class="text-sm text-slate-500">Découvrez des produits tendances et utiles.</p>
         </div>
-        
-        <!-- Category Filters -->
+
         <div class="flex flex-wrap gap-2 text-xs">
-            <a href="{{ route('marketplace') }}" 
+            <a href="{{ route('marketplace') }}"
                class="rounded-full border px-3 py-1 {{ !request('category') ? 'bg-teal-600 text-white border-teal-600' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50' }}">
                 Tout
             </a>
             @if(isset($categories))
                 @foreach($categories as $category)
-                    <a href="{{ route('marketplace', ['category' => $category->id]) }}" 
+                    <a href="{{ route('marketplace', ['category' => $category->id]) }}"
                        class="rounded-full border px-3 py-1 {{ request('category') == $category->id ? 'bg-teal-600 text-white border-teal-600' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50' }}">
                         {{ $category->name }}
                     </a>
@@ -30,40 +29,38 @@
         </div>
     </div>
 
-    <!-- Sort and Search -->
     <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <form action="{{ route('marketplace') }}" method="GET" class="flex gap-2">
             @if(request('category'))
                 <input type="hidden" name="category" value="{{ request('category') }}">
             @endif
-            <input type="text" name="search" value="{{ request('search') }}" 
-                   placeholder="Rechercher un produit..." 
+            <input type="text" name="search" value="{{ request('search') }}"
+                   placeholder="Rechercher un produit..."
                    class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm focus:border-teal-500 focus:ring-teal-500">
             <button type="submit" class="rounded-lg bg-teal-600 px-3 py-1.5 text-sm text-white hover:bg-teal-700">
                 Rechercher
             </button>
         </form>
-        
+
         <div class="flex items-center gap-2 text-sm">
             <span class="text-slate-500">Trier:</span>
-            <a href="{{ route('marketplace', array_merge(request()->query(), ['sort' => 'newest'])) }}" 
+            <a href="{{ route('marketplace', array_merge(request()->query(), ['sort' => 'newest'])) }}"
                class="{{ request('sort', 'newest') === 'newest' ? 'text-teal-600 font-semibold' : 'text-slate-600 hover:text-slate-800' }}">
                 Récent
             </a>
             <span class="text-slate-300">|</span>
-            <a href="{{ route('marketplace', array_merge(request()->query(), ['sort' => 'price_low'])) }}" 
+            <a href="{{ route('marketplace', array_merge(request()->query(), ['sort' => 'price_low'])) }}"
                class="{{ request('sort') === 'price_low' ? 'text-teal-600 font-semibold' : 'text-slate-600 hover:text-slate-800' }}">
                 Prix ↑
             </a>
             <span class="text-slate-300">|</span>
-            <a href="{{ route('marketplace', array_merge(request()->query(), ['sort' => 'price_high'])) }}" 
+            <a href="{{ route('marketplace', array_merge(request()->query(), ['sort' => 'price_high'])) }}"
                class="{{ request('sort') === 'price_high' ? 'text-teal-600 font-semibold' : 'text-slate-600 hover:text-slate-800' }}">
                 Prix ↓
             </a>
         </div>
     </div>
 
-    <!-- Products Grid -->
     <div class="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         @forelse ($items as $product)
             <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
@@ -78,8 +75,7 @@
                         <span class="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">Stock limité</span>
                     @endif
                 </div>
-                
-                <!-- Product Image -->
+
                 <div class="mt-3 h-32 rounded-lg bg-slate-100 overflow-hidden">
                     @php
                         $image = $product->primary_image;
@@ -94,10 +90,9 @@
                         </div>
                     @endif
                 </div>
-                
+
                 <p class="mt-3 text-sm text-slate-600 line-clamp-2">{{ Str::limit($product->description, 80) }}</p>
-                
-                <!-- Rating -->
+
                 @if($product->reviews->count() > 0)
                     <div class="mt-2 flex items-center gap-1">
                         <span class="text-amber-500 text-sm">
@@ -109,7 +104,7 @@
                         <span class="text-xs text-slate-500">({{ $product->reviews->where('moderation_status', 'approved')->count() }})</span>
                     </div>
                 @endif
-                
+
                 <div class="mt-4 flex items-center justify-between">
                     <div>
                         <p class="text-base font-bold text-slate-800">{{ number_format($product->price, 2) }} MAD</p>
@@ -127,13 +122,13 @@
                         <form action="{{ route('marketplace.addToCart', $product->id) }}" method="POST">
                             @csrf
                             <input type="hidden" name="quantity" value="1">
-                            <button type="submit" 
+                            <button type="submit"
                                 class="rounded-lg px-3 py-1 text-xs text-white {{ $product->stock_quantity > 0 ? 'bg-teal-600 hover:bg-teal-700' : 'bg-slate-300 cursor-not-allowed' }}"
                                 {{ $product->stock_quantity <= 0 ? 'disabled' : '' }}>
                                 Ajouter
                             </button>
                         </form>
-                        <a href="{{ route('marketplace.show', $product->id) }}" 
+                        <a href="{{ route('marketplace.show', $product->id) }}"
                            class="rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 hover:bg-slate-50">
                             Voir
                         </a>
@@ -155,7 +150,6 @@
         @endforelse
     </div>
 
-    <!-- Pagination -->
     @if ($hasPaginator && $products->hasPages())
         <div class="mt-6">
             {{ $products->links() }}

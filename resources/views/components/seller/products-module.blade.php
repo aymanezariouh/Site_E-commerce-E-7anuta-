@@ -7,7 +7,7 @@
 @endphp
 
 <div class="bg-white rounded-3xl shadow-soft border border-shop-gray-100 overflow-hidden">
-    <!-- Header & Filters -->
+
     <div class="p-6 border-b border-shop-gray-100 bg-shop-gray-50/30">
         <div class="flex items-center justify-between mb-6">
             <div>
@@ -20,19 +20,18 @@
                 </button>
             </div>
         </div>
-        
+
         <form method="GET" action="{{ route('seller.stock') }}" class="grid gap-4 grid-cols-1 md:grid-cols-4 lg:grid-cols-12 items-end">
-            <!-- Search -->
+
             <div class="md:col-span-2 lg:col-span-4">
                 <label class="block text-xs font-bold text-shop-gray-500 mb-1 ml-1">RECHERCHE</label>
                 <div class="relative">
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Nom, SKU..." 
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Nom, SKU..."
                            class="w-full rounded-xl border-shop-gray-200 bg-white text-sm focus:border-brand-500 focus:ring-brand-500 pl-10 shadow-sm py-2.5">
                     <svg class="w-5 h-5 text-shop-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </div>
             </div>
-            
-            <!-- Category Filter -->
+
             <div class="lg:col-span-3">
                  <label class="block text-xs font-bold text-shop-gray-500 mb-1 ml-1">CATÉGORIE</label>
                 <div class="relative">
@@ -48,7 +47,6 @@
                 </div>
             </div>
 
-            <!-- Status Filter -->
             <div class="lg:col-span-2">
                  <label class="block text-xs font-bold text-shop-gray-500 mb-1 ml-1">STATUT</label>
                 <div class="relative">
@@ -63,15 +61,14 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Toggle & Button -->
+
             <div class="lg:col-span-3 flex items-center gap-3">
                  <label class="inline-flex items-center cursor-pointer h-full bg-white px-3 py-2.5 rounded-xl border border-shop-gray-200 shadow-sm hover:bg-shop-gray-50 transition-colors w-full justify-center">
                     <input type="checkbox" name="low_stock" value="1" class="sr-only peer" @checked(request('low_stock'))>
                     <div class="relative w-9 h-5 bg-shop-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-600"></div>
                     <span class="ms-2 text-sm font-medium text-shop-gray-700">Stock Bas</span>
                 </label>
-                
+
                 <button class="bg-brand-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-brand-700 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 rounded-xl flex-shrink-0" type="submit">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </button>
@@ -79,7 +76,6 @@
         </form>
     </div>
 
-    <!-- Table -->
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-shop-gray-100">
             <thead class="bg-shop-gray-50">
@@ -192,7 +188,7 @@
             </tbody>
         </table>
     </div>
-    
+
     @if ($hasPaginator && $products->hasPages())
         <div class="px-6 py-4 border-t border-shop-gray-100 bg-shop-gray-50/30">
             {{ $products->links() }}

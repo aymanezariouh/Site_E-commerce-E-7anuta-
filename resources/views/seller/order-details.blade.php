@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="py-12 bg-shop-gray-50 min-h-screen">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            <!-- Header -->
+
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                      <div class="flex items-center gap-2 text-sm text-shop-gray-500 mb-1">
@@ -28,7 +28,7 @@
                     <p class="text-green-700 text-sm font-medium">{{ session('success') }}</p>
                 </div>
             @endif
-            
+
             @if (session('error'))
                  <div class="rounded-xl bg-red-50 border border-red-200 p-4 flex items-center gap-3">
                     <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -37,7 +37,7 @@
             @endif
 
             <div class="grid gap-8 lg:grid-cols-3">
-                <!-- Main Content (Products) -->
+
                 <div class="lg:col-span-2 space-y-6">
                     <div class="bg-white rounded-xl shadow-soft border border-shop-gray-100 overflow-hidden">
                         <div class="px-6 py-4 border-b border-shop-gray-100 bg-shop-gray-50/50">
@@ -116,12 +116,11 @@
                     @endif
                 </div>
 
-                <!-- Sidebar (Status & Info) -->
                 <div class="space-y-6">
-                    <!-- Status Card -->
+
                     <div class="bg-white rounded-xl shadow-soft border border-shop-gray-100 p-6">
                         <h5 class="text-lg font-bold text-shop-gray-900 font-display mb-4">Statut Commande</h5>
-                        
+
                         @php
                             $statusColors = [
                                 'pending' => 'bg-amber-100 text-amber-800 border-amber-200',
@@ -141,7 +140,7 @@
                                 'refunded' => 'Remboursée',
                             ];
                         @endphp
-                        
+
                         <div class="mb-6">
                              <div class="flex items-center justify-center p-3 rounded-lg border {{ $statusColors[$order->status] ?? 'bg-gray-50 border-gray-200 text-gray-500' }}">
                                 <span class="text-sm font-bold uppercase tracking-wide">
@@ -168,12 +167,11 @@
                         </form>
                     </div>
 
-                    <!-- Payment Status -->
                     @if($order->payments->isNotEmpty())
                         @php $payment = $order->payments->first(); @endphp
                         <div class="bg-white rounded-xl shadow-soft border border-shop-gray-100 p-6">
                             <h5 class="text-lg font-bold text-shop-gray-900 font-display mb-4">Statut Paiement</h5>
-                            
+
                             <div class="flex items-center justify-center p-4 rounded-lg border-2
                                 @if($payment->status === 'completed') bg-green-50 border-green-200
                                 @elseif($payment->status === 'pending') bg-yellow-50 border-yellow-200
@@ -224,7 +222,6 @@
                         </div>
                     @endif
 
-                    <!-- Customer Info -->
                     <div class="bg-white rounded-xl shadow-soft border border-shop-gray-100 p-6">
                         <h5 class="text-lg font-bold text-shop-gray-900 font-display mb-4">Client</h5>
                         <div class="flex items-center gap-3 mb-4">
@@ -244,11 +241,10 @@
                         </div>
                     </div>
 
-                    <!-- Timeline -->
                     <div class="bg-white rounded-xl shadow-soft border border-shop-gray-100 p-6">
                         <h5 class="text-lg font-bold text-shop-gray-900 font-display mb-4">Historique</h5>
                         <div class="relative pl-4 border-l-2 border-shop-gray-100 space-y-6">
-                            <!-- Created -->
+
                             <div class="relative">
                                 <div class="absolute -left-[21px] top-1 h-3 w-3 rounded-full bg-shop-gray-200 border-2 border-white"></div>
                                 <p class="text-xs text-shop-gray-500 mb-0.5">{{ $order->created_at->format('d/m/Y H:i') }}</p>

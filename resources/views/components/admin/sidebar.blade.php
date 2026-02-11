@@ -1,11 +1,10 @@
-{{-- Admin Sidebar Component --}}
+
 <aside class="w-64 min-h-screen bg-shop-gray-900 text-white fixed left-0 top-0 z-40 transform lg:translate-x-0 transition-transform duration-300 ease-in-out border-r border-shop-gray-800"
-       x-data="{ open: false }" 
+       x-data="{ open: false }"
        x-on:toggle-sidebar.window="open = !open"
        :class="open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
-    
-    {{-- Overlay for mobile --}}
-    <div x-show="open" 
+
+    <div x-show="open"
          @click="open = false"
          x-transition:enter="transition-opacity ease-linear duration-300"
          x-transition:enter-start="opacity-0"
@@ -14,9 +13,9 @@
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
          class="fixed inset-0 bg-shop-gray-900/80 backdrop-blur-sm lg:hidden z-30"></div>
-    
+
     <div class="flex flex-col h-full">
-        {{-- Header --}}
+
         <div class="h-20 flex items-center px-6 border-b border-shop-gray-800 bg-shop-gray-900">
             <div class="flex items-center justify-between w-full">
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 group">
@@ -27,7 +26,7 @@
                     </div>
                     <span class="text-xl font-bold font-display text-white tracking-tight">E-7anuta</span>
                 </a>
-                <button @click="open = false" 
+                <button @click="open = false"
                         class="lg:hidden p-1 rounded-md text-shop-gray-400 hover:text-white hover:bg-shop-gray-800 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -35,8 +34,7 @@
                 </button>
             </div>
         </div>
-        
-        {{-- Navigation --}}
+
         <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto custom-scrollbar">
             @php
             $navItems = [
@@ -84,11 +82,11 @@
                 @php
                     $isActive = request()->routeIs($item['routePattern']);
                 @endphp
-                <a href="{{ route($item['route']) }}" 
+                <a href="{{ route($item['route']) }}"
                    @click="$dispatch('close-mobile-menu')"
                    class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group
-                          {{ $isActive 
-                             ? 'bg-brand-600/10 text-brand-400 font-semibold shadow-inner-light' 
+                          {{ $isActive
+                             ? 'bg-brand-600/10 text-brand-400 font-semibold shadow-inner-light'
                              : 'text-shop-gray-400 hover:bg-shop-gray-800 hover:text-white' }}">
                     <svg class="w-5 h-5 mr-3 flex-shrink-0 transition-colors {{ $isActive ? 'text-brand-400' : 'text-shop-gray-500 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}" />
@@ -105,12 +103,11 @@
                 </a>
             @endforeach
         </nav>
-        
-        {{-- Footer Section --}}
+
         <div class="px-4 py-4 border-t border-shop-gray-800 mt-auto bg-shop-gray-900">
             <div class="bg-shop-gray-800/50 rounded-xl p-3 space-y-1">
-                {{-- Settings --}}
-                <a href="{{ route('profile.edit') }}" 
+
+                <a href="{{ route('profile.edit') }}"
                    @click="$dispatch('close-mobile-menu')"
                    class="flex items-center px-3 py-2 rounded-lg text-shop-gray-400 hover:bg-shop-gray-700 hover:text-white transition-colors">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -120,10 +117,9 @@
                     <span class="font-medium text-sm">Paramètres</span>
                 </a>
 
-                {{-- Logout --}}
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" 
+                    <button type="submit"
                             class="w-full flex items-center px-3 py-2 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

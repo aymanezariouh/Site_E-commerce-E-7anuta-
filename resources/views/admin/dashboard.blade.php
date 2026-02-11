@@ -9,16 +9,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-shop-gray-50 font-sans antialiased text-shop-gray-900">
-    {{-- Sidebar --}}
+
     <x-admin.sidebar />
-    
-    {{-- Navbar --}}
+
     <x-admin.navbar title="Tableau de Bord" :notificationCount="5" />
-    
-    {{-- Main Content --}}
+
     <main class="lg:ml-64 min-h-screen transition-all duration-300">
         <div class="p-6 lg:p-8 max-w-7xl mx-auto">
-            <!-- Welcome Section -->
+
             <div class="mb-8 animate-fade-in-up">
                 <h1 class="text-3xl font-bold text-shop-gray-900 mb-2 font-display tracking-tight">
                     Bonjour, {{ Auth::user()->name }} 👋
@@ -28,7 +26,6 @@
                 </p>
             </div>
 
-            {{-- Statistics Cards --}}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 animate-fade-in-up" style="animation-delay: 100ms;">
                 <x-admin.stat-card
                     title="Utilisateurs"
@@ -37,7 +34,7 @@
                     color="brand"
                     :change="$stats['users_change']"
                 />
-                
+
                 <x-admin.stat-card
                     title="Commandes"
                     :value="$stats['orders']"
@@ -64,20 +61,20 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8 animate-fade-in-up" style="animation-delay: 200ms;">
-                {{-- Recent Activity --}}
+
                 <div class="lg:col-span-2 bg-white rounded-2xl shadow-soft border border-shop-gray-100 p-6 flex flex-col h-full">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-shop-gray-900 font-display">Activité Récente</h2>
                         <a href="#" class="text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors">Voir tout</a>
                     </div>
-                    
+
                     <div class="space-y-4 flex-grow overflow-y-auto custom-scrollbar max-h-[400px] pr-2">
                         @forelse($recentActivity as $activity)
                             <div class="flex items-start p-4 rounded-xl hover:bg-shop-gray-50 transition-colors duration-200 border border-transparent hover:border-shop-gray-100 group">
                                 <div class="flex-shrink-0">
                                     <div class="w-10 h-10 rounded-full flex items-center justify-center shadow-sm
-                                        {{ $activity->type === 'order' ? 'bg-blue-50 text-blue-600' : 
-                                          ($activity->type === 'user' ? 'bg-green-50 text-green-600' : 
+                                        {{ $activity->type === 'order' ? 'bg-blue-50 text-blue-600' :
+                                          ($activity->type === 'user' ? 'bg-green-50 text-green-600' :
                                           ($activity->type === 'product' ? 'bg-purple-50 text-purple-600' : 'bg-shop-gray-100 text-shop-gray-600')) }}">
                                         @if($activity->type === 'order')
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
@@ -109,13 +106,13 @@
                 </div>
 
                 <div class="space-y-8 flex flex-col h-full">
-                    {{-- Quick Actions --}}
+
                     <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 p-6 flex-1">
                         <h2 class="text-xl font-bold text-shop-gray-900 font-display mb-6">Actions Rapides</h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
-                            <x-admin.action-button 
-                                href="{{ route('admin.products') }}" 
-                                color="brand-ghost" 
+                            <x-admin.action-button
+                                href="{{ route('admin.products') }}"
+                                color="brand-ghost"
                                 class="w-full justify-start h-auto py-4 px-5 bg-brand-50/30 hover:bg-brand-50 border border-brand-100 hover:border-brand-200 shadow-sm"
                             >
                                 <div class="flex items-center w-full">
@@ -129,9 +126,9 @@
                                 </div>
                             </x-admin.action-button>
 
-                            <x-admin.action-button 
-                                href="{{ route('admin.users') }}" 
-                                color="blue-ghost" 
+                            <x-admin.action-button
+                                href="{{ route('admin.users') }}"
+                                color="blue-ghost"
                                 class="w-full justify-start h-auto py-4 px-5 bg-blue-50/30 hover:bg-blue-50 border border-blue-100 hover:border-blue-200 shadow-sm"
                             >
                                 <div class="flex items-center w-full">
@@ -147,7 +144,6 @@
                         </div>
                     </div>
 
-                    {{-- System Status --}}
                     <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 p-6">
                         <h2 class="text-xl font-bold text-shop-gray-900 font-display mb-6">État du Système</h2>
                         <div class="space-y-4">
@@ -176,7 +172,6 @@
                 </div>
             </div>
 
-            {{-- Charts Section Mockup --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in-up" style="animation-delay: 300ms;">
                 <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 p-6 hover:shadow-card transition-shadow duration-300">
                     <h3 class="text-lg font-bold text-shop-gray-900 font-display mb-6 flex items-center">
@@ -211,8 +206,8 @@
     </main>
 
     @if(session('success'))
-        <div x-data="{ show: true }" 
-             x-show="show" 
+        <div x-data="{ show: true }"
+             x-show="show"
              x-init="setTimeout(() => show = false, 3000)"
              x-transition:enter="transform ease-out duration-300 transition"
              x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"

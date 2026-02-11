@@ -1,9 +1,9 @@
 <x-app-layout>
     <div class="py-8 bg-shop-gray-50 min-h-screen">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-            
+
             @role('seller')
-                <!-- Welcome Section (Seller Only) -->
+
                 <section class="relative overflow-hidden rounded-3xl border border-shop-gray-200 bg-white shadow-soft animate-fade-in-up">
                     <div class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-brand-600 via-brand-500 to-brand-700"></div>
                     <div class="absolute -right-24 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-brand-100/80 blur-3xl"></div>
@@ -54,7 +54,6 @@
                     </div>
                 </section>
 
-                <!-- Seller Quick Links -->
                 <section class="bg-white rounded-3xl shadow-soft border border-shop-gray-100 overflow-hidden">
                     <div class="p-6 border-b border-shop-gray-100 flex items-center justify-between">
                         <h4 class="text-xl font-bold text-shop-gray-900 font-display flex items-center gap-2">
@@ -65,10 +64,10 @@
                             Voir Statistiques &rarr;
                         </a>
                     </div>
-                    
+
                     <div class="p-6 bg-shop-gray-50/30">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <!-- Card 1 -->
+
                             <a href="{{ route('seller.products.create') }}" class="group relative flex flex-col items-center justify-center p-6 bg-white rounded-2xl border border-shop-gray-200 hover:border-brand-300 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
                                 <div class="absolute inset-0 bg-brand-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                 <div class="relative z-10 w-14 h-14 bg-brand-100 text-brand-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-sm">
@@ -78,7 +77,6 @@
                                 <span class="relative z-10 text-xs text-shop-gray-500 mt-1">Ajouter au catalogue</span>
                             </a>
 
-                            <!-- Card 2 -->
                             <a href="{{ route('seller.products.index') }}" class="group relative flex flex-col items-center justify-center p-6 bg-white rounded-2xl border border-shop-gray-200 hover:border-blue-300 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
                                 <div class="absolute inset-0 bg-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                 <div class="relative z-10 w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-sm">
@@ -88,7 +86,6 @@
                                 <span class="relative z-10 text-xs text-shop-gray-500 mt-1">Gérer l'inventaire</span>
                             </a>
 
-                            <!-- Card 3 -->
                             <a href="{{ route('seller.orders') }}" class="group relative flex flex-col items-center justify-center p-6 bg-white rounded-2xl border border-shop-gray-200 hover:border-purple-300 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
                                 <div class="absolute inset-0 bg-purple-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                 <div class="relative z-10 w-14 h-14 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-sm">
@@ -102,11 +99,98 @@
                 </section>
             @endrole
 
+            @role('moderator')
+                <section class="relative overflow-hidden rounded-3xl border border-shop-gray-200 bg-white shadow-soft animate-fade-in-up">
+                    <div class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-purple-600 via-purple-500 to-purple-700"></div>
+                    <div class="absolute -right-24 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-purple-100/80 blur-3xl"></div>
+                    <div class="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-purple-50/70 to-transparent"></div>
+
+                    <div class="relative z-10 p-8 sm:p-10 lg:p-12">
+                        <div class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+                            <div class="max-w-2xl">
+                                <div class="mb-4 flex flex-wrap items-center gap-3 text-xs uppercase tracking-widest text-shop-gray-500">
+                                    <span class="font-semibold">Tableau de bord Modérateur</span>
+                                    <span class="h-1 w-1 rounded-full bg-shop-gray-300"></span>
+                                    <span class="inline-flex items-center rounded-full border border-shop-gray-200 bg-shop-gray-50 px-3 py-1 text-xs font-semibold normal-case tracking-normal text-shop-gray-600">
+                                        {{ now()->format('d M Y') }}
+                                    </span>
+                                </div>
+
+                                <h1 class="text-4xl font-display font-bold leading-tight text-shop-gray-900 sm:text-5xl">
+                                    Bonjour, {{ Auth::user()->name }}
+                                </h1>
+
+                                <p class="mt-3 text-base text-shop-gray-600 sm:text-lg">
+                                    Il y a <span class="font-bold text-shop-gray-900">{{ $moderatorPendingReviewsCount }}</span> avis en attente de modération.
+                                </p>
+
+                                <div class="mt-6 grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+                                    <div class="rounded-2xl border border-shop-gray-200 bg-shop-gray-50/80 px-4 py-3">
+                                        <p class="text-xs font-semibold uppercase tracking-widest text-shop-gray-500">Avis en attente</p>
+                                        <p class="mt-1 text-2xl font-bold text-shop-gray-900">{{ $moderatorPendingReviewsCount }}</p>
+                                    </div>
+                                    <div class="rounded-2xl border border-shop-gray-200 bg-shop-gray-50/80 px-4 py-3">
+                                        <p class="text-xs font-semibold uppercase tracking-widest text-shop-gray-500">Utilisateurs Suspendus</p>
+                                        <p class="mt-1 text-2xl font-bold text-shop-gray-900">{{ $moderatorSuspendedUsersCount }}</p>
+                                    </div>
+                                     <div class="rounded-2xl border border-shop-gray-200 bg-shop-gray-50/80 px-4 py-3">
+                                        <p class="text-xs font-semibold uppercase tracking-widest text-shop-gray-500">Produits Suspendus</p>
+                                        <p class="mt-1 text-2xl font-bold text-shop-gray-900">{{ $moderatorSuspendedProductsCount }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-white rounded-3xl shadow-soft border border-shop-gray-100 overflow-hidden mt-8">
+                    <div class="p-6 border-b border-shop-gray-100 flex items-center justify-between">
+                        <h4 class="text-xl font-bold text-shop-gray-900 font-display flex items-center gap-2">
+                            <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                            Outils de Modération
+                        </h4>
+                    </div>
+
+                    <div class="p-6 bg-shop-gray-50/30">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+                            <a href="{{ route('moderator.reviews') }}" class="group relative flex flex-col items-center justify-center p-6 bg-white rounded-2xl border border-shop-gray-200 hover:border-purple-300 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+                                <div class="absolute inset-0 bg-purple-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                <div class="relative z-10 w-14 h-14 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-sm">
+                                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+                                </div>
+                                <span class="relative z-10 font-bold text-shop-gray-900 group-hover:text-purple-700 transition-colors">Avis</span>
+                                <span class="relative z-10 text-xs text-shop-gray-500 mt-1">Gérer les évaluations</span>
+                            </a>
+
+                            <a href="{{ route('moderator.products') }}" class="group relative flex flex-col items-center justify-center p-6 bg-white rounded-2xl border border-shop-gray-200 hover:border-blue-300 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+                                <div class="absolute inset-0 bg-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                <div class="relative z-10 w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-sm">
+                                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                                </div>
+                                <span class="relative z-10 font-bold text-shop-gray-900 group-hover:text-blue-700 transition-colors">Produits</span>
+                                <span class="relative z-10 text-xs text-shop-gray-500 mt-1">Modérer le catalogue</span>
+                            </a>
+
+                            <a href="{{ route('moderator.users') }}" class="group relative flex flex-col items-center justify-center p-6 bg-white rounded-2xl border border-shop-gray-200 hover:border-green-300 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+                                <div class="absolute inset-0 bg-green-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                <div class="relative z-10 w-14 h-14 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-sm">
+                                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                                </div>
+                                <span class="relative z-10 font-bold text-shop-gray-900 group-hover:text-green-700 transition-colors">Utilisateurs</span>
+                                <span class="relative z-10 text-xs text-shop-gray-500 mt-1">Gérer les comptes</span>
+                            </a>
+
+                        </div>
+                    </div>
+                </section>
+            @endrole
+
             @role('buyer')
-                 <!-- Buyer Dashboard -->
+
                  <div class="grid gap-8 lg:grid-cols-3">
                     <div class="space-y-8 lg:col-span-2">
-                        <!-- Recent Orders -->
+
                         <section class="bg-white rounded-3xl shadow-soft border border-shop-gray-100 overflow-hidden animate-fade-in-up">
                             <div class="p-6 border-b border-shop-gray-100 flex items-center justify-between">
                                 <h4 class="text-xl font-bold text-shop-gray-900 font-display flex items-center gap-2">
@@ -156,7 +240,6 @@
                             </div>
                         </section>
 
-                        <!-- Wishlist -->
                         <section class="bg-white rounded-3xl shadow-soft border border-shop-gray-100 overflow-hidden animate-fade-in-up" style="animation-delay: 100ms;">
                             <div class="p-6 border-b border-shop-gray-100 flex items-center justify-between">
                                 <h4 class="text-xl font-bold text-shop-gray-900 font-display flex items-center gap-2">
@@ -198,9 +281,8 @@
                         </section>
                     </div>
 
-                    <!-- Sidebar (Profile & Account Status) -->
                      <aside class="space-y-6 animate-fade-in-up" style="animation-delay: 200ms;">
-                         <!-- Quick Actions Menu -->
+
                         <div class="bg-white rounded-3xl shadow-soft border border-shop-gray-100 p-6">
                             <h4 class="text-lg font-bold text-shop-gray-900 font-display mb-4 flex items-center gap-2">
                                  <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
@@ -216,7 +298,7 @@
                                     </div>
                                     <svg class="w-5 h-5 text-shop-gray-300 group-hover:translate-x-1 group-hover:text-brand-500 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                                 </a>
-                                
+
                                 <a href="#" class="flex items-center justify-between p-3 rounded-2xl hover:bg-shop-gray-50 group transition-all duration-200 border border-transparent hover:border-shop-gray-100">
                                     <div class="flex items-center gap-3">
                                         <div class="w-10 h-10 rounded-full bg-shop-gray-50 flex items-center justify-center text-shop-gray-500 group-hover:bg-white group-hover:shadow-sm group-hover:text-shop-gray-900 transition-all">
@@ -229,7 +311,6 @@
                             </div>
                         </div>
 
-                        <!-- Account Status -->
                         <div class="bg-gradient-to-br from-brand-900 to-brand-800 rounded-3xl shadow-xl p-6 text-white relative overflow-hidden">
                             <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-10 rounded-full blur-xl"></div>
                             <h4 class="text-lg font-bold font-display mb-4 relative z-10">Statut du Compte</h4>

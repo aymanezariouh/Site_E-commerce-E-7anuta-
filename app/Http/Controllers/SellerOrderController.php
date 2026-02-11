@@ -23,23 +23,15 @@ class SellerOrderController extends Controller
         'accepted' => 'Accepted',
         'shipped' => 'Shipped',
     ];
-
-    /**
-     * Display a list of orders containing the seller's products.
-     */
-    public function index()
+public function index()
     {
         $sellerId = Auth::id();
-
-        // Get orders that contain at least one product from this seller
         $orders = Order::with(['user', 'items.product'])
             ->whereHas('items.product', function ($query) use ($sellerId) {
                 $query->where('user_id', $sellerId);
             })
             ->orderByDesc('created_at')
             ->paginate(15);
-
-        // Calculate seller's portion for each order
         $orders->getCollection()->transform(function ($order) use ($sellerId) {
             $sellerItems = $order->items->filter(function ($item) use ($sellerId) {
                 return $item->product && $item->product->user_id === $sellerId;
@@ -53,19 +45,13 @@ class SellerOrderController extends Controller
 
         return view('seller.orders', compact('orders'));
     }
-
-    /**
-     * Display order details.
-     */
-    public function show(Order $order)
+public function show(Order $order)
     {
         $this->authorize('viewForSeller', $order);
 
         $sellerId = Auth::id();
 
         $order->load(['user', 'items.product', 'payments', 'statusHistories.user']);
-
-        // Filter items to show only seller's products
         $sellerItems = $order->items->filter(function ($item) use ($sellerId) {
             return $item->product && $item->product->user_id === $sellerId;
         });
@@ -75,11 +61,7 @@ class SellerOrderController extends Controller
 
         return view('seller.order-details', compact('order', 'sellerItems', 'sellerTotal', 'availableStatuses'));
     }
-
-    /**
-     * Update the order status.
-     */
-    public function updateStatus(Request $request, Order $order)
+public function updateStatus(Request $request, Order $order)
     {
         $this->authorize('updateStatus', $order);
 
@@ -100,8 +82,6 @@ class SellerOrderController extends Controller
 
         $oldStatus = $order->status;
         $order->status = $targetStatus;
-
-        // Set timestamps based on status
         if ($targetStatus === 'shipped' && !$order->shipped_at) {
             $order->shipped_at = now();
         }

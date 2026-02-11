@@ -13,27 +13,15 @@ class NewReviewNotification extends Notification implements ShouldQueue
     use Queueable;
 
     protected Review $review;
-
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct(Review $review)
+public function __construct(Review $review)
     {
         $this->review = $review;
     }
-
-    /**
-     * Get the notification's delivery channels.
-     */
-    public function via(object $notifiable): array
+public function via(object $notifiable): array
     {
         return ['mail', 'database'];
     }
-
-    /**
-     * Get the mail representation of the notification.
-     */
-    public function toMail(object $notifiable): MailMessage
+public function toMail(object $notifiable): MailMessage
     {
         $stars = str_repeat('★', $this->review->rating) . str_repeat('☆', 5 - $this->review->rating);
 
@@ -47,11 +35,7 @@ class NewReviewNotification extends Notification implements ShouldQueue
             ->action('Voir les avis', url('/seller/reviews'))
             ->line('Merci d\'utiliser LocalMart!');
     }
-
-    /**
-     * Get the array representation of the notification.
-     */
-    public function toArray(object $notifiable): array
+public function toArray(object $notifiable): array
     {
         return [
             'type' => 'new_review',

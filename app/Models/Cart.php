@@ -17,8 +17,6 @@ class Cart extends Model
     protected $casts = [
         'status' => 'string',
     ];
-
-    // Relationships
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -28,14 +26,10 @@ class Cart extends Model
     {
         return $this->hasMany(CartItem::class);
     }
-
-    // Scopes
     public function scopeActive($query)
     {
         return $query->where('status', 'active');
     }
-
-    // Helper methods
     public function getTotalAmountAttribute()
     {
         return $this->items->sum(function($item) {

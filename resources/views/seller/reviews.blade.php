@@ -8,7 +8,6 @@
                 </div>
             </div>
 
-            <!-- Stats Cards -->
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 p-6">
                     <div class="flex items-center gap-4">
@@ -59,14 +58,13 @@
                 </div>
             </div>
 
-            <!-- Reviews Table -->
             <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 overflow-hidden">
                 <div class="flex items-center justify-between border-b border-shop-gray-100 px-6 py-4 bg-shop-gray-50/50">
                     <div>
                         <h5 class="text-lg font-bold text-shop-gray-900 font-display">Derniers Avis</h5>
                     </div>
                 </div>
-                
+
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-shop-gray-100">
                         <thead class="bg-shop-gray-50">

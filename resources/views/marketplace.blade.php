@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'Laravel') }} - Marketplace</title>
-    <!-- Fonts -->
+
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
     <link href="https://fonts.bunny.net/css?family=playfair-display:400,600,700&display=swap" rel="stylesheet" />
-    
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         [x-cloak] { display: none !important; }
@@ -20,7 +20,7 @@
     @auth
         @include('layouts.navigation')
     @else
-        <!-- Guest Nav for Marketplace (reusing similar style to main nav but simpler) -->
+
         <nav x-data="{ open: false, scrolled: false }"
              @scroll.window="scrolled = (window.pageYOffset > 20)"
              :class="{ 'bg-white/80 backdrop-blur-md shadow-soft': scrolled, 'bg-white border-b border-shop-gray-200': !scrolled }"
@@ -49,7 +49,7 @@
     @endauth
 
     <div class="flex-grow">
-        <!-- Hero Section -->
+
         <div class="relative bg-shop-gray-900 overflow-hidden">
             <div class="absolute inset-0">
                 <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="" class="w-full h-full object-cover opacity-30">
@@ -71,18 +71,18 @@
         </div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <!-- Filters -->
+
             <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
                 <h2 class="text-2xl font-bold text-shop-gray-900 font-display mb-4 md:mb-0">Latest Collections</h2>
-                
+
                 <div class="flex overflow-x-auto pb-4 md:pb-0 gap-2 no-scrollbar">
-                    <a href="{{ route('marketplace') }}" 
+                    <a href="{{ route('marketplace') }}"
                        class="whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 {{ !request('category_id') ? 'bg-brand-600 text-white shadow-md' : 'bg-white text-shop-gray-600 border border-shop-gray-200 hover:bg-shop-gray-50 hover:border-shop-gray-300' }}">
                         All Categories
                     </a>
                     @if(isset($categories))
                         @foreach($categories as $category)
-                            <a href="{{ route('marketplace', ['category_id' => $category->id]) }}" 
+                            <a href="{{ route('marketplace', ['category_id' => $category->id]) }}"
                                class="whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 {{ request('category_id') == $category->id ? 'bg-brand-600 text-white shadow-md' : 'bg-white text-shop-gray-600 border border-shop-gray-200 hover:bg-shop-gray-50 hover:border-shop-gray-300' }}">
                                 {{ $category->name }}
                             </a>
@@ -91,12 +91,11 @@
                 </div>
             </div>
 
-            <!-- Product Grid -->
             @if(isset($products) && $products->count() > 0)
                 <div id="products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                     @foreach($products as $product)
                         <div class="group bg-white rounded-2xl shadow-soft hover:shadow-card transition-all duration-300 flex flex-col h-full border border-shop-gray-100 overflow-hidden transform hover:-translate-y-1">
-                            <!-- Image Area -->
+
                             <div class="relative aspect-w-4 aspect-h-3 bg-shop-gray-100 overflow-hidden">
                                 @if($product->primary_image)
                                     <img src="{{ $product->primary_image }}" alt="{{ $product->name }}" class="w-full h-full object-center object-cover group-hover:scale-105 transition-transform duration-500">
@@ -107,8 +106,7 @@
                                         </svg>
                                     </div>
                                 @endif
-                                
-                                <!-- Overlay Actions -->
+
                                 <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
                                     <a href="{{ route('marketplace.show', $product->id) }}" class="bg-white text-shop-gray-900 rounded-full p-2 hover:bg-brand-50 hover:text-brand-600 transition-colors" title="View Details">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -129,7 +127,6 @@
                                 </div>
                             </div>
 
-                            <!-- Content -->
                             <div class="p-5 flex-grow flex flex-col">
                                 <div class="mb-2">
                                     <span class="text-xs font-semibold tracking-wider text-brand-600 uppercase bg-brand-50 px-2 py-1 rounded-md">
@@ -144,7 +141,7 @@
                                 <p class="text-sm text-shop-gray-500 mb-4 line-clamp-2 flex-grow">
                                     {{ Str::limit($product->description, 80) }}
                                 </p>
-                                
+
                                 <div class="flex items-center justify-between pt-4 border-t border-shop-gray-100 mt-auto">
                                     <div class="flex flex-col">
                                         <span class="text-xl font-bold text-shop-gray-900 font-display">
@@ -154,12 +151,12 @@
                                             <span class="text-xs font-bold text-red-600">Rupture de stock</span>
                                         @endif
                                     </div>
-                                    
+
                                     @auth
                                         <form action="{{ route('marketplace.addToCart', $product->id) }}" method="POST">
                                             @csrf
                                             <input type="hidden" name="quantity" value="1">
-                                            <button type="submit" 
+                                            <button type="submit"
                                                 class="inline-flex items-center gap-1 px-4 py-2 rounded-full text-sm font-medium transition-colors shadow-sm {{ $product->stock_quantity > 0 ? 'bg-shop-gray-900 text-white hover:bg-brand-600' : 'bg-gray-300 text-gray-500 cursor-not-allowed' }}"
                                                 {{ $product->stock_quantity <= 0 ? 'disabled' : '' }}>
                                                 <span>Add</span>
@@ -195,9 +192,8 @@
             @endif
         </div>
     </div>
-    
-    <!-- Footer moved to App Layout or kept here if needed for guest view, but app layout handles footer -->
-    @include('layouts.footer') 
+
+    @include('layouts.footer')
 
 </body>
 </html>

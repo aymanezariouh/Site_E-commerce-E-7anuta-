@@ -17,10 +17,10 @@
      @scroll.window="scrolled = (window.pageYOffset > 20)"
      :class="{ 'bg-white/80 backdrop-blur-md shadow-soft': scrolled, 'bg-white border-b border-shop-gray-200': !scrolled }"
      class="sticky top-0 z-50 transition-all duration-300 ease-in-out">
-    <!-- Primary Navigation Menu -->
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-20"> <!-- Increased height for better presence -->
-            <!-- Logo -->
+        <div class="flex justify-between h-20">
+
             <div class="flex items-center">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-2 group">
                     <div class="bg-brand-600 text-white p-1.5 rounded-lg group-hover:bg-brand-700 transition-colors">
@@ -32,7 +32,6 @@
                 </a>
             </div>
 
-            <!-- Navigation Links -->
             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex sm:items-center">
                 <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="text-base font-medium text-shop-gray-600 hover:text-brand-600 transition-colors">
                     Dashboard
@@ -97,7 +96,6 @@
                 @endrole
             </div>
 
-            <!-- Settings Dropdown & Cart -->
             <div class="hidden sm:flex sm:items-center sm:ms-6 sm:gap-4">
                 @if($canShop)
                     <a
@@ -146,7 +144,6 @@
                 </x-dropdown>
             </div>
 
-            <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
                 <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-shop-gray-400 hover:text-shop-gray-500 hover:bg-shop-gray-100 focus:outline-none transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -158,7 +155,6 @@
         </div>
     </div>
 
-    <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-white border-t border-shop-gray-100 shadow-lg">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
@@ -225,7 +221,6 @@
             @endrole
         </div>
 
-        <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-shop-gray-200">
             <div class="px-4">
                 <div class="font-medium text-base text-shop-gray-800">{{ Auth::user()->name }}</div>

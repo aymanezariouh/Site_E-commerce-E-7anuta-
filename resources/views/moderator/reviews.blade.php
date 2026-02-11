@@ -22,7 +22,7 @@
                         <p class="text-sm text-shop-gray-500">{{ $reviews->total() }} avis enregistrés</p>
                     </div>
                 </div>
-                
+
                 <div class="p-6 grid gap-6">
                     @forelse($reviews as $review)
                         <div class="group rounded-xl border border-shop-gray-200 p-6 hover:shadow-md hover:border-brand-200 transition-all {{ !$review->is_approved ? 'bg-red-50/30' : 'bg-white' }}">
@@ -30,9 +30,9 @@
                                 <div class="flex-1">
                                     <div class="flex items-center gap-3 mb-3">
                                         <div class="h-8 w-8 rounded-full bg-shop-gray-100 flex items-center justify-center text-xs font-bold text-shop-gray-500">
-                                            {{ substr($review->user->name ?? 'A', 0, 1) }}
+                                            {{ strtoupper(substr($review->user->name ?? 'U', 0, 1)) }}
                                         </div>
-                                        <span class="font-semibold text-shop-gray-900">{{ $review->user->name }}</span>
+                                        <span class="font-semibold text-shop-gray-900">{{ $review->user->name ?? 'Utilisateur supprimé' }}</span>
                                         <span class="text-shop-gray-300">•</span>
                                         <span class="text-sm text-shop-gray-500">{{ $review->created_at->format('d/m/Y H:i') }}</span>
                                         @if(!$review->is_approved)
@@ -41,7 +41,7 @@
                                             <span class="ml-2 px-2 py-0.5 bg-green-100 text-green-800 text-xs rounded-full font-medium">Visible</span>
                                         @endif
                                     </div>
-                                    
+
                                     <div class="flex items-center mb-3">
                                         <div class="flex text-amber-400">
                                             @for($i = 1; $i <= 5; $i++)
@@ -57,10 +57,14 @@
 
                                     <div class="flex items-center gap-2 text-sm text-shop-gray-500 mt-4 pt-4 border-t border-shop-gray-100">
                                         <svg class="w-4 h-4 text-shop-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                                        <span class="font-medium text-shop-gray-700">Produit:</span> 
-                                        <a href="{{ route('marketplace.show', $review->product_id) }}" class="text-brand-600 hover:text-brand-800 hover:underline transition-colors">
-                                            {{ $review->product->name }}
-                                        </a>
+                                        <span class="font-medium text-shop-gray-700">Produit:</span>
+                                        @if($review->product)
+                                            <a href="{{ route('marketplace.show', $review->product_id) }}" class="text-brand-600 hover:text-brand-800 hover:underline transition-colors">
+                                                {{ $review->product->name }}
+                                            </a>
+                                        @else
+                                            <span class="text-shop-gray-400">Produit supprimé</span>
+                                        @endif
                                     </div>
                                 </div>
 

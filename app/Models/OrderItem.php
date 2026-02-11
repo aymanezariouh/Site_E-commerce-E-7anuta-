@@ -20,8 +20,6 @@ class OrderItem extends Model
         'unit_price' => 'decimal:2',
         'total_price' => 'decimal:2',
     ];
-
-    // Relationships
     public function order()
     {
         return $this->belongsTo(Order::class);

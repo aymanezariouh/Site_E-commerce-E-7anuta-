@@ -9,10 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsureSellerIsActive
 {
-    /**
-     * Handle an incoming request.
-     */
-    public function handle(Request $request, Closure $next): Response
+public function handle(Request $request, Closure $next): Response
     {
         $user = Auth::user();
 

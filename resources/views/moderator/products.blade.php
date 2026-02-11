@@ -22,7 +22,7 @@
                         <p class="text-sm text-shop-gray-500">{{ $products->total() }} produits enregistrés</p>
                     </div>
                 </div>
-                
+
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-shop-gray-100">
                         <thead class="bg-shop-gray-50">
@@ -49,7 +49,7 @@
                                             @endif
                                             <div>
                                                 <div class="text-sm font-medium text-shop-gray-900">{{ $product->name }}</div>
-                                                <div class="text-xs text-shop-gray-500 max-w-xs truncate">{{ Str::limit($product->description, 40) }}</div>
+                                                <div class="text-xs text-shop-gray-500 max-w-xs truncate">{{ \Illuminate\Support\Str::limit($product->description ?? '', 40) }}</div>
                                             </div>
                                         </div>
                                     </td>

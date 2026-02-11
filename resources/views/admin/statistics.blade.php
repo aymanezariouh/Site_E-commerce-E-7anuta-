@@ -9,22 +9,20 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-shop-gray-50 font-sans antialiased text-shop-gray-900">
-    {{-- Sidebar --}}
+
     <x-admin.sidebar />
-    
-    {{-- Navbar --}}
+
     <x-admin.navbar title="Statistiques" />
-    
-    {{-- Main Content --}}
+
     <main class="lg:ml-64 pt-20 min-h-screen transition-all duration-300">
         <div class="p-6 lg:p-8 max-w-7xl mx-auto">
-            {{-- Header --}}
+
             <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 animate-fade-in-up">
                 <div>
                     <h1 class="text-3xl font-bold text-shop-gray-900 mb-2 font-display tracking-tight">Vue d'ensemble</h1>
                     <p class="text-shop-gray-500 text-lg">Analysez les performances de votre boutique en temps réel.</p>
                 </div>
-                
+
                 <div class="bg-white rounded-xl shadow-sm border border-shop-gray-200 p-1 flex items-center">
                     <button class="px-4 py-2 text-sm font-bold text-brand-600 bg-brand-50 rounded-lg transition-colors">7 derniers jours</button>
                     <button class="px-4 py-2 text-sm font-medium text-shop-gray-600 hover:text-shop-gray-900 hover:bg-shop-gray-50 rounded-lg transition-colors">30 jours</button>
@@ -33,7 +31,6 @@
                 </div>
             </div>
 
-            {{-- KPI Cards --}}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 animate-fade-in-up" style="animation-delay: 100ms;">
                 <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 p-6 flex flex-col justify-between h-full">
                      <div class="flex justify-between items-start mb-4">
@@ -96,9 +93,8 @@
                 </div>
             </div>
 
-            {{-- Charts Section --}}
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 animate-fade-in-up" style="animation-delay: 200ms;">
-                {{-- Sales Chart --}}
+
                 <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 p-6">
                     <div class="flex items-center justify-between mb-6">
                          <h3 class="text-lg font-bold text-shop-gray-900 font-display">Évolution des Ventes</h3>
@@ -111,7 +107,6 @@
                     </div>
                 </div>
 
-                {{-- Orders Status Chart --}}
                 <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 p-6">
                      <div class="flex items-center justify-between mb-6">
                          <h3 class="text-lg font-bold text-shop-gray-900 font-display">État des Commandes</h3>
@@ -125,13 +120,12 @@
                 </div>
             </div>
 
-            {{-- Top Products Table --}}
             <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 p-6 animate-fade-in-up" style="animation-delay: 300ms;">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-lg font-bold text-shop-gray-900 font-display">Produits les plus vendus</h3>
                     <a href="{{ route('admin.products') }}" class="text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors">Voir le catalogue</a>
                 </div>
-                
+
                 <div class="overflow-x-auto">
                     <table class="min-w-full">
                         <thead>
@@ -190,11 +184,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Chart.js Configuration
             Chart.defaults.font.family = "'Figtree', sans-serif";
             Chart.defaults.color = '#64748b';
-            
-            // Sales Chart
             const salesCtx = document.getElementById('salesChart').getContext('2d');
             new Chart(salesCtx, {
                 type: 'line',
@@ -244,8 +235,6 @@
                     }
                 }
             });
-
-            // Orders Status Chart
             const ordersCtx = document.getElementById('ordersChart').getContext('2d');
             new Chart(ordersCtx, {
                 type: 'doughnut',

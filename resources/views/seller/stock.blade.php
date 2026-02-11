@@ -1,8 +1,7 @@
 <x-app-layout>
     <div class="py-8 bg-shop-gray-50 min-h-screen">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-            
-            <!-- Header -->
+
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 animate-fade-in-up">
                 <div>
                     <h2 class="text-3xl font-bold font-display text-shop-gray-900 tracking-tight">Catalogue & Stock</h2>
@@ -23,13 +22,12 @@
             @endif
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in-up" style="animation-delay: 100ms;">
-                <!-- Left Column: Alerts & Categories -->
+
                 <div class="space-y-8 lg:col-span-1">
                     <x-seller.stock-alerts :low-stock-count="$lowStockCount" />
                     <x-seller.categories-module :categories="$categories" />
                 </div>
-                
-                <!-- Right Column: Products List -->
+
                 <div class="lg:col-span-2">
                      <x-seller.products-module :products="$products" :categories="$categories" />
                 </div>

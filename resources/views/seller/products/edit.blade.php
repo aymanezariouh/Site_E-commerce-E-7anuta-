@@ -1,8 +1,7 @@
 <x-app-layout>
     <div class="py-12 bg-shop-gray-50 min-h-screen">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 animate-fade-in-up">
-            
-            <!-- Header -->
+
             <div class="flex items-center justify-between">
                 <div>
                     <h2 class="text-3xl font-bold font-display text-shop-gray-900">Modifier Produit</h2>
@@ -16,9 +15,9 @@
             <form method="POST" action="{{ route('seller.products.update', $product) }}" enctype="multipart/form-data" class="space-y-8">
                 @csrf
                 @method('PUT')
-                
+
                 <div class="bg-white rounded-3xl shadow-soft border border-shop-gray-100 p-8 space-y-8">
-                    <!-- Section: Informations de base -->
+
                     <div>
                         <h3 class="text-lg font-bold text-shop-gray-900 border-b border-shop-gray-100 pb-4 mb-6 flex items-center gap-2">
                              <span class="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center">
@@ -26,16 +25,15 @@
                             </span>
                             Informations Générales
                         </h3>
-                        
+
                         <div class="grid grid-cols-1 gap-6">
-                            <!-- Nom -->
+
                             <div>
                                 <x-input-label for="name" value="Nom du produit" class="text-shop-gray-700 font-bold" />
                                 <x-text-input id="name" name="name" type="text" class="mt-1 block w-full rounded-xl border-shop-gray-200 focus:border-brand-500 focus:ring-brand-500 shadow-sm" value="{{ old('name', $product->name) }}" required />
                                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
                             </div>
 
-                            <!-- Description -->
                             <div>
                                 <x-input-label for="description" value="Description détaillée" class="text-shop-gray-700 font-bold" />
                                 <textarea id="description" name="description" rows="5" class="mt-1 block w-full rounded-xl border-shop-gray-200 focus:border-brand-500 focus:ring-brand-500 shadow-sm" required>{{ old('description', $product->description) }}</textarea>
@@ -44,7 +42,6 @@
                         </div>
                     </div>
 
-                    <!-- Section: Prix et Stock -->
                     <div>
                          <h3 class="text-lg font-bold text-shop-gray-900 border-b border-shop-gray-100 pb-4 mb-6 flex items-center gap-2">
                             <span class="w-8 h-8 rounded-lg bg-green-50 text-green-600 flex items-center justify-center">
@@ -54,7 +51,7 @@
                         </h3>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Prix -->
+
                             <div>
                                 <x-input-label for="price" value="Prix de vente (MAD)" class="text-shop-gray-700 font-bold" />
                                 <div class="relative mt-1 rounded-md shadow-sm">
@@ -66,7 +63,6 @@
                                 <x-input-error :messages="$errors->get('price')" class="mt-2" />
                             </div>
 
-                            <!-- Prix Barré -->
                             <div>
                                 <x-input-label for="compare_at_price" value="Prix d'origine (Optionnel)" class="text-shop-gray-700 font-bold" />
                                 <div class="relative mt-1 rounded-md shadow-sm">
@@ -78,14 +74,12 @@
                                 <x-input-error :messages="$errors->get('compare_at_price')" class="mt-2" />
                             </div>
 
-                            <!-- Stock -->
                             <div>
                                 <x-input-label for="stock_quantity" value="Quantité en stock" class="text-shop-gray-700 font-bold" />
                                 <x-text-input id="stock_quantity" name="stock_quantity" type="number" min="0" class="mt-1 block w-full rounded-xl border-shop-gray-200 focus:border-brand-500 focus:ring-brand-500 shadow-sm" value="{{ old('stock_quantity', $product->stock_quantity) }}" required />
                                 <x-input-error :messages="$errors->get('stock_quantity')" class="mt-2" />
                             </div>
 
-                            <!-- SKU -->
                             <div>
                                 <x-input-label for="sku" value="Code SKU" class="text-shop-gray-700 font-bold" />
                                 <x-text-input id="sku" name="sku" type="text" class="mt-1 block w-full rounded-xl border-shop-gray-200 focus:border-brand-500 focus:ring-brand-500 shadow-sm" value="{{ old('sku', $product->sku) }}" required />
@@ -94,7 +88,6 @@
                         </div>
                     </div>
 
-                    <!-- Section: Organisation -->
                     <div>
                          <h3 class="text-lg font-bold text-shop-gray-900 border-b border-shop-gray-100 pb-4 mb-6 flex items-center gap-2">
                              <span class="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
@@ -104,7 +97,7 @@
                         </h3>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Catégorie -->
+
                             <div class="md:col-span-2">
                                 <x-input-label for="category_id" value="Catégorie" class="text-shop-gray-700 font-bold" />
                                 <select id="category_id" name="category_id" class="mt-1 block w-full rounded-xl border-shop-gray-200 shadow-sm focus:border-brand-500 focus:ring-brand-500" required>
@@ -116,14 +109,12 @@
                                 <x-input-error :messages="$errors->get('category_id')" class="mt-2" />
                             </div>
 
-                            <!-- Poids -->
                             <div>
                                 <x-input-label for="weight" value="Poids (kg)" class="text-shop-gray-700 font-bold" />
                                 <x-text-input id="weight" name="weight" type="number" step="0.01" min="0" class="mt-1 block w-full rounded-xl border-shop-gray-200 focus:border-brand-500 focus:ring-brand-500 shadow-sm" value="{{ old('weight', $product->weight) }}" />
                                 <x-input-error :messages="$errors->get('weight')" class="mt-2" />
                             </div>
 
-                            <!-- Dimensions -->
                             <div>
                                 <x-input-label for="dimensions" value="Dimensions (L x l x h)" class="text-shop-gray-700 font-bold" />
                                 <x-text-input id="dimensions" name="dimensions" type="text" class="mt-1 block w-full rounded-xl border-shop-gray-200 focus:border-brand-500 focus:ring-brand-500 shadow-sm" value="{{ old('dimensions', $product->dimensions) }}" />
@@ -132,7 +123,6 @@
                         </div>
                     </div>
 
-                    <!-- Section: Images -->
                     <div>
                          <h3 class="text-lg font-bold text-shop-gray-900 border-b border-shop-gray-100 pb-4 mb-6 flex items-center gap-2">
                             <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
@@ -141,7 +131,6 @@
                             Médias
                         </h3>
 
-                        <!-- Existing Images Preview (Mockup) -->
                         @if(is_array($product->images) && count($product->images) > 0)
                             <div class="mb-4">
                                 <label class="block text-sm font-bold text-shop-gray-700 mb-2">Images actuelles</label>
@@ -149,7 +138,7 @@
                                     @foreach($product->images as $img)
                                         <div class="relative flex-shrink-0 group">
                                             <img src="{{ $img }}" class="h-24 w-24 rounded-lg object-cover border border-shop-gray-200">
-                                            <!-- Note: Real delete implementation would go here -->
+
                                         </div>
                                     @endforeach
                                 </div>
@@ -157,7 +146,7 @@
                         @endif
 
                         <div class="space-y-4">
-                             <!-- File Upload -->
+
                             <div class="border-2 border-dashed border-shop-gray-200 rounded-xl p-6 hover:bg-shop-gray-50 transition-colors text-center cursor-pointer relative">
                                 <input id="images_upload" name="images_upload[]" type="file" accept="image/*" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer text-sm text-slate-700">
                                 <div class="pointer-events-none">
@@ -168,7 +157,6 @@
                             </div>
                             <x-input-error :messages="$errors->get('images_upload')" class="mt-2" />
 
-                             <!-- URL Input -->
                             <div>
                                 <x-input-label for="images" value="Ou via URLs (séparez par virgule pour ajouter)" class="text-shop-gray-700 font-bold" />
                                 <x-text-input id="images" name="images" type="text" class="mt-1 block w-full rounded-xl border-shop-gray-200 focus:border-brand-500 focus:ring-brand-500 shadow-sm" value="{{ old('images', is_array($product->images) ? implode(', ', $product->images) : '') }}" />
@@ -177,7 +165,6 @@
                         </div>
                     </div>
 
-                    <!-- Section: Publication -->
                     <div>
                          <h3 class="text-lg font-bold text-shop-gray-900 border-b border-shop-gray-100 pb-4 mb-6 flex items-center gap-2">
                              <span class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
@@ -185,7 +172,7 @@
                             </span>
                             Publication
                         </h3>
-                        
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                             <div>
                                 <x-input-label for="status" value="Statut" class="text-shop-gray-700 font-bold" />
@@ -196,7 +183,7 @@
                                 </select>
                                 <x-input-error :messages="$errors->get('status')" class="mt-2" />
                             </div>
-                            
+
                             <div class="flex items-center gap-3 p-4 bg-shop-gray-50 rounded-xl border border-shop-gray-100">
                                 <div class="flex items-center h-5">
                                     <input id="is_active" name="is_active" type="checkbox" value="1" class="w-5 h-5 rounded border-shop-gray-300 text-brand-600 shadow-sm focus:ring-brand-500" @checked(old('is_active', $product->is_active))>
@@ -209,7 +196,6 @@
                         </div>
                     </div>
 
-                    <!-- Actions Bottom -->
                     <div class="pt-6 border-t border-shop-gray-100 flex items-center justify-end gap-3" x-data="{ submitting: false }">
                         <a href="{{ route('seller.stock') }}" class="px-6 py-3 bg-white border border-shop-gray-200 text-shop-gray-700 font-bold rounded-xl hover:bg-shop-gray-50 transition-colors shadow-sm">
                             Annuler

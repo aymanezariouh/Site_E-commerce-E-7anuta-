@@ -25,14 +25,10 @@ class Payment extends Model
         'payment_details' => 'array',
         'processed_at' => 'datetime',
     ];
-
-    // Relationships
     public function order()
     {
         return $this->belongsTo(Order::class);
     }
-
-    // Scopes
     public function scopeCompleted($query)
     {
         return $query->where('status', 'completed');

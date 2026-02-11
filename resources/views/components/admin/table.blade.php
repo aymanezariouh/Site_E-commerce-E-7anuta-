@@ -58,7 +58,7 @@
                                         </a>
 
                                     @elseif($action['type'] === 'button')
-                                        <button type="button" class="{{ $colorClass }} transition-colors" 
+                                        <button type="button" class="{{ $colorClass }} transition-colors"
                                                 @if(isset($action['onclick'])) onclick="{{ $action['onclick'] }}" @endif>
                                             {{ $action['label'] }}
                                         </button>

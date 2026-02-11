@@ -8,36 +8,34 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-shop-gray-50 font-sans antialiased text-shop-gray-900">
-    {{-- Sidebar --}}
+
     <x-admin.sidebar />
-    
-    {{-- Navbar --}}
+
     <x-admin.navbar title="Gestion des Commandes" />
-    
-    {{-- Main Content --}}
+
     <main class="lg:ml-64 pt-20 min-h-screen transition-all duration-300">
         <div class="p-6 lg:p-8 max-w-7xl mx-auto">
-            {{-- Header --}}
+
             <div class="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4 animate-fade-in-up">
                 <div>
                     <h1 class="text-3xl font-bold text-shop-gray-900 mb-2 font-display tracking-tight">Commandes</h1>
                     <p class="text-shop-gray-500 text-lg">Suivez et gérez les commandes des clients.</p>
                 </div>
-                
+
                 <div class="flex items-center space-x-3">
                     <div class="relative">
-                         <input type="text" placeholder="Rechercher une commande..." 
+                         <input type="text" placeholder="Rechercher une commande..."
                                class="pl-10 pr-4 py-2.5 rounded-xl border-shop-gray-200 focus:border-brand-500 focus:ring-brand-500 w-full sm:w-64 text-sm shadow-sm transition-all">
                          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                              <svg class="w-5 h-5 text-shop-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                          </div>
                     </div>
-                    
+
                     <button class="flex items-center space-x-2 px-4 py-2.5 bg-white border border-shop-gray-200 rounded-xl text-shop-gray-700 hover:bg-shop-gray-50 font-medium shadow-sm transition-all text-sm">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
                         <span>Filtrer</span>
                     </button>
-                    
+
                     <button class="flex items-center space-x-2 px-4 py-2.5 bg-white border border-shop-gray-200 rounded-xl text-shop-gray-700 hover:bg-shop-gray-50 font-medium shadow-sm transition-all text-sm">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         <span>Exporter</span>
@@ -45,7 +43,6 @@
                 </div>
             </div>
 
-            {{-- Stats Overview --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 animate-fade-in-up" style="animation-delay: 100ms;">
                 <div class="bg-white rounded-xl shadow-sm border border-shop-gray-100 p-4 flex items-center">
                     <div class="p-3 bg-blue-50 rounded-lg text-blue-600 mr-4">
@@ -56,7 +53,7 @@
                         <p class="text-xl font-bold text-shop-gray-900">{{ $orders->total() }}</p>
                     </div>
                 </div>
-                
+
                  <div class="bg-white rounded-xl shadow-sm border border-shop-gray-100 p-4 flex items-center">
                     <div class="p-3 bg-amber-50 rounded-lg text-amber-600 mr-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -88,7 +85,6 @@
                 </div>
             </div>
 
-            {{-- Orders Table --}}
             <div class="bg-white shadow-soft rounded-2xl border border-shop-gray-100 overflow-hidden animate-fade-in-up" style="animation-delay: 200ms;">
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-shop-gray-100">
@@ -142,7 +138,7 @@
                                                 'delivered' => 'bg-emerald-100 text-emerald-700 border-emerald-200',
                                                 'cancelled' => 'bg-red-100 text-red-700 border-red-200',
                                             ];
-                                            
+
                                             $statusLabels = [
                                                 'pending' => 'En attente',
                                                 'processing' => 'En cours',
@@ -162,11 +158,11 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div class="flex items-center justify-end gap-2" x-data="{ open: false }">
-                                            {{-- Status Update Form --}}
+
                                             <form action="{{ route('admin.orders.update-status', $order) }}" method="POST" class="mr-2">
                                                 @csrf
                                                 @method('PATCH')
-                                                <select name="status" onchange="this.form.submit()" 
+                                                <select name="status" onchange="this.form.submit()"
                                                         class="text-xs rounded-lg border-shop-gray-200 focus:border-brand-500 focus:ring-brand-500 py-1.5 pl-2 pr-8 bg-shop-gray-50 hover:bg-white transition-colors cursor-pointer select-arrow-padding">
                                                     @foreach($statusLabels as $value => $label)
                                                         <option value="{{ $value }}" {{ $order->status === $value ? 'selected' : '' }}>
@@ -180,9 +176,8 @@
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
                                             </button>
 
-                                             {{-- Context Menu Mockup --}}
-                                            <div x-show="open" @click.outside="open = false" 
-                                                 class="absolute right-12 z-10 w-48 bg-white rounded-xl shadow-xl border border-shop-gray-100 py-1" 
+                                            <div x-show="open" @click.outside="open = false"
+                                                 class="absolute right-12 z-10 w-48 bg-white rounded-xl shadow-xl border border-shop-gray-100 py-1"
                                                  style="display: none;"
                                                  x-transition:enter="transition ease-out duration-100"
                                                  x-transition:enter-start="transform opacity-0 scale-95"
@@ -209,8 +204,7 @@
                         </tbody>
                     </table>
                 </div>
-                
-                {{-- Pagination --}}
+
                 @if($orders->hasPages())
                 <div class="px-6 py-4 border-t border-shop-gray-100 bg-shop-gray-50/30">
                     {{ $orders->links() }}

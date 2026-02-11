@@ -8,16 +8,14 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-gray-50">
-    {{-- Sidebar --}}
+
     <x-admin.sidebar />
-    
-    {{-- Navbar --}}
+
     <x-admin.navbar title="Détails Utilisateur" />
-    
-    {{-- Main Content --}}
+
     <main class="lg:ml-64 pt-16 min-h-screen">
         <div class="p-6">
-            {{-- Back Button --}}
+
             <div class="mb-6">
                 <a href="{{ route('admin.users') }}" class="inline-flex items-center text-sm text-gray-600 hover:text-gray-900">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -27,7 +25,6 @@
                 </a>
             </div>
 
-            {{-- User Header Card --}}
             <div class="bg-white rounded-lg shadow-sm border mb-6">
                 <div class="p-6">
                     <div class="flex items-start justify-between">
@@ -43,15 +40,15 @@
                                 <div class="mt-2 flex items-center space-x-2">
                                     @if($user->roles->isNotEmpty())
                                         @foreach($user->roles as $role)
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                                {{ $role->name === 'admin' ? 'bg-red-100 text-red-800' : 
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                {{ $role->name === 'admin' ? 'bg-red-100 text-red-800' :
                                                    ($role->name === 'moderator' ? 'bg-yellow-100 text-yellow-800' :
                                                    ($role->name === 'seller' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800')) }}">
                                                 {{ ucfirst($role->name) }}
                                             </span>
                                         @endforeach
                                     @endif
-                                    
+
                                     @if($user->email_verified_at)
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                             Vérifié
@@ -68,7 +65,6 @@
                 </div>
             </div>
 
-            {{-- Stats Grid --}}
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                 <div class="bg-white p-6 rounded-lg shadow-sm border">
                     <div class="flex items-center">
@@ -129,25 +125,24 @@
                 </div>
             </div>
 
-            {{-- Tabs --}}
             <div class="bg-white rounded-lg shadow-sm border" x-data="{ tab: 'orders' }">
                 <div class="border-b border-gray-200">
                     <nav class="flex -mb-px">
-                        <button @click="tab = 'orders'" 
+                        <button @click="tab = 'orders'"
                                 :class="tab === 'orders' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                 class="py-4 px-6 border-b-2 font-medium text-sm">
                             Commandes ({{ $user->orders->count() }})
                         </button>
-                        
+
                         @if($user->hasRole('seller'))
-                        <button @click="tab = 'products'" 
+                        <button @click="tab = 'products'"
                                 :class="tab === 'products' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                 class="py-4 px-6 border-b-2 font-medium text-sm">
                             Produits ({{ $user->products->count() }})
                         </button>
                         @endif
-                        
-                        <button @click="tab = 'reviews'" 
+
+                        <button @click="tab = 'reviews'"
                                 :class="tab === 'reviews' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                 class="py-4 px-6 border-b-2 font-medium text-sm">
                             Avis ({{ $user->reviews->count() }})
@@ -155,7 +150,6 @@
                     </nav>
                 </div>
 
-                {{-- Orders Tab --}}
                 <div x-show="tab === 'orders'" class="p-6">
                     @if($user->orders->count() > 0)
                         <div class="overflow-x-auto">
@@ -175,8 +169,8 @@
                                         <td class="px-6 py-4 text-sm text-gray-500">{{ $order->created_at->format('d/m/Y H:i') }}</td>
                                         <td class="px-6 py-4 text-sm font-semibold text-gray-900">€{{ number_format($order->total_amount, 2) }}</td>
                                         <td class="px-6 py-4 text-sm">
-                                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
-                                                {{ $order->status === 'delivered' ? 'bg-green-100 text-green-800' : 
+                                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
+                                                {{ $order->status === 'delivered' ? 'bg-green-100 text-green-800' :
                                                    ($order->status === 'cancelled' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
                                                 {{ ucfirst($order->status) }}
                                             </span>
@@ -191,7 +185,6 @@
                     @endif
                 </div>
 
-                {{-- Products Tab --}}
                 @if($user->hasRole('seller'))
                 <div x-show="tab === 'products'" class="p-6" style="display: none;">
                     @if($user->products->count() > 0)
@@ -213,7 +206,6 @@
                 </div>
                 @endif
 
-                {{-- Reviews Tab --}}
                 <div x-show="tab === 'reviews'" class="p-6" style="display: none;">
                     @if($user->reviews->count() > 0)
                         <div class="space-y-4">
@@ -222,7 +214,7 @@
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center">
                                         @for($i = 1; $i <= 5; $i++)
-                                            <svg class="w-4 h-4 {{ $i <= $review->rating ? 'text-yellow-400' : 'text-gray-300' }}" 
+                                            <svg class="w-4 h-4 {{ $i <= $review->rating ? 'text-yellow-400' : 'text-gray-300' }}"
                                                  fill="currentColor" viewBox="0 0 20 20">
                                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                             </svg>
