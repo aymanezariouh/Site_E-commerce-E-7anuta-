@@ -126,8 +126,8 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
                                         <div class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
-                                            @if($product->images && count($product->images) > 0)
-                                                <img src="{{ $product->images[0] }}" alt="{{ $product->name }}" 
+                                            @if($product->primary_image)
+                                                <img src="{{ $product->primary_image }}" alt="{{ $product->name }}" 
                                                      class="w-12 h-12 object-cover rounded-lg">
                                             @else
                                                 <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

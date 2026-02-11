@@ -98,8 +98,8 @@
                         <div class="group bg-white rounded-2xl shadow-soft hover:shadow-card transition-all duration-300 flex flex-col h-full border border-shop-gray-100 overflow-hidden transform hover:-translate-y-1">
                             <!-- Image Area -->
                             <div class="relative aspect-w-4 aspect-h-3 bg-shop-gray-100 overflow-hidden">
-                                @if($product->image_path)
-                                    <img src="{{ Storage::url($product->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-center object-cover group-hover:scale-105 transition-transform duration-500">
+                                @if($product->primary_image)
+                                    <img src="{{ $product->primary_image }}" alt="{{ $product->name }}" class="w-full h-full object-center object-cover group-hover:scale-105 transition-transform duration-500">
                                 @else
                                     <div class="w-full h-48 bg-shop-gray-100 flex items-center justify-center text-shop-gray-400">
                                         <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">

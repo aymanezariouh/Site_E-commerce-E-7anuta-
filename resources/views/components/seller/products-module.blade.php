@@ -98,7 +98,7 @@
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 h-10 w-10">
                                     @php
-                                        $image = is_array($product->images) && count($product->images) ? $product->images[0] : null;
+                                        $image = $product->primary_image;
                                     @endphp
                                     @if ($image)
                                         <img class="h-10 w-10 rounded-lg object-cover border border-shop-gray-200 shadow-sm group-hover:scale-110 transition-transform duration-300" src="{{ $image }}" alt="{{ $product->name }}">

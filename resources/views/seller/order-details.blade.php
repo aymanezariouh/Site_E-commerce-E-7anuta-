@@ -59,7 +59,7 @@
                                             <td class="px-6 py-4">
                                                 <div class="flex items-center gap-4">
                                                     @php
-                                                        $image = is_array($item->product->images) && count($item->product->images) ? $item->product->images[0] : null;
+                                                        $image = $item->product->primary_image;
                                                     @endphp
                                                     @if ($image)
                                                         <img class="h-12 w-12 rounded-lg object-cover border border-shop-gray-200" src="{{ $image }}" alt="{{ $item->product->name }}">

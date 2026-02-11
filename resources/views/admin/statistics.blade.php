@@ -148,8 +148,8 @@
                                 <td class="px-6 py-4">
                                     <div class="flex items-center">
                                         <div class="h-10 w-10 flex-shrink-0 rounded-lg bg-shop-gray-100 flex items-center justify-center overflow-hidden border border-shop-gray-200">
-                                            @if($product->images && count($product->images) > 0)
-                                                <img src="{{ $product->images[0] }}" alt="{{ $product->name }}" class="h-full w-full object-cover">
+                                            @if($product->primary_image)
+                                                <img src="{{ $product->primary_image }}" alt="{{ $product->name }}" class="h-full w-full object-cover">
                                             @else
                                                 <svg class="h-5 w-5 text-shop-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />

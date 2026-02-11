@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index() 
     {
         $user = Auth::user();
         $sellerPendingOrdersCount = 0;
@@ -26,6 +26,36 @@ class DashboardController extends Controller
                 ->count();
         }
 
-        return view('dashboard', compact('sellerPendingOrdersCount', 'sellerActiveProductsCount'));
+        $buyerRecentOrders = [];
+        $buyerWishlist = [];
+        $buyerOrdersCount = 0;
+        $buyerWishlistCount = 0;
+
+        if ($user && $user->isBuyer()) {
+             $buyerRecentOrders = Order::where('user_id', $user->id)
+                ->with(['items.product'])
+                ->orderBy('created_at', 'desc')
+                ->take(5)
+                ->get();
+            
+            $buyerOrdersCount = Order::where('user_id', $user->id)->count();
+
+            $buyerWishlist = $user->likes()
+                ->with('product')
+                ->orderBy('created_at', 'desc')
+                ->take(4)
+                ->get();
+                
+            $buyerWishlistCount = $user->likes()->count();
+        }
+
+        return view('dashboard', compact(
+            'sellerPendingOrdersCount', 
+            'sellerActiveProductsCount',
+            'buyerRecentOrders',
+            'buyerWishlist',
+            'buyerOrdersCount',
+            'buyerWishlistCount'
+        ));
     }
 }

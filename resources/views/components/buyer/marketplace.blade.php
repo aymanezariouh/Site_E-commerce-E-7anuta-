@@ -82,7 +82,7 @@
                 <!-- Product Image -->
                 <div class="mt-3 h-32 rounded-lg bg-slate-100 overflow-hidden">
                     @php
-                        $image = is_array($product->images) && count($product->images) ? $product->images[0] : null;
+                        $image = $product->primary_image;
                     @endphp
                     @if($image)
                         <img src="{{ $image }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
