@@ -1,37 +1,40 @@
 @props(['type' => 'button', 'color' => 'blue', 'size' => 'md', 'href' => null, 'icon' => null, 'confirm' => null])
 
 @php
-    $baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2';
+    $baseClasses = 'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 transform active:scale-95';
     
     // Size classes
     $sizeClasses = match($size) {
-        'sm' => 'px-3 py-1.5 text-sm',
+        'sm' => 'px-3 py-1.5 text-xs',
         'md' => 'px-4 py-2 text-sm',
         'lg' => 'px-6 py-3 text-base',
         'xl' => 'px-8 py-4 text-lg',
         default => 'px-4 py-2 text-sm'
     };
     
-    // Color classes
+    // Color classes (Updated to premium palette)
     $colorMap = [
-        'blue' => 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500',
-        'green' => 'bg-green-600 hover:bg-green-700 text-white focus:ring-green-500',
-        'red' => 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500',
-        'yellow' => 'bg-yellow-600 hover:bg-yellow-700 text-white focus:ring-yellow-500',
-        'gray' => 'bg-gray-600 hover:bg-gray-700 text-white focus:ring-gray-500',
-        'indigo' => 'bg-indigo-600 hover:bg-indigo-700 text-white focus:ring-indigo-500',
-        'purple' => 'bg-purple-600 hover:bg-purple-700 text-white focus:ring-purple-500',
-        'pink' => 'bg-pink-600 hover:bg-pink-700 text-white focus:ring-pink-500',
+        'blue' => 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500 shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/30',
+        'brand' => 'bg-brand-600 hover:bg-brand-700 text-white focus:ring-brand-500 shadow-md shadow-brand-500/20 hover:shadow-lg hover:shadow-brand-500/30',
+        'green' => 'bg-emerald-600 hover:bg-emerald-700 text-white focus:ring-emerald-500 shadow-md shadow-emerald-500/20 hover:shadow-lg hover:shadow-emerald-500/30',
+        'red' => 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500 shadow-md shadow-red-500/20 hover:shadow-lg hover:shadow-red-500/30',
+        'yellow' => 'bg-amber-500 hover:bg-amber-600 text-white focus:ring-amber-500 shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30',
+        'gray' => 'bg-shop-gray-600 hover:bg-shop-gray-700 text-white focus:ring-shop-gray-500 shadow-md shadow-shop-gray-500/20 hover:shadow-lg hover:shadow-shop-gray-500/30',
+        'indigo' => 'bg-indigo-600 hover:bg-indigo-700 text-white focus:ring-indigo-500 shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30',
+        
         'blue-outline' => 'border border-blue-600 text-blue-600 hover:bg-blue-50 focus:ring-blue-500',
-        'green-outline' => 'border border-green-600 text-green-600 hover:bg-green-50 focus:ring-green-500',
+        'brand-outline' => 'border border-brand-600 text-brand-600 hover:bg-brand-50 focus:ring-brand-500',
+        'green-outline' => 'border border-emerald-600 text-emerald-600 hover:bg-emerald-50 focus:ring-emerald-500',
         'red-outline' => 'border border-red-600 text-red-600 hover:bg-red-50 focus:ring-red-500',
-        'gray-outline' => 'border border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-gray-500',
-        'blue-ghost' => 'text-blue-600 hover:bg-blue-100 focus:ring-blue-500',
-        'green-ghost' => 'text-green-600 hover:bg-green-100 focus:ring-green-500',
-        'red-ghost' => 'text-red-600 hover:bg-red-100 focus:ring-red-500',
-        'gray-ghost' => 'text-gray-600 hover:bg-gray-100 focus:ring-gray-500',
+        'gray-outline' => 'border border-shop-gray-300 text-shop-gray-700 hover:bg-shop-gray-50 focus:ring-shop-gray-500',
+        
+        'blue-ghost' => 'text-blue-600 hover:bg-blue-50 focus:ring-blue-500',
+        'brand-ghost' => 'text-brand-600 hover:bg-brand-50 focus:ring-brand-500',
+        'green-ghost' => 'text-emerald-600 hover:bg-emerald-50 focus:ring-emerald-500',
+        'red-ghost' => 'text-red-600 hover:bg-red-50 focus:ring-red-500',
+        'gray-ghost' => 'text-shop-gray-600 hover:bg-shop-gray-100 focus:ring-shop-gray-500',
     ];
-    $colorClasses = $colorMap[$color] ?? 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500';
+    $colorClasses = $colorMap[$color] ?? $colorMap['blue'];
 
     // Icon paths
     $iconPaths = [

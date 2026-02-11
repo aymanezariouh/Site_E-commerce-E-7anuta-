@@ -24,6 +24,8 @@ class OrderStatusChanged extends Mailable
 
     public function build()
     {
+        $this->order->loadMissing(['user', 'items.product']);
+
         return $this->subject('Order Status Update - Order #' . $this->order->order_number)
                     ->view('emails.order-status-changed');
     }

@@ -124,14 +124,14 @@
                         </p>
                     </div>
                     <div class="flex gap-2">
-                        <form action="{{ route('buyer.addToCart', $product->id) }}" method="POST">
+                        <form action="{{ route('marketplace.addToCart', $product->id) }}" method="POST">
                             @csrf
                             <input type="hidden" name="quantity" value="1">
                             <button type="submit" class="rounded-lg bg-teal-600 px-3 py-1 text-xs text-white hover:bg-teal-700">
                                 Ajouter
                             </button>
                         </form>
-                        <a href="{{ route('buyer.produits.show', $product->id) }}" 
+                        <a href="{{ route('marketplace.show', $product->id) }}" 
                            class="rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 hover:bg-slate-50">
                             Voir
                         </a>

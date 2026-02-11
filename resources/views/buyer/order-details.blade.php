@@ -220,7 +220,7 @@
                             <div class="space-x-2">
                                 @foreach($order->items as $item)
                                     @if(!$item->product->reviews()->where('user_id', Auth::id())->exists())
-                                        <a href="{{ route('buyer.produits.show', $item->product->id) }}#review" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                        <a href="{{ route('marketplace.show', $item->product->id) }}#review" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                             Review {{ $item->product->name }}
                                         </a>
                                     @endif

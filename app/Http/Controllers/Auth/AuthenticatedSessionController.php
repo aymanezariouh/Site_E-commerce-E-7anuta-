@@ -28,7 +28,21 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended('/');
+        $user = $request->user();
+
+        if ($user->hasRole('admin')) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        if ($user->hasRole('buyer')) {
+            return redirect()->route('marketplace');
+        }
+
+        if ($user->hasRole('seller') || $user->hasRole('moderator')) {
+            return redirect()->route('dashboard');
+        }
+
+        return redirect()->route('marketplace');
     }
 
     /**

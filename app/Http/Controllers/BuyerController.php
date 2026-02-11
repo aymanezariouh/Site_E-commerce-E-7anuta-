@@ -90,6 +90,30 @@ class BuyerController extends Controller
         return view('buyer.cart', compact('cart'));
     }
 
+    public function removeFromCart($itemId)
+    {
+        $cart = Cart::where('user_id', Auth::id())->first();
+        if (!$cart) {
+            return redirect()->route('buyer.cart')->with('error', 'Your cart is empty.');
+        }
+
+        $item = CartItem::where('id', $itemId)
+            ->where('cart_id', $cart->id)
+            ->first();
+
+        if (!$item) {
+            return redirect()->route('buyer.cart')->with('error', 'Item not found in your cart.');
+        }
+
+        $item->delete();
+
+        if ($cart->items()->count() === 0) {
+            $cart->delete();
+        }
+
+        return redirect()->route('buyer.cart')->with('success', 'Item removed from cart.');
+    }
+
     public function checkout()
     {
         $cart = Cart::with('items.product')->where('user_id', Auth::id())->first();
@@ -167,16 +191,28 @@ class BuyerController extends Controller
             \Log::error('Email failed: ' . $e->getMessage());
         }
 
-        $admins = User::role('admin')->whereKeyNot(Auth::id())->get();
-        if ($admins->isNotEmpty()) {
-            Notification::send(
-                $admins,
-                new AdminAlertNotification(
-                    'new_order',
-                    'Nouvelle commande #' . $order->order_number . ' par ' . $order->user->name,
-                    route('admin.orders.show', $order)
-                )
-            );
+        // Notify each seller involved in the order.
+        try {
+            $order->loadMissing(['user', 'items.product.vendor']);
+
+            $itemsBySeller = $order->items
+                ->filter(function ($item) {
+                    return $item->product && $item->product->vendor;
+                })
+                ->groupBy(function ($item) {
+                    return $item->product->vendor->id;
+                });
+
+            foreach ($itemsBySeller as $sellerItems) {
+                $seller = $sellerItems->first()->product->vendor;
+                $sellerTotal = (float) $sellerItems->sum(function ($item) {
+                    return (float) $item->total_price;
+                });
+
+                $seller->notify(new NewOrderNotification($order, $sellerTotal));
+            }
+        } catch (\Exception $e) {
+            \Log::error('Seller notification failed: ' . $e->getMessage());
         }
 
         return redirect()->route('buyer.orders')->with([
