@@ -45,6 +45,6 @@ public function destroy(Request $request): RedirectResponse
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect()->route('login');
     }
 }

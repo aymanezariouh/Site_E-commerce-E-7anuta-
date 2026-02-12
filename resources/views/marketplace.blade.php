@@ -13,6 +13,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         [x-cloak] { display: none !important; }
+        @media (prefers-reduced-motion: no-preference) {
+            html {
+                scroll-behavior: smooth;
+            }
+        }
     </style>
 </head>
 <body class="font-sans antialiased h-full flex flex-col text-shop-gray-800">
@@ -91,8 +96,9 @@
                 </div>
             </div>
 
+            <section id="products" class="scroll-mt-28">
             @if(isset($products) && $products->count() > 0)
-                <div id="products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                     @foreach($products as $product)
                         <div class="group bg-white rounded-2xl shadow-soft hover:shadow-card transition-all duration-300 flex flex-col h-full border border-shop-gray-100 overflow-hidden transform hover:-translate-y-1">
 
@@ -190,6 +196,7 @@
                     <a href="{{ route('marketplace') }}" class="text-brand-600 font-medium hover:text-brand-700">Clear filters &rarr;</a>
                 </div>
             @endif
+            </section>
         </div>
     </div>
 
