@@ -7,10 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class SellerReviewController extends Controller
 {
-    /**
-     * Display reviews on the seller's products.
-     */
-    public function index()
+public function index()
     {
         $sellerId = Auth::id();
 
@@ -20,8 +17,6 @@ class SellerReviewController extends Controller
             })
             ->orderByDesc('created_at')
             ->paginate(15);
-
-        // Calculate stats
         $stats = [
             'total' => Review::whereHas('product', fn($q) => $q->where('user_id', $sellerId))->count(),
             'average_rating' => Review::whereHas('product', fn($q) => $q->where('user_id', $sellerId))->avg('rating') ?? 0,

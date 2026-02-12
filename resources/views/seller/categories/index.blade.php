@@ -1,8 +1,7 @@
 <x-app-layout>
     <div class="py-12 bg-shop-gray-50 min-h-screen">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 animate-fade-in-up">
-            
-            <!-- Header -->
+
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                      <h2 class="text-3xl font-bold font-display text-shop-gray-900 tracking-tight">Catégories</h2>
@@ -15,21 +14,20 @@
             </div>
 
             @if (session('success'))
-                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)" 
+                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
                      class="rounded-xl bg-emerald-50 border border-emerald-100 p-4 flex items-center gap-3 animate-fade-in-up">
                     <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                     <p class="text-emerald-800 text-sm font-bold">{{ session('success') }}</p>
                 </div>
             @endif
 
-            <!-- Categories List -->
             <div class="bg-white rounded-3xl shadow-soft border border-shop-gray-100 overflow-hidden">
                 <div class="px-6 py-5 border-b border-shop-gray-100 bg-shop-gray-50/30 flex items-center justify-between">
                     <div>
                         <h3 class="text-lg font-bold text-shop-gray-900 font-display">Toutes les catégories</h3>
                         <p class="text-sm text-shop-gray-500">{{ $categories->count() }} éléments</p>
                     </div>
-                    <!-- Optional: Search (could be added here later) -->
+
                 </div>
 
                 <div class="overflow-x-auto">

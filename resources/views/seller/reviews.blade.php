@@ -8,7 +8,6 @@
                 </div>
             </div>
 
-            <!-- Stats Cards -->
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 p-6">
                     <div class="flex items-center gap-4">
@@ -59,14 +58,13 @@
                 </div>
             </div>
 
-            <!-- Reviews Table -->
             <div class="bg-white rounded-2xl shadow-soft border border-shop-gray-100 overflow-hidden">
                 <div class="flex items-center justify-between border-b border-shop-gray-100 px-6 py-4 bg-shop-gray-50/50">
                     <div>
                         <h5 class="text-lg font-bold text-shop-gray-900 font-display">Derniers Avis</h5>
                     </div>
                 </div>
-                
+
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-shop-gray-100">
                         <thead class="bg-shop-gray-50">
@@ -84,8 +82,8 @@
                                 <tr class="hover:bg-shop-gray-50/50 transition-colors">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
-                                            @if($review->product && count($review->product->images ?? []) > 0)
-                                                <img src="{{ $review->product->images[0] }}" alt="" class="h-8 w-8 rounded-lg object-cover mr-3 border border-shop-gray-200">
+                                            @if($review->product && $review->product->primary_image)
+                                                <img src="{{ $review->product->primary_image }}" alt="" class="h-8 w-8 rounded-lg object-cover mr-3 border border-shop-gray-200">
                                             @else
                                                 <div class="h-8 w-8 rounded-lg bg-shop-gray-100 mr-3 flex items-center justify-center">
                                                     <svg class="w-4 h-4 text-shop-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>

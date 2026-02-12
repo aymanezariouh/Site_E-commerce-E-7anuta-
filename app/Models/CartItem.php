@@ -17,8 +17,6 @@ class CartItem extends Model
         'quantity' => 'integer',
         'price' => 'decimal:2',
     ];
-
-    // Relationships
     public function cart()
     {
         return $this->belongsTo(Cart::class);
@@ -28,8 +26,6 @@ class CartItem extends Model
     {
         return $this->belongsTo(Product::class);
     }
-
-    // Helper methods
     public function getTotalPriceAttribute()
     {
         return $this->quantity * $this->price;

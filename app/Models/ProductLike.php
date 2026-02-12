@@ -10,8 +10,6 @@ class ProductLike extends Model
         'user_id',
         'product_id',
     ];
-
-    // Relationships
     public function user()
     {
         return $this->belongsTo(User::class);

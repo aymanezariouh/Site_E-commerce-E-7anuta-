@@ -13,7 +13,7 @@
     @if(Auth::user()->hasRole('admin'))
         <x-admin.sidebar />
         <x-admin.navbar title="Profil et parametres" />
-        
+
         <main class="lg:ml-64 pt-16 min-h-screen">
             <div class="p-6">
                 <div class="max-w-7xl mx-auto space-y-6">

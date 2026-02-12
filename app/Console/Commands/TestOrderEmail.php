@@ -14,20 +14,20 @@ class TestOrderEmail extends Command
     {
         $orderId = $this->argument('order_id');
         $newStatus = $this->argument('new_status');
-        
+
         $order = Order::with('user')->find($orderId);
-        
+
         if (!$order) {
             $this->error("Order with ID {$orderId} not found.");
             return 1;
         }
-        
+
         $oldStatus = $order->status;
         $order->update(['status' => $newStatus]);
-        
+
         $this->info("Order #{$order->order_number} status changed from {$oldStatus} to {$newStatus}");
         $this->info("Email notification sent to: {$order->user->email}");
-        
+
         return 0;
     }
 }

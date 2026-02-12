@@ -7,12 +7,12 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- Order Status Timeline -->
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6">
                     <h3 class="text-lg font-medium mb-6">Order Status Timeline</h3>
                     <div class="flex items-center justify-between">
-                        <!-- Pending -->
+
                         <div class="flex flex-col items-center">
                             <div class="w-8 h-8 rounded-full flex items-center justify-center {{ $order->status == 'pending' || in_array($order->status, ['processing', 'shipped', 'delivered']) ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-600' }}">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -21,11 +21,9 @@
                             </div>
                             <span class="text-sm mt-2 {{ $order->status == 'pending' ? 'font-bold text-blue-600' : 'text-gray-600' }}">Pending</span>
                         </div>
-                        
-                        <!-- Line -->
+
                         <div class="flex-1 h-1 mx-4 {{ in_array($order->status, ['processing', 'shipped', 'delivered']) ? 'bg-green-500' : 'bg-gray-300' }}"></div>
-                        
-                        <!-- Processing -->
+
                         <div class="flex flex-col items-center">
                             <div class="w-8 h-8 rounded-full flex items-center justify-center {{ in_array($order->status, ['processing', 'shipped', 'delivered']) ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-600' }}">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -34,11 +32,9 @@
                             </div>
                             <span class="text-sm mt-2 {{ $order->status == 'processing' ? 'font-bold text-blue-600' : 'text-gray-600' }}">Processing</span>
                         </div>
-                        
-                        <!-- Line -->
+
                         <div class="flex-1 h-1 mx-4 {{ in_array($order->status, ['shipped', 'delivered']) ? 'bg-green-500' : 'bg-gray-300' }}"></div>
-                        
-                        <!-- Shipped -->
+
                         <div class="flex flex-col items-center">
                             <div class="w-8 h-8 rounded-full flex items-center justify-center {{ in_array($order->status, ['shipped', 'delivered']) ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-600' }}">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -47,11 +43,9 @@
                             </div>
                             <span class="text-sm mt-2 {{ $order->status == 'shipped' ? 'font-bold text-blue-600' : 'text-gray-600' }}">Shipped</span>
                         </div>
-                        
-                        <!-- Line -->
+
                         <div class="flex-1 h-1 mx-4 {{ $order->status == 'delivered' ? 'bg-green-500' : 'bg-gray-300' }}"></div>
-                        
-                        <!-- Delivered -->
+
                         <div class="flex flex-col items-center">
                             <div class="w-8 h-8 rounded-full flex items-center justify-center {{ $order->status == 'delivered' ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-600' }}">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -61,8 +55,7 @@
                             <span class="text-sm mt-2 {{ $order->status == 'delivered' ? 'font-bold text-blue-600' : 'text-gray-600' }}">Delivered</span>
                         </div>
                     </div>
-                    
-                    <!-- Current Status Description -->
+
                     <div class="mt-6 p-4 rounded-lg {{ $order->status == 'pending' ? 'bg-yellow-50 border border-yellow-200' : ($order->status == 'processing' ? 'bg-blue-50 border border-blue-200' : ($order->status == 'shipped' ? 'bg-purple-50 border border-purple-200' : ($order->status == 'delivered' ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'))) }}">
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
@@ -131,12 +124,12 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Order Information -->
+
                         <div>
                             <h3 class="text-lg font-medium mb-4">Order Information</h3>
                             <div class="space-y-2">
                                 <p><strong>Order Number:</strong> {{ $order->order_number }}</p>
-                                <p><strong>Status:</strong> 
+                                <p><strong>Status:</strong>
                                     <span class="px-2 py-1 rounded text-sm
                                         @if($order->status == 'pending') bg-yellow-100 text-yellow-800
                                         @elseif($order->status == 'processing') bg-blue-100 text-blue-800
@@ -158,7 +151,6 @@
                             </div>
                         </div>
 
-                        <!-- Shipping Address -->
                         <div>
                             <h3 class="text-lg font-medium mb-4">Shipping Address</h3>
                             @if($order->shipping_address)
@@ -172,7 +164,54 @@
                         </div>
                     </div>
 
-                    <!-- Order Items -->
+                    @if($order->payments->isNotEmpty())
+                        @php $payment = $order->payments->first(); @endphp
+                        <div class="mt-8">
+                            <h3 class="text-lg font-medium mb-4">Informations de paiement</h3>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-sm text-gray-500">Méthode</p>
+                                        <p class="font-medium text-gray-900">
+                                            @if($payment->payment_method === 'cod')
+                                                💵 Paiement à la livraison
+                                            @elseif($payment->payment_method === 'bank_transfer')
+                                                🏦 Virement bancaire
+                                            @elseif($payment->payment_method === 'card')
+                                                💳 Carte bancaire
+                                            @else
+                                                {{ ucfirst($payment->payment_method) }}
+                                            @endif
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-500">Statut</p>
+                                        <p>
+                                            <span class="px-2 py-1 rounded text-sm
+                                                @if($payment->status === 'completed') bg-green-100 text-green-800
+                                                @elseif($payment->status === 'pending') bg-yellow-100 text-yellow-800
+                                                @elseif($payment->status === 'failed') bg-red-100 text-red-800
+                                                @else bg-gray-100 text-gray-800
+                                                @endif">
+                                                {{ ucfirst($payment->status) }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                    @if($payment->transaction_id)
+                                    <div>
+                                        <p class="text-sm text-gray-500">Référence</p>
+                                        <p class="font-mono text-sm text-gray-900">{{ $payment->transaction_id }}</p>
+                                    </div>
+                                    @endif
+                                    <div>
+                                        <p class="text-sm text-gray-500">Montant</p>
+                                        <p class="font-medium text-gray-900">{{ number_format($payment->amount, 2) }} MAD</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     <div class="mt-8">
                         <h3 class="text-lg font-medium mb-4">Order Items</h3>
                         <div class="overflow-x-auto">
@@ -210,12 +249,11 @@
                         </div>
                     </div>
 
-                    <!-- Actions -->
                     <div class="mt-6 flex justify-between">
                         <a href="{{ route('buyer.orders') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
                             ← Back to Orders
                         </a>
-                        
+
                         @if($order->status == 'delivered')
                             <div class="space-x-2">
                                 @foreach($order->items as $item)

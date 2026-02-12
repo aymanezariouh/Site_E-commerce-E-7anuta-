@@ -1,8 +1,7 @@
 <x-app-layout>
     <div class="py-12 bg-shop-gray-50 min-h-screen">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 animate-fade-in-up">
-            
-            <!-- Header -->
+
             <div class="flex items-center justify-between">
                 <div>
                     <h2 class="text-3xl font-bold font-display text-shop-gray-900">Nouvelle Catégorie</h2>
@@ -16,8 +15,7 @@
             <div class="bg-white rounded-3xl shadow-soft border border-shop-gray-100 p-8">
                 <form method="POST" action="{{ route('seller.categories.store') }}" class="space-y-6">
                     @csrf
-                    
-                    <!-- Icon Header -->
+
                     <div class="flex items-center gap-4 mb-6 border-b border-shop-gray-100 pb-6">
                         <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center shadow-sm">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
@@ -29,21 +27,19 @@
                     </div>
 
                     <div class="space-y-6">
-                        <!-- Nom -->
+
                         <div>
                             <x-input-label for="name" value="Nom de la catégorie" class="text-shop-gray-700 font-bold" />
                             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full rounded-xl border-shop-gray-200 focus:border-brand-500 focus:ring-brand-500 shadow-sm" value="{{ old('name') }}" placeholder="Ex: Électronique" required autofocus />
                             <x-input-error :messages="$errors->get('name')" class="mt-2" />
                         </div>
 
-                        <!-- Description -->
                         <div>
                             <x-input-label for="description" value="Description (Optionnel)" class="text-shop-gray-700 font-bold" />
                             <textarea id="description" name="description" rows="4" class="mt-1 block w-full rounded-xl border-shop-gray-200 focus:border-brand-500 focus:ring-brand-500 shadow-sm" placeholder="Brève description de cette catégorie...">{{ old('description') }}</textarea>
                             <x-input-error :messages="$errors->get('description')" class="mt-2" />
                         </div>
 
-                        <!-- Image URL -->
                         <div>
                             <x-input-label for="image" value="Image de couverture (URL)" class="text-shop-gray-700 font-bold" />
                             <div class="mt-1 flex rounded-md shadow-sm">
@@ -55,7 +51,6 @@
                             <x-input-error :messages="$errors->get('image')" class="mt-2" />
                         </div>
 
-                        <!-- Status Toggle -->
                         <div class="flex items-center justify-between p-4 bg-shop-gray-50 rounded-xl border border-shop-gray-100">
                              <div>
                                 <label for="is_active" class="font-bold text-shop-gray-900">Catégorie Active</label>
@@ -68,7 +63,6 @@
                         </div>
                     </div>
 
-                    <!-- Actions -->
                     <div class="pt-6 border-t border-shop-gray-100 flex items-center justify-end gap-3" x-data="{ submitting: false }">
                         <a href="{{ route('seller.categories.index') }}" class="px-6 py-3 bg-white border border-shop-gray-200 text-shop-gray-700 font-bold rounded-xl hover:bg-shop-gray-50 transition-colors shadow-sm">
                             Annuler
@@ -85,10 +79,9 @@
             </div>
         </div>
     </div>
-    
+
     <style>
-        /* Custom Toggle Checkbox */
-        .toggle-checkbox:checked {
+.toggle-checkbox:checked {
             right: 0;
             border-color: #0d9488;
         }

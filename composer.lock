@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "41773b8ea943914b8c151ce37ba37f48",
+    "content-hash": "bd5044114817a8aa31a591b3105d62cf",
     "packages": [
         {
             "name": "brick/math",
@@ -1051,6 +1051,74 @@
                 }
             ],
             "time": "2025-08-22T14:27:06+00:00"
+        },
+        {
+            "name": "isapp/laravel-cart",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/isap-ou/laravel-cart.git",
+                "reference": "fc1102a253ffd50c19a61d3670c39680abb350c5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/isap-ou/laravel-cart/zipball/fc1102a253ffd50c19a61d3670c39680abb350c5",
+                "reference": "fc1102a253ffd50c19a61d3670c39680abb350c5",
+                "shasum": ""
+            },
+            "require": {
+                "ext-bcmath": "*",
+                "illuminate/support": "^10|^11|^12",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.24"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Isapp\\LaravelCart\\CartServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Isapp\\LaravelCart\\": "src/",
+                    "Isapp\\LaravelCart\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "ISAP OÜ",
+                    "email": "contact@isap.me",
+                    "homepage": "https://isap.me"
+                },
+                {
+                    "name": "Andrii Trush",
+                    "email": "andrii.trush@isapp.be",
+                    "homepage": "https://isapp.be"
+                }
+            ],
+            "description": "Is high customazible package for adding shopping cart functionality to Laravel applications",
+            "keywords": [
+                "cart",
+                "e-commerce",
+                "framework",
+                "laravel",
+                "laravel-package",
+                "php"
+            ],
+            "support": {
+                "email": "contact@isap.me",
+                "issues": "https://github.com/isap-ou/laravel-cart/issues",
+                "source": "https://github.com/isap-ou/laravel-cart/tree/1.0.0"
+            },
+            "time": "2025-08-03T12:32:22+00:00"
         },
         {
             "name": "laravel/framework",

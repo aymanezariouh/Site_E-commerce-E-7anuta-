@@ -8,16 +8,14 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-gray-50">
-    {{-- Sidebar --}}
+
     <x-admin.sidebar />
-    
-    {{-- Navbar --}}
+
     <x-admin.navbar title="Gestion des Produits" />
-    
-    {{-- Main Content --}}
+
     <main class="lg:ml-64 pt-16 min-h-screen">
         <div class="p-6">
-            {{-- Header --}}
+
             <div class="mb-8">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                     <div>
@@ -37,7 +35,6 @@
                 </div>
             </div>
 
-            {{-- Stats Cards --}}
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                 <div class="bg-white p-6 rounded-lg shadow-sm border">
                     <div class="flex items-center">
@@ -102,7 +99,6 @@
                 </div>
             </div>
 
-            {{-- Products Table --}}
             <div class="bg-white shadow rounded-lg">
                 <div class="px-6 py-4 border-b border-gray-200">
                     <h3 class="text-lg font-medium text-gray-900">Liste des Produits</h3>
@@ -126,8 +122,8 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
                                         <div class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
-                                            @if($product->images && count($product->images) > 0)
-                                                <img src="{{ $product->images[0] }}" alt="{{ $product->name }}" 
+                                            @if($product->primary_image)
+                                                <img src="{{ $product->primary_image }}" alt="{{ $product->name }}"
                                                      class="w-12 h-12 object-cover rounded-lg">
                                             @else
                                                 <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -150,9 +146,9 @@
                                     <div class="text-sm font-medium text-gray-900">{{ number_format($product->price, 2) }} €</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                        {{ $product->moderation_status === 'approved' ? 'bg-green-100 text-green-800' : 
-                                           ($product->moderation_status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                        {{ $product->moderation_status === 'approved' ? 'bg-green-100 text-green-800' :
+                                           ($product->moderation_status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
                                            ($product->moderation_status === 'suspended' ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800')) }}">
                                         @if($product->moderation_status === 'approved')
                                             Approuvé
@@ -176,7 +172,7 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex items-center justify-end gap-2" x-data="{ showDropdown: false }">
-                                        <a href="{{ route('marketplace.show', $product->id) }}" 
+                                        <a href="{{ route('marketplace.show', $product->id) }}"
                                            class="inline-flex items-center px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-md hover:bg-indigo-200 transition-colors duration-200"
                                            title="Voir le produit">
                                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -187,7 +183,7 @@
                                         </a>
 
                                         <div class="relative">
-                                            <button @click="showDropdown = !showDropdown" 
+                                            <button @click="showDropdown = !showDropdown"
                                                     class="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors duration-200"
                                                     title="Actions">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -195,7 +191,7 @@
                                                 </svg>
                                             </button>
 
-                                            <div x-show="showDropdown" 
+                                            <div x-show="showDropdown"
                                                  @click.outside="showDropdown = false"
                                                  x-transition:enter="transition ease-out duration-100"
                                                  x-transition:enter-start="transform opacity-0 scale-95"
@@ -276,7 +272,6 @@
                     </table>
                 </div>
 
-                {{-- Pagination --}}
                 @if($products->hasPages())
                 <div class="px-6 py-4 border-t border-gray-200">
                     {{ $products->links() }}

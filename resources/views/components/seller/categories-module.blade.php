@@ -12,7 +12,7 @@
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
         </a>
     </div>
-    
+
     <div class="flex-1 overflow-y-auto custom-scrollbar p-2">
         @if($categories->count() > 0)
             <div class="space-y-2">
@@ -29,7 +29,7 @@
                                 </p>
                             </div>
                         </div>
-                        
+
                         <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             <a href="{{ route('seller.categories.edit', $category) }}" class="p-1.5 text-shop-gray-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
@@ -47,7 +47,7 @@
             </div>
         @endif
     </div>
-    
+
     @if($categories->count() > 5)
         <div class="p-3 bg-shop-gray-50/50 border-t border-shop-gray-100 text-center">
             <a href="{{ route('seller.categories.index') }}" class="text-xs font-bold text-brand-600 hover:text-brand-700 transition-colors uppercase tracking-wide">

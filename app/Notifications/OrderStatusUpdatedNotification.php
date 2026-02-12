@@ -14,28 +14,16 @@ class OrderStatusUpdatedNotification extends Notification implements ShouldQueue
 
     protected Order $order;
     protected string $oldStatus;
-
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct(Order $order, string $oldStatus)
+public function __construct(Order $order, string $oldStatus)
     {
         $this->order = $order;
         $this->oldStatus = $oldStatus;
     }
-
-    /**
-     * Get the notification's delivery channels.
-     */
-    public function via(object $notifiable): array
+public function via(object $notifiable): array
     {
         return ['mail', 'database'];
     }
-
-    /**
-     * Get the mail representation of the notification.
-     */
-    public function toMail(object $notifiable): MailMessage
+public function toMail(object $notifiable): MailMessage
     {
         $order = $this->order->loadMissing('user');
         $customerName = $order->user->name ?? $notifiable->name;
@@ -54,11 +42,7 @@ class OrderStatusUpdatedNotification extends Notification implements ShouldQueue
             ->action('View your orders', url('/orders'))
             ->line('Thank you for using LocalMart.');
     }
-
-    /**
-     * Get the array representation of the notification.
-     */
-    public function toArray(object $notifiable): array
+public function toArray(object $notifiable): array
     {
         return [
             'type' => 'order_status_updated',
