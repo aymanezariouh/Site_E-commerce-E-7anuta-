@@ -81,6 +81,8 @@ Route::middleware(['auth', 'role:buyer|seller|moderator'])->group(function() {
     Route::delete('/cart/items/{id}', [BuyerController::class, 'removeFromCart'])->name('buyer.cart.remove');
     Route::get('/checkout', [BuyerController::class, 'checkout'])->name('buyer.checkout');
     Route::post('/place-order', [BuyerController::class, 'placeOrder'])->name('buyer.placeOrder');
+    Route::get('/checkout/stripe/success', [BuyerController::class, 'stripeSuccess'])->name('buyer.stripe.success');
+    Route::get('/checkout/stripe/cancel', [BuyerController::class, 'stripeCancel'])->name('buyer.stripe.cancel');
     Route::get('/buyer/orders', [BuyerController::class, 'orders'])->name('buyer.orders');
     Route::get('/buyer/orders/{id}', [BuyerController::class, 'orderDetails'])->name('buyer.orderDetails');
 });
