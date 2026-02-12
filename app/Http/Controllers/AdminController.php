@@ -90,6 +90,39 @@ class AdminController extends Controller
         $pendingReviews = Review::where('moderation_status', 'pending')->count();
         $totalReviews = Review::count();
 
+        // Build recent activity feed
+        $recentActivity = collect();
+        
+        // Add recent orders
+        foreach (Order::with('user')->latest()->take(10)->get() as $order) {
+            $recentActivity->push((object)[
+                'type' => 'order',
+                'description' => "Commande #{$order->id} créée par {$order->user->name}",
+                'created_at' => $order->created_at,
+            ]);
+        }
+        
+        // Add recent users
+        foreach (User::latest()->take(5)->get() as $user) {
+            $recentActivity->push((object)[
+                'type' => 'user',
+                'description' => "Nouvel utilisateur {$user->name}",
+                'created_at' => $user->created_at,
+            ]);
+        }
+        
+        // Add recent products
+        foreach (Product::latest()->take(5)->get() as $product) {
+            $recentActivity->push((object)[
+                'type' => 'product',
+                'description' => "Nouveau produit : {$product->name}",
+                'created_at' => $product->created_at,
+            ]);
+        }
+        
+        // Sort by creation date and take the latest 10
+        $recentActivity = $recentActivity->sortByDesc('created_at')->take(10)->values();
+
         $stats = [
             'users' => $totalUsers,
             'users_change' => [
@@ -121,7 +154,7 @@ class AdminController extends Controller
             'users_by_role' => $usersByRole,
         ];
 
-        return view('admin.dashboard', compact('stats'));
+        return view('admin.dashboard', compact('stats', 'recentActivity'));
     }
 
     /**
@@ -409,7 +442,24 @@ class AdminController extends Controller
             ]
         ];
 
+        // KPIs array for the view
+        $kpis = [
+            'revenue' => $totalRevenue,
+            'orders_count' => $totalOrders,
+            'new_customers' => $newCustomers,
+            'conversion_rate' => round($conversionRate, 2),
+            'total_visitors' => $totalVisitors,
+        ];
+
+        // Charts data for the view
+        $charts = [
+            'sales' => $salesData,
+            'orders' => $ordersData,
+        ];
+
         return view('admin.statistics', compact(
+            'kpis',
+            'charts',
             'totalRevenue', 
             'totalOrders', 
             'newCustomers', 
